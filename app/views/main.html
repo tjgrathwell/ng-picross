@@ -3,9 +3,17 @@
 </header>
 
 <div class='board'>
+  <div class='col-hint' ng-repeat="col in board[0] track by $index">
+    <div class='col-hint-number' ng-repeat="num in hintsForColumn($index)">{{num}}</div>
+  </div>
   <div class='row' ng-init="rowIndex = $index" ng-repeat="row in board track by $index">
+    <div class='row-hint'>
+      <span class='row-hint-number' ng-repeat="num in hintsForRow(rowIndex) track by $index">{{num}}</span>
+    </div>
     <div class='col' ng-init="colIndex = $index" ng-repeat="col in board[rowIndex] track by $index" ng-class="{on: board[rowIndex][colIndex] === 'x'}"
          ng-click="clickedCell(rowIndex, colIndex)">
     </div>
   </div>
 </div>
+
+<h1 class='solved-message' ng-if='solved'>SOLVED</h1>
