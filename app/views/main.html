@@ -2,18 +2,24 @@
   <h1 class='text-center'>ng-picross</h1>
 </header>
 
-<div class='board'>
-  <div class='col-hint' ng-repeat="col in board[0] track by $index">
-    <div class='col-hint-number' ng-repeat="num in hintsForColumn($index)">{{num}}</div>
-  </div>
-  <div class='row' ng-init="rowIndex = $index" ng-repeat="row in board track by $index">
-    <div class='row-hint'>
-      <span class='row-hint-number' ng-repeat="num in hintsForRow(rowIndex) track by $index">{{num}}</span>
-    </div>
-    <div class='col' ng-init="colIndex = $index" ng-repeat="col in board[rowIndex] track by $index" ng-class="{on: board[rowIndex][colIndex] === 'x'}"
+<table class='board'>
+  <tr>
+    <td></td>
+    <td class='col-hint' ng-repeat="hints in puzzle.colHints track by $index">
+      <div class='col-hint-number' ng-repeat="num in hints track by $index">{{num}}</div>
+    </td>
+  </tr>
+  <tr class='row' ng-init="rowIndex = $index" ng-repeat="row in puzzle.board track by $index">
+    <td class='row-hint'>
+      <span class='row-hint-number' ng-repeat="num in puzzle.rowHints[rowIndex] track by $index">{{num}}</span>
+    </td>
+    <td class='cell' ng-init="colIndex = $index" ng-repeat="col in puzzle.board[rowIndex] track by $index" ng-class="{on: puzzle.board[rowIndex][colIndex] === 'x'}"
          ng-click="clickedCell(rowIndex, colIndex)">
-    </div>
-  </div>
-</div>
+    </td>
+  </tr>
+</table>
 
-<h1 class='solved-message' ng-if='solved'>SOLVED</h1>
+<div class='solved-message' ng-if='solved'>
+  <h1>SOLVED</h1>
+  <button ng-click='randomPuzzle()'>Random</button>
+</div>

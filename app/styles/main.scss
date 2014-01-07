@@ -10,14 +10,17 @@ html, body {
 .container {
   width: 800px;
   margin: 0 auto;
-  padding: 50px;
+  padding: 20px 0 0 0;
   border-left: 1px solid grey;
   border-right: 1px solid grey;
   height: 100%;
 }
 
 h1 {
-  font-size: 30px;
+  letter-spacing: 10px;
+  font-size: 32px;
+  font-family: monospace;
+  font-weight: 300;
 }
 
 .text-center {
@@ -33,19 +36,42 @@ h1 {
   $cell-width: 20px;
   $cell-border: 1px solid grey;
 
-  margin-top: 40px;
+  border-collapse: collapse;
+  margin: 40px auto;
   text-align: center;
   font-size: 0;
 
   .col-hint, .row-hint {
-    font-size: 10px;
-    display: inline-block;
+    font-size: 16px;
+    font-family: sans-serif;
     width: $cell-width;
     height: $cell-width;
+    white-space: nowrap;
   }
 
-  .col {
+  .col-hint {
+    vertical-align: bottom;
+  }
+
+  .row-hint {
+    text-align: right;
+    padding-right: 10px;
+  }
+
+  .col-hint:not(.last) {
+    border-right: 1px solid #cdd;
+  }
+
+  .row-hint:not(.last) {
+    border-bottom: 1px solid #cdd;
+  }
+
+  .row-hint-number {
     display: inline-block;
+    width: 20px;
+  }
+
+  .cell {
     border-top: $cell-border;
     border-left: $cell-border;
     height: $cell-width;
@@ -53,7 +79,7 @@ h1 {
     background-color: #ddd;
 
     &.on {
-      background-color: green;
+      background-color: #999;
     }
 
     &:last-child {
@@ -62,7 +88,7 @@ h1 {
   }
 
   .row:last-child {
-    .col {
+    .cell {
       border-bottom: $cell-border;
     }
   }
