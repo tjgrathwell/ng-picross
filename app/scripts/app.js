@@ -1,7 +1,10 @@
 'use strict';
 
-var x = 'x';
-var o = '';
+var CellStates = {
+  x: 'x',
+  o: '',
+  b: 'b'
+};
 
 angular.module('ngPicrossApp', ['ngRoute']).config(function ($routeProvider) {
   $routeProvider.when('/', {

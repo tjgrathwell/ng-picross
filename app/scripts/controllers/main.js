@@ -10,15 +10,32 @@ angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleSe
     startPuzzle(puzzleService.generateRandomPuzzle());
   };
 
-  $scope.clickedCell = function (rowIndex, colIndex) {
-    if ($scope.puzzle.board[rowIndex][colIndex]) {
-      $scope.puzzle.board[rowIndex][colIndex] = o;
+  function toggleBoardCell (rowIndex, colIndex, desiredValue) {
+    var board = $scope.puzzle.board;
+    if (board[rowIndex][colIndex] === desiredValue) {
+      board[rowIndex][colIndex] = CellStates.o;
     } else {
-      $scope.puzzle.board[rowIndex][colIndex] = x;
+      board[rowIndex][colIndex] = desiredValue;
     }
+  }
+
+  $scope.clickedCell = function (rowIndex, colIndex) {
+    toggleBoardCell(rowIndex, colIndex, CellStates.x);
     $scope.solved = $scope.puzzle.solved();
   };
 
+  $scope.rightClickedCell = function (rowIndex, colIndex) {
+    toggleBoardCell(rowIndex, colIndex, CellStates.b);
+    $scope.solved = $scope.puzzle.solved();
+  };
+
+  $scope.cellClasses = function (rowIndex, colIndex) {
+    var cellValue = $scope.puzzle.board[rowIndex][colIndex];
+    return {
+      on: cellValue === CellStates.x,
+      off: cellValue === CellStates.b
+    };
+  }
 
   startPuzzle(puzzleService.authoredPuzzle());
 });

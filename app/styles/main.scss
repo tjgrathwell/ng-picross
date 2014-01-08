@@ -77,9 +77,22 @@ h1 {
     height: $cell-width;
     width: $cell-width;
     background-color: #ddd;
+    &:hover {
+      background-color: #ccc;
+    }
+
+    &.off {
+      background-color: white;
+      &:hover {
+        background-color: #f0f0f0;
+      }
+    }
 
     &.on {
       background-color: #999;
+      &:hover {
+        background-color: #acacac;
+      }
     }
 
     &:last-child {

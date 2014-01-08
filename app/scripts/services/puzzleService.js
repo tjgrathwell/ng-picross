@@ -3,8 +3,8 @@
 angular.module('ngPicrossApp').service('puzzleService', function () {
   function randomBoard () {
     var puzzle = [];
-    var rows = Math.ceil(Math.random() * 10);
-    var cols = Math.ceil(Math.random() * 10);
+    var rows = 1 + Math.ceil(Math.random() * 9);
+    var cols = 1 + Math.ceil(Math.random() * 9);
 
     var ticks = Math.ceil(Math.random() * 10);
     var distribution = Math.random();
@@ -13,9 +13,9 @@ angular.module('ngPicrossApp').service('puzzleService', function () {
       var row = [];
       for (var j = 0; j < cols; j++) {
         if (Math.random() < distribution) {
-          row.push(x);
+          row.push(CellStates.x);
         } else {
-          row.push(o);
+          row.push(CellStates.o);
         }
         ticks -= 1;
         if (ticks <= 0) {
@@ -31,7 +31,7 @@ angular.module('ngPicrossApp').service('puzzleService', function () {
   function puzzleHasMerit (puzzle) {
     for (var i = 0; i < puzzle.length; i++) {
       for (var j = 0; j < puzzle[i].length; j++) {
-        if (puzzle[i][j] === x) {
+        if (puzzle[i][j] === CellStates.x) {
           return true;
         }
       }
@@ -47,7 +47,7 @@ angular.module('ngPicrossApp').service('puzzleService', function () {
     for (var i = 0; i < rows; i++) {
       var row = [];
       for (var j = 0; j < cols; j++) {
-        row.push(o);
+        row.push(CellStates.o);
       }
       board.push(row);
     }
@@ -59,7 +59,7 @@ angular.module('ngPicrossApp').service('puzzleService', function () {
     var run = 0;
     var hints = [];
     for (var i = 0; i < line.length; i++) {
-      if (line[i] === x) {
+      if (line[i] === CellStates.x) {
         run += 1;
       } else if (run) {
         hints.push(run);
@@ -108,7 +108,12 @@ angular.module('ngPicrossApp').service('puzzleService', function () {
       rowHints: rowHints(puzzle),
       colHints: colHints(puzzle),
       solved: function () {
-        return angular.equals(this.solution, this.board);
+        var boardWithOnlyMarkedCells = this.board.map(function (row) {
+          return row.map(function (cell) {
+            return cell === CellStates.x ? cell : CellStates.o;
+          });
+        });
+        return angular.equals(this.solution, boardWithOnlyMarkedCells);
       }
     };
   }
@@ -124,9 +129,9 @@ angular.module('ngPicrossApp').service('puzzleService', function () {
 
   this.authoredPuzzle = function () {
     return makePuzzle([
-      [x, o, x],
-      [o, x, x],
-      [o, o, x]
+      [CellStates.x, CellStates.o, CellStates.x],
+      [CellStates.o, CellStates.x, CellStates.x],
+      [CellStates.o, CellStates.o, CellStates.x]
     ]);
   };
 });
