@@ -2,7 +2,7 @@
   <h1 class='text-center'>ng-picross</h1>
 </header>
 
-<table class='board'>
+<table class='board' ng-mouseup="mouseupBoard()">
   <tr>
     <td></td>
     <td class='col-hint' ng-repeat="hints in puzzle.colHints track by $index">
@@ -15,9 +15,11 @@
     </td>
     <td class='cell'
         ng-init="colIndex = $index"
-        ng-repeat="col in puzzle.board[rowIndex] track by $index"
+        ng-repeat="cell in puzzle.board[rowIndex]"
         ng-class="cellClasses(rowIndex, colIndex)"
         ng-click="clickedCell(rowIndex, colIndex)"
+        ng-mousedown="mousedownCell(rowIndex, colIndex)"
+        ng-mousemove="mousemoveCell(rowIndex, colIndex)"
         right-click="rightClickedCell(rowIndex, colIndex)">
     </td>
   </tr>

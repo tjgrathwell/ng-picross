@@ -36,6 +36,15 @@ h1 {
   $cell-width: 20px;
   $cell-border: 1px solid grey;
 
+  &, *, * * {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
   border-collapse: collapse;
   margin: 40px auto;
   text-align: center;

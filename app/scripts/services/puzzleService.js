@@ -47,7 +47,7 @@ angular.module('ngPicrossApp').service('puzzleService', function () {
     for (var i = 0; i < rows; i++) {
       var row = [];
       for (var j = 0; j < cols; j++) {
-        row.push(CellStates.o);
+        row.push({displayValue: CellStates.o});
       }
       board.push(row);
     }
@@ -110,7 +110,7 @@ angular.module('ngPicrossApp').service('puzzleService', function () {
       solved: function () {
         var boardWithOnlyMarkedCells = this.board.map(function (row) {
           return row.map(function (cell) {
-            return cell === CellStates.x ? cell : CellStates.o;
+            return cell.value === CellStates.x ? cell.value : CellStates.o;
           });
         });
         return angular.equals(this.solution, boardWithOnlyMarkedCells);
