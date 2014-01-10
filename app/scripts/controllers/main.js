@@ -1,6 +1,8 @@
 'use strict';
 
 angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleService) {
+  var drag = {};
+
   var startPuzzle = function (puzzle) {
     $scope.puzzle = puzzle;
     $scope.solved = false;
@@ -12,8 +14,9 @@ angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleSe
 
   function applyOverlay (cells) {
     discardOverlayValues();
+    var cellValue = (drag.button == Button.LEFT) ? CellStates.x : CellStates.b;
     cells.forEach(function (pair) {
-      overlayBoardCell(pair[0], pair[1], CellStates.x);
+      overlayBoardCell(pair[0], pair[1], cellValue);
     });
   }
 
@@ -67,24 +70,26 @@ angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleSe
   };
 
   $scope.mouseupBoard = function () {
-    if ($scope.dragStartCell) {
-      delete $scope.dragStartCell;
+    if (drag.startCell) {
+      drag.startCell = undefined;
       commitOverlayValues();
       $scope.solved = $scope.puzzle.solved();
     }
   };
 
-  $scope.mousedownCell = function (rowIndex, colIndex) {
-    $scope.dragStartCell = {rowIndex: rowIndex, colIndex: colIndex};
+  $scope.mousedownCell = function ($event, rowIndex, colIndex) {
+    $event.preventDefault();
+    drag.button = $event.button;
+    drag.startCell = {rowIndex: rowIndex, colIndex: colIndex};
   };
 
   $scope.mousemoveCell = function (rowIndex, colIndex) {
-    if ($scope.dragStartCell) {
-      var startRowIx = $scope.dragStartCell.rowIndex;
-      var startColIx = $scope.dragStartCell.colIndex;
+    if (drag.startCell) {
+      var startRowIx = drag.startCell.rowIndex;
+      var startColIx = drag.startCell.colIndex;
       var sign, cellCount, cells;
       if (rowIndex === startRowIx) {
-        cellCount = colIndex - $scope.dragStartCell.colIndex;
+        cellCount = colIndex - drag.startCell.colIndex;
         sign = Math.min(1, Math.max(-1, cellCount));
         cellCount += sign;
         cells = [];
@@ -94,7 +99,7 @@ angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleSe
         } while (cellCount != 0);
       }
       if (colIndex === startColIx) {
-        cellCount = rowIndex - $scope.dragStartCell.rowIndex;
+        cellCount = rowIndex - drag.startCell.rowIndex;
         sign = Math.min(1, Math.max(-1, cellCount));
         cellCount += sign;
         cells = [];
