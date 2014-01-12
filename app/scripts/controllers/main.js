@@ -14,9 +14,8 @@ angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleSe
 
   function applyOverlay (cells) {
     discardOverlayValues();
-    var cellValue = (drag.button == Button.LEFT) ? CellStates.x : CellStates.b;
     cells.forEach(function (pair) {
-      overlayBoardCell(pair[0], pair[1], cellValue);
+      overlayBoardCell(pair[0], pair[1], drag.value);
     });
   }
 
@@ -79,7 +78,8 @@ angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleSe
 
   $scope.mousedownCell = function ($event, rowIndex, colIndex) {
     $event.preventDefault();
-    drag.button = $event.button;
+    var rightClicky = ($event.button == Button.RIGHT) || $event.ctrlKey;
+    drag.value = rightClicky ? CellStates.b : CellStates.x;
     drag.startCell = {rowIndex: rowIndex, colIndex: colIndex};
   };
 
