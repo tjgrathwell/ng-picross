@@ -71,6 +71,13 @@ h1 {
     border-bottom: 1px solid #cdd;
   }
 
+  .row-hint-number, .col-hint-number {
+    &.off {
+      color: #ccc;
+      text-decoration: line-through;
+    }
+  }
+
   .row-hint-number {
     display: inline-block;
     width: 20px;

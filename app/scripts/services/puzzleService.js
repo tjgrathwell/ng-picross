@@ -62,12 +62,12 @@ angular.module('ngPicrossApp').service('puzzleService', function () {
       if (line[i] === CellStates.x) {
         run += 1;
       } else if (run) {
-        hints.push(run);
+        hints.push({value: run});
         run = 0;
       }
     }
     if (run) {
-      hints.push(run);
+      hints.push({value: run});
     }
 
     return hints.length === 0 ? [0] : hints;
@@ -77,12 +77,16 @@ angular.module('ngPicrossApp').service('puzzleService', function () {
     return hintsForLine(puzzle[rowIndex]);
   }
 
-  function hintsForColumn (puzzle, colIndex) {
+  function columnOfMatrix(matrix, colIndex) {
     var col = [];
-    for (var i = 0; i < puzzle.length; i++) {
-      col.push(puzzle[i][colIndex]);
+    for (var i = 0; i < matrix.length; i++) {
+      col.push(matrix[i][colIndex]);
     }
-    return hintsForLine(col);
+    return col;
+  }
+  
+  function hintsForColumn (puzzle, colIndex) {
+    return hintsForLine(columnOfMatrix(puzzle, colIndex));
   }
 
   function rowHints (puzzle) {
@@ -118,6 +122,29 @@ angular.module('ngPicrossApp').service('puzzleService', function () {
     };
   }
 
+  function solvedFlag(line, boardLine) {
+    var solved = true;
+    for (var i = 0; i < line.length; i++) {
+      if ((boardLine[i].displayValue == CellStates.x && line[i] != CellStates.x) || (line[i] == CellStates.x && boardLine[i].displayValue != CellStates.x)) {
+        solved = false;
+      }
+    }
+
+    return solved;
+  }
+
+  this.annotateHintsForCellChange = function (puzzle, rowIndex, colIndex) {
+    var rowSolved = solvedFlag(puzzle.solution[rowIndex], puzzle.board[rowIndex]);
+    puzzle.rowHints[rowIndex].forEach(function (hint) {
+      hint.solved = rowSolved;
+    });
+
+    var colSolved = solvedFlag(columnOfMatrix(puzzle.solution, colIndex), columnOfMatrix(puzzle.board, colIndex));
+    puzzle.colHints[colIndex].forEach(function (hint) {
+      hint.solved = colSolved;
+    });
+  };
+  
   this.generateRandomPuzzle = function () {
     var puzzle;
     while (puzzle = randomBoard()) {

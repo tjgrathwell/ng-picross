@@ -58,21 +58,25 @@ angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleSe
     }
   }
 
+  function computeBoardStateAfterCellChange (rowIndex, colIndex) {
+    $scope.solved = $scope.puzzle.solved();
+    puzzleService.annotateHintsForCellChange($scope.puzzle, rowIndex, colIndex);
+  }
+
   $scope.clickedCell = function (rowIndex, colIndex) {
     toggleBoardCell(rowIndex, colIndex, CellStates.x);
-    $scope.solved = $scope.puzzle.solved();
+    computeBoardStateAfterCellChange(rowIndex, colIndex);
   };
 
   $scope.rightClickedCell = function (rowIndex, colIndex) {
     toggleBoardCell(rowIndex, colIndex, CellStates.b);
-    $scope.solved = $scope.puzzle.solved();
+    computeBoardStateAfterCellChange(rowIndex, colIndex);
   };
 
   $scope.mouseupBoard = function () {
     if (drag.startCell) {
       drag.startCell = undefined;
       commitOverlayValues();
-      $scope.solved = $scope.puzzle.solved();
     }
   };
 
