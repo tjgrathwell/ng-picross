@@ -77,16 +77,20 @@ angular.module('ngPicrossApp').service('puzzleService', function () {
     return hintsForLine(puzzle[rowIndex]);
   }
 
-  function columnOfMatrix(matrix, colIndex) {
+  function matrixCol(matrix, colIndex) {
     var col = [];
     for (var i = 0; i < matrix.length; i++) {
       col.push(matrix[i][colIndex]);
     }
     return col;
   }
-  
+
+  function matrixRow(matrix, rowIndex) {
+    return matrix[rowIndex];
+  }
+
   function hintsForColumn (puzzle, colIndex) {
-    return hintsForLine(columnOfMatrix(puzzle, colIndex));
+    return hintsForLine(matrixCol(puzzle, colIndex));
   }
 
   function rowHints (puzzle) {
@@ -133,15 +137,17 @@ angular.module('ngPicrossApp').service('puzzleService', function () {
     return solved;
   }
 
-  this.annotateHintsForCellChange = function (puzzle, rowIndex, colIndex) {
-    var rowSolved = solvedFlag(puzzle.solution[rowIndex], puzzle.board[rowIndex]);
-    puzzle.rowHints[rowIndex].forEach(function (hint) {
-      hint.solved = rowSolved;
-    });
+  this.annotateHintsForCellChanges = function (puzzle, cells) {
+    cells.forEach(function (cell) {
+      var rowSolved = solvedFlag(matrixRow(puzzle.solution, cell.row), matrixRow(puzzle.board, cell.row));
+      puzzle.rowHints[cell.row].forEach(function (hint) {
+        hint.solved = rowSolved;
+      });
 
-    var colSolved = solvedFlag(columnOfMatrix(puzzle.solution, colIndex), columnOfMatrix(puzzle.board, colIndex));
-    puzzle.colHints[colIndex].forEach(function (hint) {
-      hint.solved = colSolved;
+      var colSolved = solvedFlag(matrixCol(puzzle.solution, cell.col), matrixCol(puzzle.board, cell.col));
+      puzzle.colHints[cell.col].forEach(function (hint) {
+        hint.solved = colSolved;
+      });
     });
   };
   

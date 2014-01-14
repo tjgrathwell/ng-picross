@@ -2,6 +2,7 @@
 
 angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleService) {
   var drag = {};
+  var prevDragCells;
 
   var startPuzzle = function (puzzle) {
     $scope.puzzle = puzzle;
@@ -13,10 +14,21 @@ angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleSe
   };
 
   function applyOverlay (cells) {
+    if (prevDragCells && angular.equals(prevDragCells, cells)) {
+      return;
+    }
+
     discardOverlayValues();
     cells.forEach(function (pair) {
-      overlayBoardCell(pair[0], pair[1], drag.value);
+      overlayBoardCell(pair.row, pair.col, drag.value);
     });
+
+    var affectedCells = cells;
+    if (prevDragCells) {
+      affectedCells = affectedCells.concat(prevDragCells);
+    }
+    puzzleService.annotateHintsForCellChanges($scope.puzzle, affectedCells);
+    prevDragCells = cells;
   }
 
   function onEveryCell (f) {
@@ -60,7 +72,8 @@ angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleSe
 
   function computeBoardStateAfterCellChange (rowIndex, colIndex) {
     $scope.solved = $scope.puzzle.solved();
-    puzzleService.annotateHintsForCellChange($scope.puzzle, rowIndex, colIndex);
+    var cell = {row: rowIndex, col: colIndex};
+    puzzleService.annotateHintsForCellChanges($scope.puzzle, [cell]);
   }
 
   $scope.clickedCell = function (rowIndex, colIndex) {
@@ -99,7 +112,7 @@ angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleSe
         cells = [];
         do {
           cellCount -= sign;
-          cells.push([startRowIx, startColIx + cellCount]);
+          cells.push({row: startRowIx, col: startColIx + cellCount});
         } while (cellCount != 0);
       }
       if (colIndex === startColIx) {
@@ -109,7 +122,7 @@ angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleSe
         cells = [];
         do {
           cellCount -= sign;
-          cells.push([startRowIx + cellCount, startColIx]);
+          cells.push({row: startRowIx + cellCount, col: startColIx});
         } while (cellCount != 0);
       }
       if (cells) {
