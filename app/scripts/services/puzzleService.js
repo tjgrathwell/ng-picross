@@ -29,14 +29,17 @@ angular.module('ngPicrossApp').service('puzzleService', function () {
   }
 
   function puzzleHasMerit (puzzle) {
+    var rowHasCells = {};
+    var colHasCells = {};
     for (var i = 0; i < puzzle.length; i++) {
       for (var j = 0; j < puzzle[i].length; j++) {
         if (puzzle[i][j] === CellStates.x) {
-          return true;
+          rowHasCells[i] = true;
+          colHasCells[j] = true;
         }
       }
     }
-    return false;
+    return (_.values(rowHasCells).length === puzzle.length) && (_.values(colHasCells).length === puzzle[0].length);
   }
 
   function generateBoard (puzzle) {

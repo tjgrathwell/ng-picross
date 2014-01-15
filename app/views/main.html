@@ -21,10 +21,9 @@
         ng-init="colIndex = $index"
         ng-repeat="cell in puzzle.board[rowIndex]"
         ng-class="cellClasses(rowIndex, colIndex)"
-        ng-click="clickedCell(rowIndex, colIndex)"
         ng-mousedown="mousedownCell($event, rowIndex, colIndex)"
         ng-mousemove="mousemoveCell(rowIndex, colIndex)"
-        right-click="rightClickedCell(rowIndex, colIndex)">
+        right-click>
     </td>
   </tr>
 </table>

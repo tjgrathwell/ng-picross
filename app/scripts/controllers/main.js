@@ -51,53 +51,30 @@ angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleSe
       cell.value = cell.displayValue;
     });
   }
-  
-  function setBoardCell (rowIndex, colIndex, desiredValue) {
-    overlayBoardCell(rowIndex, colIndex, desiredValue);
-    $scope.puzzle.board[rowIndex][colIndex].value = desiredValue;
-  }
 
   function overlayBoardCell (rowIndex, colIndex, desiredValue) {
     $scope.puzzle.board[rowIndex][colIndex].displayValue = desiredValue;
   }
 
-  function toggleBoardCell (rowIndex, colIndex, desiredValue) {
-    var board = $scope.puzzle.board;
-    if (board[rowIndex][colIndex].displayValue === desiredValue) {
-      setBoardCell(rowIndex, colIndex, CellStates.o);
-    } else {
-      setBoardCell(rowIndex, colIndex, desiredValue);
-    }
-  }
-
-  function computeBoardStateAfterCellChange (rowIndex, colIndex) {
-    $scope.solved = $scope.puzzle.solved();
-    var cell = {row: rowIndex, col: colIndex};
-    puzzleService.annotateHintsForCellChanges($scope.puzzle, [cell]);
-  }
-
-  $scope.clickedCell = function (rowIndex, colIndex) {
-    toggleBoardCell(rowIndex, colIndex, CellStates.x);
-    computeBoardStateAfterCellChange(rowIndex, colIndex);
-  };
-
-  $scope.rightClickedCell = function (rowIndex, colIndex) {
-    toggleBoardCell(rowIndex, colIndex, CellStates.b);
-    computeBoardStateAfterCellChange(rowIndex, colIndex);
-  };
-
   $scope.mouseupBoard = function () {
     if (drag.startCell) {
       drag.startCell = undefined;
       commitOverlayValues();
+      $scope.solved = $scope.puzzle.solved();
     }
   };
 
   $scope.mousedownCell = function ($event, rowIndex, colIndex) {
     $event.preventDefault();
+    var cellValue = $scope.puzzle.board[rowIndex][colIndex].value;
     var rightClicky = ($event.button == Button.RIGHT) || $event.ctrlKey;
-    drag.value = rightClicky ? CellStates.b : CellStates.x;
+    if (rightClicky) {
+      drag.value = (cellValue === CellStates.b) ? CellStates.o : CellStates.b;
+    } else {
+      drag.value = (cellValue === CellStates.x) ? CellStates.o : CellStates.x;
+    }
     drag.startCell = {rowIndex: rowIndex, colIndex: colIndex};
+    $scope.mousemoveCell(rowIndex, colIndex);
   };
 
   $scope.mousemoveCell = function (rowIndex, colIndex) {
