@@ -2,7 +2,6 @@
 
 angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleService) {
   var drag = {};
-  var prevDragCells;
 
   var startPuzzle = function (puzzle) {
     $scope.puzzle = puzzle;
@@ -14,21 +13,17 @@ angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleSe
   };
 
   function applyOverlay (cells) {
-    if (prevDragCells && angular.equals(prevDragCells, cells)) {
-      return;
-    }
-
     discardOverlayValues();
     cells.forEach(function (pair) {
       overlayBoardCell(pair.row, pair.col, drag.value);
     });
 
     var affectedCells = cells;
-    if (prevDragCells) {
-      affectedCells = affectedCells.concat(prevDragCells);
+    if (drag.prevDragCells) {
+      affectedCells = affectedCells.concat(drag.prevDragCells);
     }
     puzzleService.annotateHintsForCellChanges($scope.puzzle, affectedCells);
-    prevDragCells = cells;
+    drag.prevDragCells = cells;
   }
 
   function onEveryCell (f) {
@@ -101,8 +96,8 @@ angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleSe
           cellCount -= sign;
           cells.push({row: startRowIx + cellCount, col: startColIx});
         } while (cellCount != 0);
-      }
-      if (cells) {
+      }      
+      if (cells && !angular.equals(drag.prevDragCells, cells)) {
         applyOverlay(cells);
       }
     }

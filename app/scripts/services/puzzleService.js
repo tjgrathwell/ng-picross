@@ -61,23 +61,19 @@ angular.module('ngPicrossApp').service('puzzleService', function () {
   function hintsForLine (line) {
     var run = 0;
     var hints = [];
-    for (var i = 0; i < line.length; i++) {
-      if (line[i] === CellStates.x) {
+    _.forEach(line, function (cell) {
+      if (cell === CellStates.x) {
         run += 1;
       } else if (run) {
         hints.push({value: run});
         run = 0;
       }
-    }
+    });
     if (run) {
       hints.push({value: run});
     }
 
     return hints.length === 0 ? [0] : hints;
-  }
-
-  function hintsForRow (puzzle, rowIndex) {
-    return hintsForLine(puzzle[rowIndex]);
   }
 
   function matrixCol(matrix, colIndex) {
@@ -92,14 +88,10 @@ angular.module('ngPicrossApp').service('puzzleService', function () {
     return matrix[rowIndex];
   }
 
-  function hintsForColumn (puzzle, colIndex) {
-    return hintsForLine(matrixCol(puzzle, colIndex));
-  }
-
   function rowHints (puzzle) {
     var hints = [];
     for (var i = 0; i < puzzle.length; i++) {
-      hints.push(hintsForRow(puzzle, i));
+      hints.push(hintsForLine(puzzle[i]));
     }
     return hints;
   }
@@ -107,7 +99,7 @@ angular.module('ngPicrossApp').service('puzzleService', function () {
   function colHints (puzzle) {
     var hints = [];
     for (var i = 0; i < puzzle[0].length; i++) {
-      hints.push(hintsForColumn(puzzle, i));
+      hints.push(hintsForLine(matrixCol(puzzle, i)));
     }
     return hints;
   }
