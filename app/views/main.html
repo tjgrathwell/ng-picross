@@ -2,7 +2,7 @@
   <h1 class='text-center'>ng-picross</h1>
 </header>
 
-<table class='board' ng-mouseup="mouseupBoard()">
+<table class='board' document-mouseup="mouseupBoard()">
   <tr>
     <td></td>
     <td class='col-hint' ng-repeat="hints in puzzle.colHints track by $index">
