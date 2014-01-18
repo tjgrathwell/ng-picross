@@ -7,7 +7,7 @@ angular.module('ngPicrossApp').directive('documentMouseup', function ($parse, $d
       var invoker = $parse(attrs.documentMouseup);
       $document.on('mouseup', function (event) {
         scope.$apply(function(){
-          invoker(scope, {$event: event})
+          invoker(scope, {$event: event});
         });
       });
     }

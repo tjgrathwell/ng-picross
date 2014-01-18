@@ -1,6 +1,8 @@
 'use strict';
 
-angular.module('ngPicrossApp').service('puzzleService', function () {
+angular.module('ngPicrossApp').service('puzzleService', function (constantsService) {
+  var CellStates = constantsService.CellStates;
+
   function randomBoard () {
     var puzzle = [];
     var rows = 1 + Math.ceil(Math.random() * 9);
@@ -124,7 +126,7 @@ angular.module('ngPicrossApp').service('puzzleService', function () {
   function solvedFlag(line, boardLine) {
     var solved = true;
     for (var i = 0; i < line.length; i++) {
-      if ((boardLine[i].displayValue == CellStates.x && line[i] != CellStates.x) || (line[i] == CellStates.x && boardLine[i].displayValue != CellStates.x)) {
+      if ((boardLine[i].displayValue === CellStates.x && line[i] !== CellStates.x) || (line[i] === CellStates.x && boardLine[i].displayValue !== CellStates.x)) {
         solved = false;
       }
     }
@@ -145,7 +147,7 @@ angular.module('ngPicrossApp').service('puzzleService', function () {
       });
     });
   };
-  
+
   this.generateRandomPuzzle = function () {
     var puzzle;
     while (puzzle = randomBoard()) {

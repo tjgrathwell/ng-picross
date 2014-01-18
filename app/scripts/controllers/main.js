@@ -1,7 +1,9 @@
 'use strict';
 
-angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleService) {
+angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleService, constantsService) {
   var drag = {};
+  var CellStates = constantsService.CellStates;
+  var Button = constantsService.Button;
 
   var startPuzzle = function (puzzle) {
     $scope.puzzle = puzzle;
@@ -62,7 +64,7 @@ angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleSe
   $scope.mousedownCell = function ($event, rowIndex, colIndex) {
     $event.preventDefault();
     var cellValue = $scope.puzzle.board[rowIndex][colIndex].value;
-    var rightClicky = ($event.button == Button.RIGHT) || $event.ctrlKey;
+    var rightClicky = ($event.button === Button.RIGHT) || $event.ctrlKey;
     if (rightClicky) {
       drag.value = (cellValue === CellStates.b) ? CellStates.o : CellStates.b;
     } else {
@@ -85,7 +87,7 @@ angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleSe
         do {
           cellCount -= sign;
           cells.push({row: startRowIx, col: startColIx + cellCount});
-        } while (cellCount != 0);
+        } while (cellCount !== 0);
       }
       if (colIndex === startColIx) {
         cellCount = rowIndex - drag.startCell.rowIndex;
@@ -95,8 +97,8 @@ angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleSe
         do {
           cellCount -= sign;
           cells.push({row: startRowIx + cellCount, col: startColIx});
-        } while (cellCount != 0);
-      }      
+        } while (cellCount !== 0);
+      }
       if (cells && !angular.equals(drag.prevDragCells, cells)) {
         applyOverlay(cells);
       }
