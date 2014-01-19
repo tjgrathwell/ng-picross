@@ -4,60 +4,51 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
   var CellStates = constantsService.CellStates;
 
   function randomBoard () {
-    var puzzle = [];
     var rows = 1 + Math.ceil(Math.random() * 9);
     var cols = 1 + Math.ceil(Math.random() * 9);
 
     var ticks = Math.ceil(Math.random() * 10);
     var distribution = Math.random();
 
-    for (var i = 0; i < rows; i++) {
-      var row = [];
-      for (var j = 0; j < cols; j++) {
-        if (Math.random() < distribution) {
-          row.push(CellStates.x);
-        } else {
-          row.push(CellStates.o);
-        }
+    return Array.apply(null, new Array(rows)).map(function () {
+      return Array.apply(null, new Array(cols)).map(function () {
+        var cellValue = (Math.random() < distribution) ? CellStates.x : CellStates.o;
         ticks -= 1;
         if (ticks <= 0) {
           distribution = Math.random();
           ticks = Math.ceil(Math.random() * 10);
         }
-      }
-      puzzle.push(row);
-    }
-    return puzzle;
+        return cellValue;
+      });
+    });
   }
 
   function puzzleHasMerit (puzzle) {
+    var rows = puzzle.length;
+    var cols = puzzle[0].length;
+
     var rowHasCells = {};
     var colHasCells = {};
-    for (var i = 0; i < puzzle.length; i++) {
-      for (var j = 0; j < puzzle[i].length; j++) {
-        if (puzzle[i][j] === CellStates.x) {
-          rowHasCells[i] = true;
-          colHasCells[j] = true;
+    puzzle.forEach(function (row, rowIx) {
+      row.forEach(function (cell, colIx) {
+        if (cell === CellStates.x) {
+          rowHasCells[rowIx] = true;
+          colHasCells[colIx] = true;
         }
-      }
-    }
-    return (_.values(rowHasCells).length === puzzle.length) && (_.values(colHasCells).length === puzzle[0].length);
+      });
+    });
+    return (_.values(rowHasCells).length === rows) && (_.values(colHasCells).length === cols);
   }
 
   function generateBoard (puzzle) {
     var rows = puzzle.length;
     var cols = puzzle[0].length;
 
-    var board = [];
-    for (var i = 0; i < rows; i++) {
-      var row = [];
-      for (var j = 0; j < cols; j++) {
-        row.push({displayValue: CellStates.o});
-      }
-      board.push(row);
-    }
-
-    return board;
+    return Array.apply(null, new Array(rows)).map(function () {
+      return Array.apply(null, new Array(cols)).map(function () {
+        return {displayValue: CellStates.o};
+      });
+    });
   }
 
   function hintsForLine (line) {
@@ -91,19 +82,15 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
   }
 
   function rowHints (puzzle) {
-    var hints = [];
-    for (var i = 0; i < puzzle.length; i++) {
-      hints.push(hintsForLine(puzzle[i]));
-    }
-    return hints;
+    return puzzle.map(function (row) {
+      return hintsForLine(row);
+    });
   }
 
   function colHints (puzzle) {
-    var hints = [];
-    for (var i = 0; i < puzzle[0].length; i++) {
-      hints.push(hintsForLine(matrixCol(puzzle, i)));
-    }
-    return hints;
+    return puzzle[0].map(function (col, ix) {
+      return hintsForLine(matrixCol(puzzle, ix));
+    });
   }
 
   function makePuzzle (puzzle) {

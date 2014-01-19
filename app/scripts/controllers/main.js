@@ -54,8 +54,8 @@ angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleSe
   }
 
   $scope.mouseupBoard = function () {
-    if (drag.startCell) {
-      drag.startCell = undefined;
+    if (drag) {
+      drag = {};
       commitOverlayValues();
       $scope.solved = $scope.puzzle.solved();
     }
