@@ -110,28 +110,46 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
     };
   }
 
-  function solvedFlag(line, boardLine) {
-    var solved = true;
-    for (var i = 0; i < line.length; i++) {
-      if ((boardLine[i].displayValue === CellStates.x && line[i] !== CellStates.x) || (line[i] === CellStates.x && boardLine[i].displayValue !== CellStates.x)) {
-        solved = false;
+  function annotateHints (hints, line) {
+    var linePosition = -1;
+    for (var i = 0; i < hints.length; i++) {
+      var hint = hints[i];
+      var hintSolved = false;
+      var runStarted = false;
+      var cellsRemainingForHint = hint.value;
+      if (linePosition > -1 && line[linePosition].displayValue === CellStates.x) {
+        // If the last cell was marked, the next group must be at least one cell over
+        linePosition += 1;
       }
+      while (linePosition < (line.length - 1)) {
+        linePosition += 1;
+        if (line[linePosition].displayValue === CellStates.x) {
+          runStarted = true;
+          cellsRemainingForHint -= 1;
+          if (cellsRemainingForHint === 0) {
+            // If the next cell is marked, this run is too long
+            if ((linePosition === (line.length - 1)) || (line[linePosition + 1].displayValue !== CellStates.x)) {
+              hintSolved = true;
+            }
+            break;
+          }
+        } else if (runStarted) {
+          break;
+        }
+      }
+      if (runStarted && cellsRemainingForHint > 0) {
+        return;
+      }
+      hint.solved = hintSolved;
     }
-
-    return solved;
   }
 
   this.annotateHintsForCellChanges = function (puzzle, cells) {
-    cells.forEach(function (cell) {
-      var rowSolved = solvedFlag(matrixRow(puzzle.solution, cell.row), matrixRow(puzzle.board, cell.row));
-      puzzle.rowHints[cell.row].forEach(function (hint) {
-        hint.solved = rowSolved;
-      });
-
-      var colSolved = solvedFlag(matrixCol(puzzle.solution, cell.col), matrixCol(puzzle.board, cell.col));
-      puzzle.colHints[cell.col].forEach(function (hint) {
-        hint.solved = colSolved;
-      });
+    _.uniq(_.pluck(cells, 'row')).forEach(function (rowIndex) {
+      annotateHints(puzzle.rowHints[rowIndex], matrixRow(puzzle.board, rowIndex));
+    });
+    _.uniq(_.pluck(cells, 'col')).forEach(function (colIndex) {
+      annotateHints(puzzle.colHints[colIndex], matrixCol(puzzle.board, colIndex));
     });
   };
 
