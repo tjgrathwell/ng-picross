@@ -110,7 +110,7 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
     };
   }
 
-  function annotateHints (hints, line) {
+  this._annotateHints = function (hints, line) {
     var linePosition = -1;
     for (var i = 0; i < hints.length; i++) {
       var hint = hints[i];
@@ -137,25 +137,26 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
           break;
         }
       }
+      hint.solved = hintSolved;
       if (runStarted && cellsRemainingForHint > 0) {
         return;
       }
-      hint.solved = hintSolved;
     }
-  }
+  };
 
   this.annotateHintsForCellChanges = function (puzzle, cells) {
+    var puzzleService = this;
     _.uniq(_.pluck(cells, 'row')).forEach(function (rowIndex) {
-      annotateHints(puzzle.rowHints[rowIndex], matrixRow(puzzle.board, rowIndex));
+      puzzleService._annotateHints(puzzle.rowHints[rowIndex], matrixRow(puzzle.board, rowIndex));
     });
     _.uniq(_.pluck(cells, 'col')).forEach(function (colIndex) {
-      annotateHints(puzzle.colHints[colIndex], matrixCol(puzzle.board, colIndex));
+      puzzleService._annotateHints(puzzle.colHints[colIndex], matrixCol(puzzle.board, colIndex));
     });
   };
 
   this.generateRandomPuzzle = function () {
     var puzzle;
-    while (puzzle = randomBoard()) {
+    while ((puzzle = randomBoard())) {
       if (puzzleHasMerit(puzzle)) {
         return makePuzzle(puzzle);
       }
