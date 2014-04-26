@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleService, constantsService) {
+angular.module('ngPicrossApp').controller('PuzzleBoardCtrl', function ($scope, puzzleService, constantsService, puzzle) {
   var drag = {};
   var CellStates = constantsService.CellStates;
   var Button = constantsService.Button;
@@ -113,5 +113,5 @@ angular.module('ngPicrossApp').controller('MainCtrl', function ($scope, puzzleSe
     };
   };
 
-  startPuzzle(puzzleService.authoredPuzzle());
+  startPuzzle(puzzle);
 });

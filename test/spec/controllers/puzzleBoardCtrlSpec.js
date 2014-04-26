@@ -1,13 +1,13 @@
 'use strict';
 
-describe('Controller: MainCtrl', function () {
+describe('Controller: PuzzleBoardCtrl', function () {
   beforeEach(module('ngPicrossApp'));
 
-  var MainCtrl, scope;
+  var PuzzleBoardCtrl, scope;
 
   beforeEach(inject(function ($controller, $rootScope) {
     scope = $rootScope.$new();
-    MainCtrl = $controller('MainCtrl', {
+    PuzzleBoardCtrl = $controller('PuzzleBoardCtrl', {
       $scope: scope
     });
   }));

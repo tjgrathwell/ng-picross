@@ -163,7 +163,7 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
     }
   };
 
-  this.authoredPuzzle = function () {
+  this.getPuzzle = function () {
     return makePuzzle([
       [CellStates.x, CellStates.o, CellStates.x],
       [CellStates.o, CellStates.x, CellStates.x],

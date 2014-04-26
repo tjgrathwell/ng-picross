@@ -7,9 +7,22 @@ html, body {
   height: 100%;
 }
 
+body > header {
+  padding-top: 20px;
+}
+
 .container {
-  padding: 20px 0;
   height: 100%;
+}
+
+.home-actions {
+  width: 300px;
+  margin: 45px auto;
+
+  h1 {
+    text-align: center;
+    font-family: monospace;
+  }
 }
 
 h1 {
