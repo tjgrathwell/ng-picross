@@ -163,11 +163,29 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
     }
   };
 
-  this.getPuzzle = function () {
-    return makePuzzle([
-      [CellStates.x, CellStates.o, CellStates.x],
-      [CellStates.o, CellStates.x, CellStates.x],
-      [CellStates.o, CellStates.o, CellStates.x]
-    ]);
+  this.getPuzzle = function (id) {
+    var puzzles = {
+      '1': [
+        [CellStates.x, CellStates.o, CellStates.x],
+        [CellStates.o, CellStates.x, CellStates.x],
+        [CellStates.o, CellStates.o, CellStates.x]
+      ],
+      '2': [
+        [CellStates.o, CellStates.o, CellStates.x, CellStates.o, CellStates.o],
+        [CellStates.o, CellStates.x, CellStates.x, CellStates.x, CellStates.o],
+        [CellStates.x, CellStates.x, CellStates.x, CellStates.x, CellStates.x],
+        [CellStates.x, CellStates.x, CellStates.x, CellStates.x, CellStates.x],
+        [CellStates.x, CellStates.x, CellStates.x, CellStates.x, CellStates.x]
+      ],
+      '3': [
+        [CellStates.o, CellStates.o, CellStates.x, CellStates.o, CellStates.o],
+        [CellStates.o, CellStates.x, CellStates.x, CellStates.x, CellStates.o],
+        [CellStates.x, CellStates.x, CellStates.x, CellStates.x, CellStates.x],
+        [CellStates.o, CellStates.x, CellStates.x, CellStates.x, CellStates.o],
+        [CellStates.o, CellStates.o, CellStates.x, CellStates.o, CellStates.o]
+      ]
+    };
+
+    return makePuzzle(puzzles[id]);
   };
 });
