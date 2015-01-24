@@ -5,10 +5,12 @@ describe('Controller: PuzzleBoardCtrl', function () {
 
   var PuzzleBoardCtrl, scope;
 
-  beforeEach(inject(function ($controller, $rootScope) {
-    scope = $rootScope.$new();
-    PuzzleBoardCtrl = $controller('PuzzleBoardCtrl', {
+  beforeEach(injectIntoThis('$controller', '$rootScope'));
+
+  beforeEach(function () {
+    scope = this.$rootScope.$new();
+    PuzzleBoardCtrl = this.$controller('PuzzleBoardCtrl', {
       $scope: scope
     });
-  }));
+  });
 });
