@@ -3,43 +3,6 @@
 angular.module('ngPicrossApp').service('puzzleService', function (constantsService) {
   var CellStates = constantsService.CellStates;
 
-  function randomBoard () {
-    var rows = 1 + Math.ceil(Math.random() * 9);
-    var cols = 1 + Math.ceil(Math.random() * 9);
-
-    var ticks = Math.ceil(Math.random() * 10);
-    var distribution = Math.random();
-
-    return Array.apply(null, new Array(rows)).map(function () {
-      return Array.apply(null, new Array(cols)).map(function () {
-        var cellValue = (Math.random() < distribution) ? CellStates.x : CellStates.o;
-        ticks -= 1;
-        if (ticks <= 0) {
-          distribution = Math.random();
-          ticks = Math.ceil(Math.random() * 10);
-        }
-        return cellValue;
-      });
-    });
-  }
-
-  function puzzleHasMerit (puzzle) {
-    var rows = puzzle.length;
-    var cols = puzzle[0].length;
-
-    var rowHasCells = {};
-    var colHasCells = {};
-    puzzle.forEach(function (row, rowIx) {
-      row.forEach(function (cell, colIx) {
-        if (cell === CellStates.x) {
-          rowHasCells[rowIx] = true;
-          colHasCells[colIx] = true;
-        }
-      });
-    });
-    return (_.values(rowHasCells).length === rows) && (_.values(colHasCells).length === cols);
-  }
-
   function generateBoard (puzzle) {
     var rows = puzzle.length;
     var cols = puzzle[0].length;
@@ -93,12 +56,12 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
     });
   }
 
-  function makePuzzle (puzzle) {
+  this.makePuzzle = function (solution) {
     return {
-      solution: puzzle,
-      board: generateBoard(puzzle),
-      rowHints: rowHints(puzzle),
-      colHints: colHints(puzzle),
+      solution: solution,
+      board: generateBoard(solution),
+      rowHints: rowHints(solution),
+      colHints: colHints(solution),
       solved: function () {
         var boardWithOnlyMarkedCells = this.board.map(function (row) {
           return row.map(function (cell) {
@@ -108,7 +71,7 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
         return angular.equals(this.solution, boardWithOnlyMarkedCells);
       }
     };
-  }
+  };
 
   this._annotateHints = function (hints, line) {
     var linePosition = -1;
@@ -152,40 +115,5 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
     _.uniq(_.pluck(cells, 'col')).forEach(function (colIndex) {
       puzzleService._annotateHints(puzzle.colHints[colIndex], matrixCol(puzzle.board, colIndex));
     });
-  };
-
-  this.generateRandomPuzzle = function () {
-    var puzzle;
-    while ((puzzle = randomBoard())) {
-      if (puzzleHasMerit(puzzle)) {
-        return makePuzzle(puzzle);
-      }
-    }
-  };
-
-  this.getPuzzle = function (id) {
-    var puzzles = {
-      '1': [
-        [CellStates.x, CellStates.o, CellStates.x],
-        [CellStates.o, CellStates.x, CellStates.x],
-        [CellStates.o, CellStates.o, CellStates.x]
-      ],
-      '2': [
-        [CellStates.o, CellStates.o, CellStates.x, CellStates.o, CellStates.o],
-        [CellStates.o, CellStates.x, CellStates.x, CellStates.x, CellStates.o],
-        [CellStates.x, CellStates.x, CellStates.x, CellStates.x, CellStates.x],
-        [CellStates.x, CellStates.x, CellStates.x, CellStates.x, CellStates.x],
-        [CellStates.x, CellStates.x, CellStates.x, CellStates.x, CellStates.x]
-      ],
-      '3': [
-        [CellStates.o, CellStates.o, CellStates.x, CellStates.o, CellStates.o],
-        [CellStates.o, CellStates.x, CellStates.x, CellStates.x, CellStates.o],
-        [CellStates.x, CellStates.x, CellStates.x, CellStates.x, CellStates.x],
-        [CellStates.o, CellStates.x, CellStates.x, CellStates.x, CellStates.o],
-        [CellStates.o, CellStates.o, CellStates.x, CellStates.o, CellStates.o]
-      ]
-    };
-
-    return makePuzzle(puzzles[id]);
   };
 });

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('ngPicrossApp').controller('PuzzleBoardCtrl', function ($scope, $location, puzzleService, constantsService, puzzle) {
+angular.module('ngPicrossApp').controller('PuzzleBoardCtrl', function ($scope, $location, puzzleService, puzzleCatalogService, constantsService, puzzle) {
   var drag = {};
   var CellStates = constantsService.CellStates;
   var Button = constantsService.Button;
@@ -12,7 +12,7 @@ angular.module('ngPicrossApp').controller('PuzzleBoardCtrl', function ($scope, $
 
   $scope.randomPuzzle = function () {
     if ($location.path() === '/random') {
-      startPuzzle(puzzleService.generateRandomPuzzle());
+      startPuzzle(puzzleCatalogService.generateRandomPuzzle());
     } else {
       $location.path('/random');
     }

@@ -18,16 +18,16 @@ angular.module('ngPicrossApp', ['ngRoute']).config(function ($provide, $routePro
     templateUrl: 'views/puzzleBoard.html',
     controller: 'PuzzleBoardCtrl',
     resolve: {
-      puzzle: ['$route', 'puzzleService', function ($route, puzzleService) {
-        return puzzleService.getPuzzle($route.current.params.id);
+      puzzle: ['$route', 'puzzleCatalogService', function ($route, puzzleCatalogService) {
+        return puzzleCatalogService.getPuzzle($route.current.params.id);
       }]
     }
   }).when('/random', {
     templateUrl: 'views/puzzleBoard.html',
     controller: 'PuzzleBoardCtrl',
     resolve: {
-      puzzle: ['puzzleService', function (puzzleService) {
-        return puzzleService.generateRandomPuzzle();
+      puzzle: ['puzzleCatalogService', function (puzzleCatalogService) {
+        return puzzleCatalogService.generateRandomPuzzle();
       }]
     }
   }).otherwise({
