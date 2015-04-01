@@ -50,19 +50,19 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function ( consta
   };
 
   var puzzles = {
-    '1': [
+    1: [
       [CellStates.x, CellStates.o, CellStates.x],
       [CellStates.o, CellStates.x, CellStates.x],
       [CellStates.o, CellStates.o, CellStates.x]
     ],
-    '2': [
+    2: [
       [CellStates.o, CellStates.o, CellStates.x, CellStates.o, CellStates.o],
       [CellStates.o, CellStates.x, CellStates.x, CellStates.x, CellStates.o],
       [CellStates.x, CellStates.x, CellStates.x, CellStates.x, CellStates.x],
       [CellStates.x, CellStates.x, CellStates.x, CellStates.x, CellStates.x],
       [CellStates.x, CellStates.x, CellStates.x, CellStates.x, CellStates.x]
     ],
-    '3': [
+    3: [
       [CellStates.o, CellStates.o, CellStates.x, CellStates.o, CellStates.o],
       [CellStates.o, CellStates.x, CellStates.x, CellStates.x, CellStates.o],
       [CellStates.x, CellStates.x, CellStates.x, CellStates.x, CellStates.x],

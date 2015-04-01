@@ -19,7 +19,7 @@ angular.module('ngPicrossApp', ['ngRoute']).config(function ($provide, $routePro
     controller: 'PuzzleBoardCtrl',
     resolve: {
       puzzle: ['$route', 'puzzleCatalogService', function ($route, puzzleCatalogService) {
-        return puzzleCatalogService.getPuzzle($route.current.params.id);
+        return puzzleCatalogService.getPuzzle(parseInt($route.current.params.id, 10));
       }]
     }
   }).when('/random', {
