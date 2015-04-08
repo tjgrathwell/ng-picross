@@ -11,7 +11,6 @@
   "latedef": true,
   "newcap": true,
   "noarg": true,
-  "quotmark": "single",
   "regexp": true,
   "undef": true,
   "unused": true,
@@ -30,7 +29,10 @@
     "inject": false,
     "it": false,
     "jasmine": false,
-    "spyOn": false
+    "spyOn": false,
+    "injectIntoThis": false,
+    "_": false,
+    "xit": false
   }
 }
 

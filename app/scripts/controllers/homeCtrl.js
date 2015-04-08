@@ -2,7 +2,7 @@
 
 angular.module('ngPicrossApp').controller('HomeCtrl', function ($scope, puzzleCatalogService) {
   $scope.puzzles = [];
-  _.each(_.sort(puzzleCatalogService.getAvailablePuzzleIds()), function (puzzleId) {
+  _.each(puzzleCatalogService.getAvailablePuzzleIds().sort(), function (puzzleId) {
     $scope.puzzles.push({id: puzzleId});
   });
 });

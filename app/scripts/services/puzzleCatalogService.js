@@ -75,7 +75,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function ( consta
     return puzzleService.makePuzzle(puzzles[id]);
   };
 
-  this.getAvailablePuzzleIds = function (id) {
+  this.getAvailablePuzzleIds = function () {
     return _.keys(puzzles);
   };
 });

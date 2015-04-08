@@ -44,6 +44,6 @@ describe('Service: puzzleService', function () {
       var hints = makeHints(1, 1);
       this.puzzleService._annotateHints(hints, makeLine(0, 0, 1));
       expect(solvedHints(hints)).toEqual([[1, false], [1, true]]);
-    })
+    });
   });
 });
