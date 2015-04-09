@@ -34,7 +34,8 @@
     "jasmine-core": "^2.2.0",
     "karma": "^0.12.31",
     "karma-jasmine": "^0.3.5",
-    "grunt-karma": "^0.10.1"
+    "grunt-karma": "^0.10.1",
+    "connect-modrewrite": "^0.7.11"
   },
   "engines": {
     "node": ">=0.10.0"
