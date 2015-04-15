@@ -40,10 +40,16 @@ describe('Service: puzzleService', function () {
       expect(solvedHints(hints)).toEqual([[1, true], [1, false]]);
     });
 
-    xit("crosses off solved hints from the end of the list when appropriate", function () {
+    it("crosses off solved hints from the end of the list when appropriate", function () {
       var hints = makeHints(1, 1);
       this.puzzleService._annotateHints(hints, makeLine(0, 0, 1));
       expect(solvedHints(hints)).toEqual([[1, false], [1, true]]);
     });
+
+    xit("does not cross off the same hint multiple times for the same solution", function () {
+      var hints = makeHints(1, 1);
+      this.puzzleService._annotateHints(hints, makeLine(0, 1, 0, 0, 0));
+      expect(solvedHints(hints)).toEqual([[1, true], [1, false]]);
+    })
   });
 });

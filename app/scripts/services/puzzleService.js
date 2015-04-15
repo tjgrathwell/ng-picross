@@ -74,25 +74,58 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
   };
 
   this._annotateHints = function (hints, line) {
-    var linePosition = -1;
+    var forwardResult = this._computeHintAnnotationValues(_.pluck(hints, 'value'), line);
+    var backwardResult = this._computeHintAnnotationValues(_.pluck(hints.slice().reverse(), 'value'), line.slice().reverse());
+    backwardResult.reverse();
+
     for (var i = 0; i < hints.length; i++) {
-      var hint = hints[i];
+      hints[i].solved = (forwardResult[i] || backwardResult[i]);
+    }
+  };
+
+  this._computeHintAnnotationValues = function (hintValues, line) {
+    var result = _.map(hintValues, function () { return false });
+    var linePosition = -1;
+    var lastLineIndex = line.length - 1;
+    var remainingHintValue = _.reduce(hintValues, function (memo, value) {
+      return memo + value;
+    }, 0);
+
+    function positionMarked(position) {
+      return line[position].displayValue === CellStates.x;
+    }
+
+    for (var i = 0; i < hintValues.length; i++) {
+      var hintValue = hintValues[i];
       var hintSolved = false;
       var runStarted = false;
-      var cellsRemainingForHint = hint.value;
-      if (linePosition > -1 && line[linePosition].displayValue === CellStates.x) {
+      var cellsRemainingForHint = hintValue;
+      if (linePosition > -1 && positionMarked(linePosition)) {
         // If the last cell was marked, the next group must be at least one cell over
         linePosition += 1;
       }
-      while (linePosition < (line.length - 1)) {
+      while (linePosition < lastLineIndex) {
         linePosition += 1;
-        if (line[linePosition].displayValue === CellStates.x) {
+
+        // If there are insufficient spaces remaining to fill any subsequent hints, give up
+        var remainingSpaces = lastLineIndex - linePosition;
+        if (remainingSpaces < (remainingHintValue - hintValue)) {
+          return result;
+        }
+
+        if (positionMarked(linePosition)) {
           runStarted = true;
           cellsRemainingForHint -= 1;
           if (cellsRemainingForHint === 0) {
-            // If the next cell is marked, this run is too long
-            if ((linePosition === (line.length - 1)) || (line[linePosition + 1].displayValue !== CellStates.x)) {
+            // If there are no more cells in the line, mark as solved
+            if (linePosition === lastLineIndex) {
               hintSolved = true;
+              break;
+            }
+            // If the next cell is blank, mark as solved
+            if (!positionMarked(linePosition + 1)) {
+              hintSolved = true;
+              break;
             }
             break;
           }
@@ -100,11 +133,15 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
           break;
         }
       }
-      hint.solved = hintSolved;
+      result[i] = hintSolved;
+      remainingHintValue -= hintValue;
+      // If this segment had less cells than the hint, give up.
       if (runStarted && cellsRemainingForHint > 0) {
-        return;
+        return result;
       }
     }
+
+    return result;
   };
 
   this.annotateHintsForCellChanges = function (puzzle, cells) {
