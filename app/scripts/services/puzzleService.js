@@ -84,12 +84,10 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
   };
 
   this._computeHintAnnotationValues = function (hintValues, line) {
-    var result = _.map(hintValues, function () { return false });
+    var result = _.map(hintValues, function () { return false; });
     var linePosition = -1;
     var lastLineIndex = line.length - 1;
-    var remainingHintValue = _.reduce(hintValues, function (memo, value) {
-      return memo + value;
-    }, 0);
+    var remainingHintValue = _.sum(hintValues);
 
     function positionMarked(position) {
       return line[position].displayValue === CellStates.x;
