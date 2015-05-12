@@ -45,6 +45,36 @@ h1 {
   text-align: center;
 }
 
+.puzzle-choices {
+  padding: 12px;
+  font-size: 0;
+  font-family: monospace;
+
+  .puzzle-choice {
+    display: inline-block;
+    font-size: 32px;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 50%;
+    margin-right: 15px;
+    margin-bottom: 8px;
+    border: 1px dashed rgba(233, 233, 233, 0.5);
+    a {
+      color: black;
+      text-decoration: none;
+    }
+
+    &:hover {
+      background-color: black;
+      &, a {
+        color: white;
+      }
+    }
+  }
+}
+
 .board {
   $cell-width: 20px;
   $cell-border: 1px solid grey;

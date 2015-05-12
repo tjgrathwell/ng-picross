@@ -1,12 +1,12 @@
 <div class='home-actions'>
-  <h2>Choose a Puzzle</h2>
+  <h2 class="text-center">Choose a Puzzle</h2>
 
-  <ul>
-    <li ng-repeat='puzzle in puzzles'>
-      <a ng-href="{{'puzzles/' + puzzle.id}}">Puzzle {{puzzle.id}}</a>
-    </li>
-    <li>
-      <a href="random">Random</a>
-    </li>
-  </ul>
+  <div class="puzzle-choices">
+    <div class="puzzle-choice" ng-repeat='puzzle in puzzles'>
+      <a ng-href="{{'puzzles/' + puzzle.id}}">{{puzzle.id}}</a>
+    </div>
+    <div class="puzzle-choice">
+      <a href="random">?</a>
+    </div>
+  </div>
 </div>

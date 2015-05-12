@@ -51,28 +51,58 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function ( consta
 
   var puzzles = {
     1: [
-      [CellStates.x, CellStates.o, CellStates.x],
-      [CellStates.o, CellStates.x, CellStates.x],
-      [CellStates.o, CellStates.o, CellStates.x]
+      'x x',
+      ' xx',
+      '  x'
     ],
     2: [
-      [CellStates.o, CellStates.o, CellStates.x, CellStates.o, CellStates.o],
-      [CellStates.o, CellStates.x, CellStates.x, CellStates.x, CellStates.o],
-      [CellStates.x, CellStates.x, CellStates.x, CellStates.x, CellStates.x],
-      [CellStates.x, CellStates.x, CellStates.x, CellStates.x, CellStates.x],
-      [CellStates.x, CellStates.x, CellStates.x, CellStates.x, CellStates.x]
+      '  x  ',
+      ' xxx ',
+      'xxxxx',
+      'xxxxx',
+      'xxxxx'
     ],
     3: [
-      [CellStates.o, CellStates.o, CellStates.x, CellStates.o, CellStates.o],
-      [CellStates.o, CellStates.x, CellStates.x, CellStates.x, CellStates.o],
-      [CellStates.x, CellStates.x, CellStates.x, CellStates.x, CellStates.x],
-      [CellStates.o, CellStates.x, CellStates.x, CellStates.x, CellStates.o],
-      [CellStates.o, CellStates.o, CellStates.x, CellStates.o, CellStates.o]
+      '  x  ',
+      ' xxx ',
+      'xxxxx',
+      ' xxx ',
+      '  x  '
+    ],
+    4: [
+      'xx  x',
+      'xxx x',
+      'xxxxx',
+      'xx xx',
+      'xx  x'
+    ],
+    5: [
+      '  xxxx   xxxx  ',
+      ' x    x x    x  ',
+      '   xxx   xxx   ',
+      '  xx  x x  xx  ',
+      '  x  xx xx  x  ',
+      '  x xxx xxx x  ',
+      '  x x x x x x  ',
+      '  x xxxxxxx x  ',
+      '   x       x   ',
+      'x x         x x',
+      'xxx         xxx',
+      'xxx         xxx',
+      'xxxx       xxxx',
+      ' xxxxxxxxxxxxx ',
+      '  xxx xxx xxx  '
     ]
   };
 
   this.getPuzzle = function (id) {
-    return puzzleService.makePuzzle(puzzles[id]);
+    var puzzleStrings = puzzles[id];
+    var puzzleMatrix = _.map(puzzleStrings, function (line) {
+      return _.map(line.split(''), function (c) {
+        return c == 'x' ? CellStates.x : CellStates.o;
+      });
+    });
+    return puzzleService.makePuzzle(puzzleMatrix);
   };
 
   this.getAvailablePuzzleIds = function () {
