@@ -2,11 +2,11 @@
   <h2 class="text-center">Choose a Puzzle</h2>
 
   <div class="puzzle-choices">
-    <div class="puzzle-choice" ng-repeat='puzzle in puzzles'>
-      <a ng-href="{{'puzzles/' + puzzle.id}}">{{puzzle.id}}</a>
-    </div>
-    <div class="puzzle-choice">
-      <a href="random">?</a>
-    </div>
+    <a class="puzzle-choice"
+       ng-repeat='puzzle in puzzles'
+       ng-href="{{'puzzles/' + puzzle.id}}">
+      {{puzzle.id}}
+    </a>
+    <a class="puzzle-choice" href="random">?</a>
   </div>
 </div>
