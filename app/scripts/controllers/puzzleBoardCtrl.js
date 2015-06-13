@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('ngPicrossApp').controller('PuzzleBoardCtrl', function ($scope, $location, puzzleService, puzzleCatalogService, constantsService, puzzle) {
+angular.module('ngPicrossApp').controller('PuzzleBoardCtrl', function ($scope, $location, puzzleService, puzzleCatalogService, puzzleHistoryService, constantsService, puzzle) {
   var drag = {};
   var CellStates = constantsService.CellStates;
   var Button = constantsService.Button;
@@ -62,6 +62,9 @@ angular.module('ngPicrossApp').controller('PuzzleBoardCtrl', function ($scope, $
       drag = {};
       commitOverlayValues();
       $scope.solved = $scope.puzzle.solved();
+      if ($scope.solved && $scope.puzzle.fingerprint) {
+        puzzleHistoryService.markCompleted($scope.puzzle.fingerprint);
+      }
     }
   };
 

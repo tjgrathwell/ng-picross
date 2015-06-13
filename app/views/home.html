@@ -2,8 +2,8 @@
   <h2 class="text-center">Choose a Puzzle</h2>
 
   <div class="puzzle-choices">
-    <a class="puzzle-choice"
-       ng-repeat='puzzle in puzzles'
+    <a ng-repeat='puzzle in puzzles'
+       ng-class="{'puzzle-choice': true, 'puzzle-choice-solved': puzzle.completed}"
        ng-href="{{'puzzles/' + puzzle.id}}">
       {{puzzle.id}}
     </a>

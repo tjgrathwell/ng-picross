@@ -56,12 +56,13 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
     });
   }
 
-  this.makePuzzle = function (solution) {
+  this.makePuzzle = function (solution, fingerprint) {
     return {
       solution: solution,
       board: generateBoard(solution),
       rowHints: rowHints(solution),
       colHints: colHints(solution),
+      fingerprint: fingerprint,
       solved: function () {
         var boardWithOnlyMarkedCells = this.board.map(function (row) {
           return row.map(function (cell) {
@@ -74,6 +75,7 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
   };
 
   this._annotateHints = function (hints, line) {
+    // TODO: raises errors on 0
     var forwardResult = this._computeHintAnnotationValues(_.pluck(hints, 'value'), line);
     var backwardResult = this._computeHintAnnotationValues(_.pluck(hints.slice().reverse(), 'value'), line.slice().reverse());
     backwardResult.reverse();

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('ngPicrossApp').service('puzzleCatalogService', function ( constantsService, puzzleService) {
+angular.module('ngPicrossApp').service('puzzleCatalogService', function (constantsService, puzzleService, puzzleHistoryService) {
   var CellStates = constantsService.CellStates;
 
   function randomBoard () {
@@ -102,7 +102,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function ( consta
     ],
     7: [
       '  xxxx   xxxx  ',
-      ' x    x x    x  ',
+      ' x    x x    x ',
       '   xxx   xxx   ',
       '  xx  x x  xx  ',
       '  x  xx xx  x  ',
@@ -119,17 +119,28 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function ( consta
     ]
   };
 
+  function generateFingerprint (lines) {
+    return lines.map(function (line) {
+      return parseInt(line.replace(/ /g, '0').replace(/x/g, '1'), 2);
+    }).join(',');
+  }
+
   this.getPuzzle = function (id) {
     var puzzleStrings = puzzles[id];
     var puzzleMatrix = _.map(puzzleStrings, function (line) {
       return _.map(line.split(''), function (c) {
-        return c == 'x' ? CellStates.x : CellStates.o;
+        return c === 'x' ? CellStates.x : CellStates.o;
       });
     });
-    return puzzleService.makePuzzle(puzzleMatrix);
+    return puzzleService.makePuzzle(puzzleMatrix, generateFingerprint(puzzles[id]));
   };
 
-  this.getAvailablePuzzleIds = function () {
-    return _.keys(puzzles);
+  this.getAvailablePuzzles = function () {
+    return _.keys(puzzles).map(function (puzzleId) {
+      return {
+        id: puzzleId,
+        completed: puzzleHistoryService.isCompleted(generateFingerprint(puzzles[puzzleId]))
+      };
+    });
   };
 });
