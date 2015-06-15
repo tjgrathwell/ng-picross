@@ -168,3 +168,22 @@ h1 {
     }
   }
 }
+
+.btn {
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 18px;
+  font-family: sans-serif;
+
+  &:hover {
+    background-color: #ddd;
+  }
+}
+
+a.btn {
+  &:link, &:visited {
+    text-decoration: none;
+    color: inherit;
+  }
+}

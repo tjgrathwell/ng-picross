@@ -5,9 +5,20 @@ angular.module('ngPicrossApp').controller('PuzzleBoardCtrl', function ($scope, $
   var CellStates = constantsService.CellStates;
   var Button = constantsService.Button;
 
+  function nextPuzzleLink () {
+    var match;
+    if ((match = $location.path().match(/\/puzzles\/(\d+)/))) {
+      var nextPuzzleNumber = parseInt(match[1], 10) + 1;
+      if (puzzleCatalogService.getAvailablePuzzles()[nextPuzzleNumber]) {
+        return '/puzzles/' + nextPuzzleNumber;
+      }
+    }
+  }
+
   var startPuzzle = function (puzzle) {
     $scope.puzzle = puzzle;
     $scope.solved = false;
+    $scope.nextPuzzleLink = nextPuzzleLink();
   };
 
   $scope.randomPuzzle = function () {
@@ -15,23 +26,6 @@ angular.module('ngPicrossApp').controller('PuzzleBoardCtrl', function ($scope, $
       startPuzzle(puzzleCatalogService.generateRandomPuzzle());
     } else {
       $location.path('/random');
-    }
-  };
-
-  $scope.nextPuzzle = function () {
-    var link = $scope.nextPuzzleLink();
-    if (link) {
-      $location.path(link);
-    }
-  };
-
-  $scope.nextPuzzleLink = function () {
-    var match;
-    if ((match = $location.path().match(/\/puzzles\/(\d+)/))) {
-      var nextPuzzleNumber = parseInt(match[1], 10) + 1;
-      if (puzzleCatalogService.getAvailablePuzzles()[nextPuzzleNumber]) {
-        return '/puzzles/' + nextPuzzleNumber;
-      }
     }
   };
 

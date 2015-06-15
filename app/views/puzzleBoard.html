@@ -26,6 +26,6 @@
 
 <div class='solved-message' ng-if='solved'>
   <h1>SOLVED</h1>
-  <button ng-click='randomPuzzle()'>Random</button>
-  <button ng-click='nextPuzzle()' ng-if='nextPuzzleLink()'>Next</button>
+  <a class="btn" ng-click='randomPuzzle()' href="">Random</a>
+  <a class="btn" ng-href='{{nextPuzzleLink}}' ng-if='nextPuzzleLink'>Next</a>
 </div>
