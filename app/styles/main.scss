@@ -45,21 +45,26 @@ h1 {
   text-align: center;
 }
 
+$puzzle-choice-width: 40px;
 .puzzle-choices {
   padding: 12px;
   font-size: 0;
   font-family: monospace;
+  text-align: center;
 
-  .puzzle-choice {
+  .puzzle-spacer, .puzzle-choice {
     display: inline-block;
-    font-size: 32px;
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
-    border-radius: 50%;
+    width: $puzzle-choice-width;
+    line-height: $puzzle-choice-width;
     margin-right: 15px;
     margin-bottom: 8px;
+  }
+
+  .puzzle-choice {
+    height: $puzzle-choice-width;
+    font-size: 32px;
+    text-align: center;
+    border-radius: 50%;
     border: 1px dashed rgba(233, 233, 233, 0.5);
     color: black;
     text-decoration: none;

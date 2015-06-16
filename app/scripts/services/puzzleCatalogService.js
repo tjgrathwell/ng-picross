@@ -149,6 +149,30 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'x x       '
     ],
     11: [
+      '    xx    ',
+      '   xx    x',
+      '  xxxx  xx',
+      ' xxxxxx x ',
+      'xx xxxxxx ',
+      ' xxxxxx x ',
+      '  xxxx  xx',
+      '   xx    x',
+      '    xx    ',
+      '     xx   '
+    ],
+    12: [
+      ' x        ',
+      ' xx       ',
+      ' xxx   xx ',
+      ' x      xx',
+      ' xx     xx',
+      ' xxx    xx',
+      'xxxxx  xxx',
+      'x xxx xxx ',
+      '  x xxx   ',
+      '  x x     '
+    ],
+    13: [
       '  xxxx   xxxx  ',
       ' x    x x    x ',
       '   xxx   xxx   ',
