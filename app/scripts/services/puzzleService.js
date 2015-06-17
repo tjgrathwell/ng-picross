@@ -29,7 +29,7 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
       hints.push({value: run});
     }
 
-    return hints.length === 0 ? [0] : hints;
+    return hints.length === 0 ? [{value: 0}] : hints;
   }
 
   function matrixCol(matrix, colIndex) {
@@ -75,7 +75,6 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
   };
 
   this._annotateHints = function (hints, line) {
-    // TODO: raises errors on 0
     var forwardResult = this._computeHintAnnotationValues(_.pluck(hints, 'value'), line);
     var backwardResult = this._computeHintAnnotationValues(_.pluck(hints.slice().reverse(), 'value'), line.slice().reverse());
     backwardResult.reverse();

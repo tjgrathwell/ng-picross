@@ -9,6 +9,27 @@ describe('Service: puzzleService', function () {
     CellStates = this.constantsService.CellStates;
   });
 
+  describe("makePuzzle", function () {
+    it("calculates the appropriate row and column hints", function () {
+      var puzzleMatrix = [
+        [CellStates.x, CellStates.o, CellStates.x],
+        [CellStates.x, CellStates.x, CellStates.x],
+        [CellStates.o, CellStates.o, CellStates.o]
+      ];
+      var puzzle = this.puzzleService.makePuzzle(puzzleMatrix);
+      expect(puzzle.rowHints).toEqual([
+        [{value: 1}, {value: 1}],
+        [{value: 3}],
+        [{value: 0}]
+      ]);
+      expect(puzzle.colHints).toEqual([
+        [{value: 2}],
+        [{value: 1}],
+        [{value: 2}]
+      ]);
+    });
+  });
+
   describe("_annotateHints", function () {
     function makeHints () {
       return _.map(Array.prototype.slice.call(arguments), function (value) {
@@ -50,6 +71,6 @@ describe('Service: puzzleService', function () {
       var hints = makeHints(1, 1);
       this.puzzleService._annotateHints(hints, makeLine(0, 1, 0, 0, 0));
       expect(solvedHints(hints)).toEqual([[1, true], [1, false]]);
-    })
+    });
   });
 });
