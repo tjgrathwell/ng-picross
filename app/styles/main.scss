@@ -7,6 +7,13 @@ html, body {
   height: 100%;
 }
 
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
 body > header {
   padding-top: 20px;
 }
@@ -16,7 +23,7 @@ body > header {
 }
 
 .home-actions {
-  width: 300px;
+  width: 400px;
   margin: 45px auto;
 
   h1 {
@@ -45,7 +52,7 @@ h1 {
   text-align: center;
 }
 
-$puzzle-choice-width: 40px;
+$puzzle-choice-width: 60px;
 .puzzle-choices {
   padding: 12px;
   font-size: 0;
@@ -59,27 +66,62 @@ $puzzle-choice-width: 40px;
     margin-right: 15px;
     margin-bottom: 8px;
   }
+}
 
-  .puzzle-choice {
-    height: $puzzle-choice-width;
-    font-size: 32px;
-    text-align: center;
-    border-radius: 50%;
-    border: 1px dashed rgba(233, 233, 233, 0.5);
-    color: black;
-    text-decoration: none;
+.puzzle-choice {
+  height: $puzzle-choice-width;
+  font-size: 32px;
+  text-align: center;
+  border-radius: 50%;
+  border: 1px dashed rgba(233, 233, 233, 0.5);
+  color: black;
+  text-decoration: none;
+  position: relative;
 
-    &.puzzle-choice-solved {
-      border-color: transparent;
-      background-color: rgba(152, 232, 186, 0.48);
+  &.puzzle-choice-solved {
+    border-color: transparent;
+    background-color: rgba(152, 232, 186, 0.48);
+  }
+
+  &:hover {
+    &:before, &:after {
+      display: inline-block;
+      position: absolute;
+      border-radius: 50%;
+      animation-iteration-count: infinite;
+      animation-name: rotateForever;
+      animation-timing-function: linear;
+      content: ' ';
     }
 
-    &:hover {
-      background-color: black;
-      &, a {
-        color: white;
-      }
+    &:before {
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      border: 2px dashed green;
+      animation-duration: 10s;
     }
+
+    &:after {
+      left: 2px;
+      right: 2px;
+      top: 2px;
+      bottom: 2px;
+      border: 2px dashed green;
+      animation-direction: reverse;
+      animation-duration: 12s;
+    }
+  }
+}
+
+@keyframes rotateForever {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
   }
 }
 
