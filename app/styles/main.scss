@@ -87,11 +87,11 @@ $puzzle-choice-width: 60px;
     &:before, &:after {
       display: inline-block;
       position: absolute;
-      border-radius: 50%;
       animation-iteration-count: infinite;
       animation-name: rotateForever;
       animation-timing-function: linear;
       content: ' ';
+      background-image: url('../images/dashed-circle.svg');
     }
 
     &:before {
@@ -99,7 +99,6 @@ $puzzle-choice-width: 60px;
       right: 0;
       top: 0;
       bottom: 0;
-      border: 2px dashed green;
       animation-duration: 10s;
     }
 
@@ -108,7 +107,6 @@ $puzzle-choice-width: 60px;
       right: 2px;
       top: 2px;
       bottom: 2px;
-      border: 2px dashed green;
       animation-direction: reverse;
       animation-duration: 12s;
     }
