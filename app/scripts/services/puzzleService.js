@@ -1,7 +1,8 @@
 'use strict';
 
-angular.module('ngPicrossApp').service('puzzleService', function (constantsService) {
+angular.module('ngPicrossApp').service('puzzleService', function (constantsService, matrixService) {
   var CellStates = constantsService.CellStates;
+  var puzzleService = this;
 
   function generateBoard (puzzle) {
     var rows = puzzle.length;
@@ -14,7 +15,7 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
     });
   }
 
-  function hintsForLine (line) {
+  this.hintsForLine = function (line) {
     var run = 0;
     var hints = [];
     _.forEach(line, function (cell) {
@@ -30,29 +31,17 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
     }
 
     return hints.length === 0 ? [{value: 0}] : hints;
-  }
-
-  function matrixCol(matrix, colIndex) {
-    var col = [];
-    for (var i = 0; i < matrix.length; i++) {
-      col.push(matrix[i][colIndex]);
-    }
-    return col;
-  }
-
-  function matrixRow(matrix, rowIndex) {
-    return matrix[rowIndex];
-  }
+  };
 
   function rowHints (puzzle) {
     return puzzle.map(function (row) {
-      return hintsForLine(row);
+      return puzzleService.hintsForLine(row);
     });
   }
 
   function colHints (puzzle) {
     return puzzle[0].map(function (col, ix) {
-      return hintsForLine(matrixCol(puzzle, ix));
+      return puzzleService.hintsForLine(matrixService.col(puzzle, ix));
     });
   }
 
@@ -146,10 +135,10 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
   this.annotateHintsForCellChanges = function (puzzle, cells) {
     var puzzleService = this;
     _.uniq(_.pluck(cells, 'row')).forEach(function (rowIndex) {
-      puzzleService._annotateHints(puzzle.rowHints[rowIndex], matrixRow(puzzle.board, rowIndex));
+      puzzleService._annotateHints(puzzle.rowHints[rowIndex], matrixService.row(puzzle.board, rowIndex));
     });
     _.uniq(_.pluck(cells, 'col')).forEach(function (colIndex) {
-      puzzleService._annotateHints(puzzle.colHints[colIndex], matrixCol(puzzle.board, colIndex));
+      puzzleService._annotateHints(puzzle.colHints[colIndex], matrixService.col(puzzle.board, colIndex));
     });
   };
 });
