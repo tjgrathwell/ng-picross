@@ -2,19 +2,12 @@
 
 angular.module('ngPicrossApp').service('puzzleSolverService', function (constantsService, matrixService, puzzleService) {
   var CellStates = constantsService.CellStates;
+  var puzzleSolverService = this;
 
-  function isSolved (hints, puzzleBoard) {
-    for (var i = 0; i < hints.rows.length; i++) {
-      var rowHint = hints.rows[i];
-      var computedRowHints = puzzleService.hintsForLine(matrixService.row(puzzleBoard, i));
-      if (!_.isEqual(rowHint, _.pluck(computedRowHints, 'value'))) {
-        return false;
-      }
-    }
-
-    for (var j = 0; j < hints.cols.length; j++) {
-      var colHint = hints.cols[j];
-      var computedColHints = puzzleService.hintsForLine(matrixService.col(puzzleBoard, j));
+  function hasCorrectColumns (hints, puzzleBoard) {
+    for (var colIx = 0; colIx < hints.cols.length; colIx++) {
+      var colHint = hints.cols[colIx];
+      var computedColHints = puzzleService.hintsForLine(matrixService.col(puzzleBoard, colIx));
 
       if (!_.isEqual(colHint, _.pluck(computedColHints, 'value'))) {
         return false;
@@ -24,38 +17,63 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function (constant
     return true;
   }
 
-  function bruteForce (hints, puzzleMatrix, i, j) {
-    if ((i === puzzleMatrix.length - 1) && (j === puzzleMatrix[0].length - 1)) {
-      return isSolved(hints, puzzleMatrix) ? puzzleMatrix : null;
+  function bruteForce (hints, puzzleMatrix, rowIx) {
+    if (rowIx === hints.rows.length) {
+      return hasCorrectColumns(hints, puzzleMatrix) ? puzzleMatrix : null;
     }
 
-    if (j === puzzleMatrix[0].length - 1) {
-      j = 0;
-      i += 1;
-    } else {
-      j += 1;
-    }
-
-    var results = [CellStates.x, CellStates.o].map(function (cellState) {
+    var nextArrangements = puzzleSolverService.arrangementsForHint(hints.rows[rowIx], hints.cols.length);
+    for (var i = 0; i < nextArrangements.length; i++) {
       var clone = JSON.parse(JSON.stringify(puzzleMatrix));
-      clone[i][j] = cellState;
-      return bruteForce(hints, clone, i, j);
-    });
+      clone.push(nextArrangements[i]);
+      var result = bruteForce(hints, clone, rowIx + 1);
+      if (result) {
+        return result;
+      }
+    }
 
-    return _.find(results, function (result) { return result; });
+    return false;
   }
 
+  function pushN (arr, item, n) {
+    for (var i = 0; i < n; i++) {
+      arr.push(item);
+    }
+  }
+
+  function calculateArrangements (current, remainingHints, totalSpaces, arrangements) {
+    var remainingSpaces = totalSpaces - current.length;
+    if (remainingHints.length == 0) {
+      pushN(current, CellStates.o, totalSpaces - current.length);
+      arrangements.push(current);
+      return;
+    }
+
+    var spacesBetweenRemainingHints = remainingHints.length - 1;
+    var wiggleRoom = remainingSpaces - _.sum(remainingHints) - spacesBetweenRemainingHints;
+    var hint = remainingHints.shift();
+
+    for (var i = 0; i < wiggleRoom + 1; i++) {
+      var nextCurrent = _.clone(current);
+      pushN(nextCurrent, CellStates.o, i);
+      pushN(nextCurrent, CellStates.x, hint);
+
+      // Ensure there is always a space between groups
+      if ((remainingSpaces - hint - i) > 0) {
+        pushN(nextCurrent, CellStates.o, 1);
+      }
+
+      calculateArrangements(nextCurrent, _.clone(remainingHints), totalSpaces, arrangements);
+    }
+  }
+
+  this.arrangementsForHint = function (hints, spaces) {
+    var result = [];
+    calculateArrangements([], _.clone(hints), spaces, result);
+    return result;
+  };
+
   this.solvePuzzle = function (hints) {
-    var board1 = Array.apply(null, new Array(hints.rows.length)).map(function () {
-      return Array.apply(null, new Array(hints.cols.length)).map(function () {
-        return null;
-      });
-    });
-    board1[0][0] = CellStates.o;
-
-    var board2 = JSON.parse(JSON.stringify(board1));
-    board2[0][0] = CellStates.x;
-
-    return bruteForce(hints, board1, 0, 0) || bruteForce(hints, board2, 0, 0);
+    return bruteForce(hints, [], 0);
   };
 });
