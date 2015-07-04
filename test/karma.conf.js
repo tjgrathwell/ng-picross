@@ -36,6 +36,8 @@ module.exports = function(config) {
     // web server port
     port: 8080,
 
+    browserNoActivityTimeout: 10000,
+
     // Start these browsers, currently available:
     // - Chrome
     // - ChromeCanary

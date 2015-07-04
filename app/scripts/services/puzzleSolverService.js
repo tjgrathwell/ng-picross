@@ -17,22 +17,52 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function (constant
     return true;
   }
 
-  function bruteForce (hints, puzzleMatrix, rowIx) {
+  function partialMatch (column, realHints, spaces) {
+    var computedHints = _.pluck(puzzleService.hintsForLine(column), 'value');
+    if (computedHints.length > realHints.length) {
+      return false;
+    }
+
+    for (var i = 0; i < computedHints.length; i++) {
+      if (computedHints[i] > realHints[i]) {
+        return false;
+      }
+    }
+
+    var remainingSpaces = spaces - column.length;
+    var remainingRuns = computedHints.length - realHints.length;
+    if (_.last(computedHints) == 0) {
+      remainingRuns += 1;
+    }
+    var spacesForRuns = _.sum(realHints) - _.sum(computedHints);
+    var spacesBetweenRuns = _.max([remainingRuns - 1, 0]);
+
+    return (spacesForRuns + spacesBetweenRuns) <= remainingSpaces;
+  }
+
+  function bruteForce (hints, puzzleMatrix, rowIx, solutions) {
     if (rowIx === hints.rows.length) {
-      return hasCorrectColumns(hints, puzzleMatrix) ? puzzleMatrix : null;
+      if (hasCorrectColumns(hints, puzzleMatrix)) {
+        solutions.push(puzzleMatrix);
+      }
+      return;
+    }
+
+    // Skip branches of the tree where any column is already incorrect
+    if (rowIx > 1) {
+      for (var colIx = 0; colIx < hints.cols.length; colIx++) {
+        if (!partialMatch(matrixService.col(puzzleMatrix, colIx), hints.cols[colIx], hints.rows.length)) {
+          return;
+        }
+      }
     }
 
     var nextArrangements = puzzleSolverService.arrangementsForHint(hints.rows[rowIx], hints.cols.length);
     for (var i = 0; i < nextArrangements.length; i++) {
       var clone = JSON.parse(JSON.stringify(puzzleMatrix));
       clone.push(nextArrangements[i]);
-      var result = bruteForce(hints, clone, rowIx + 1);
-      if (result) {
-        return result;
-      }
+      bruteForce(hints, clone, rowIx + 1, solutions);
     }
-
-    return false;
   }
 
   function pushN (arr, item, n) {
@@ -68,12 +98,20 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function (constant
   }
 
   this.arrangementsForHint = function (hints, spaces) {
+    if (_.isEqual(hints, [0])) {
+      var spacey = [];
+      pushN(spacey, CellStates.o, spaces);
+      return [spacey];
+    }
+
     var result = [];
     calculateArrangements([], _.clone(hints), spaces, result);
     return result;
   };
 
-  this.solvePuzzle = function (hints) {
-    return bruteForce(hints, [], 0);
+  this.solutionsForPuzzle = function (hints) {
+    var solutions = [];
+    bruteForce(hints, [], 0, solutions);
+    return solutions;
   };
 });
