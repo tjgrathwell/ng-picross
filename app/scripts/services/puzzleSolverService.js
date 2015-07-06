@@ -31,7 +31,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function (constant
 
     var remainingSpaces = spaces - column.length;
     var remainingRuns = computedHints.length - realHints.length;
-    if (_.last(computedHints) == 0) {
+    if (_.last(computedHints) === 0) {
       remainingRuns += 1;
     }
     var spacesForRuns = _.sum(realHints) - _.sum(computedHints);
@@ -73,7 +73,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function (constant
 
   function calculateArrangements (current, remainingHints, totalSpaces, arrangements) {
     var remainingSpaces = totalSpaces - current.length;
-    if (remainingHints.length == 0) {
+    if (remainingHints.length === 0) {
       pushN(current, CellStates.o, totalSpaces - current.length);
       arrangements.push(current);
       return;

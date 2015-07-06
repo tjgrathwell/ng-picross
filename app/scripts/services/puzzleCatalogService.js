@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('ngPicrossApp').service('puzzleCatalogService', function (constantsService, puzzleService, puzzleHistoryService) {
+angular.module('ngPicrossApp').service('puzzleCatalogService', function (constantsService, puzzleService, puzzleHistoryService, puzzleSolverService) {
   var CellStates = constantsService.CellStates;
 
   function randomBoard () {
@@ -40,10 +40,24 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
     return (_.values(rowHasCells).length === rows) && (_.values(colHasCells).length === cols);
   }
 
+  function puzzleHasUniqueSolution(puzzle) {
+    var puzzleObj = puzzleService.makePuzzle(puzzle);
+    var hints = {
+      rows: puzzleObj.rowHints.map(function (hintObj) {
+        return _.pluck(hintObj, 'value');
+      }),
+      cols: puzzleObj.colHints.map(function (hintObj) {
+        return _.pluck(hintObj, 'value');
+      })
+    };
+
+    return puzzleSolverService.solutionsForPuzzle(hints).length > 1;
+  }
+
   this.generateRandomPuzzle = function () {
     var puzzle;
     while ((puzzle = randomBoard())) {
-      if (puzzleHasMerit(puzzle)) {
+      if (puzzleHasMerit(puzzle) && puzzleHasUniqueSolution(puzzle)) {
         return puzzleService.makePuzzle(puzzle);
       }
     }
