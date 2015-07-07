@@ -1,0 +1,25 @@
+<table class='board' document-mouseup="mouseupBoard()">
+  <tr>
+    <td></td>
+    <td class='col-hint' ng-repeat="hints in puzzle.colHints track by $index">
+      <div class='col-hint-number'
+           ng-repeat="hint in hints track by $index"
+           ng-class="{off: hint.solved}">{{hint.value}}</div>
+    </td>
+  </tr>
+  <tr class='row' ng-init="rowIndex = $index" ng-repeat="row in puzzle.board track by $index">
+    <td class='row-hint'>
+      <span class='row-hint-number'
+            ng-repeat="hint in puzzle.rowHints[rowIndex] track by $index"
+            ng-class="{off: hint.solved}">{{hint.value}}</span>
+    </td>
+    <td class='cell'
+        ng-init="colIndex = $index"
+        ng-repeat="cell in puzzle.board[rowIndex]"
+        ng-class="cellClasses(rowIndex, colIndex)"
+        ng-mousedown="mousedownCell($event, rowIndex, colIndex)"
+        ng-mousemove="mousemoveCell(rowIndex, colIndex)"
+        right-click>
+    </td>
+  </tr>
+</table>
