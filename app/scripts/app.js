@@ -30,6 +30,9 @@ angular.module('ngPicrossApp', ['ngRoute']).config(function ($provide, $routePro
         return puzzleCatalogService.generateRandomPuzzle();
       }]
     }
+  }).when('/solver', {
+    templateUrl: 'views/puzzleSolver.html',
+    controller: 'PuzzleSolverCtrl'
   }).otherwise({
     redirectTo: '/'
   });

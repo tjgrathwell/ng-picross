@@ -1,0 +1,27 @@
+<div class="container">
+  <div class="solver-input">
+    <div>
+      Row Hints:
+      <div><textarea ng-model="rowHints"></textarea></div>
+    </div>
+
+    <div>
+      Column Hints:
+      <div><textarea ng-model="columnHints"></textarea></div>
+    </div>
+
+    <button ng-click="solvePuzzle()">Check It!</button>
+  </div>
+
+  <div ng-if="solutions.length == 0">
+    No solutions found...
+  </div>
+
+  <div ng-if="solutions.length > 1">
+    More than one unique solution found...
+  </div>
+
+  <div ng-if="puzzle">
+    <puzzle puzzle="puzzle" readonly></puzzle>
+  </div>
+</div>
