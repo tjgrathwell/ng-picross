@@ -8,7 +8,7 @@ angular.module('ngPicrossApp').directive('puzzle', function (constantsService, p
       puzzle: '=',
       solved: '='
     },
-    link: function ($scope, element, attrs) {
+    link: function ($scope, $element, $attrs) {
       var drag = {};
       var CellStates = constantsService.CellStates;
       var Button = constantsService.Button;
@@ -52,7 +52,15 @@ angular.module('ngPicrossApp').directive('puzzle', function (constantsService, p
         $scope.puzzle.board[rowIndex][colIndex].displayValue = desiredValue;
       }
 
-      $scope.mouseupBoard = function () {
+      function disableIfReadonly (handler) {
+        if ($attrs.hasOwnProperty('readonly')) {
+          return angular.noop;
+        }
+
+        return handler;
+      }
+
+      $scope.mouseupBoard = disableIfReadonly(function () {
         if (drag) {
           drag = {};
           commitOverlayValues();
@@ -61,9 +69,9 @@ angular.module('ngPicrossApp').directive('puzzle', function (constantsService, p
             puzzleHistoryService.markCompleted($scope.puzzle.fingerprint);
           }
         }
-      };
+      });
 
-      $scope.mousedownCell = function ($event, rowIndex, colIndex) {
+      $scope.mousedownCell = disableIfReadonly(function ($event, rowIndex, colIndex) {
         $event.preventDefault();
         var cellValue = $scope.puzzle.board[rowIndex][colIndex].value;
         var rightClicky = ($event.button === Button.RIGHT) || $event.ctrlKey;
@@ -74,9 +82,9 @@ angular.module('ngPicrossApp').directive('puzzle', function (constantsService, p
         }
         drag.startCell = {rowIndex: rowIndex, colIndex: colIndex};
         $scope.mousemoveCell(rowIndex, colIndex);
-      };
+      });
 
-      $scope.mousemoveCell = function (rowIndex, colIndex) {
+      $scope.mousemoveCell = disableIfReadonly(function (rowIndex, colIndex) {
         if (drag.startCell) {
           var startRowIx = drag.startCell.rowIndex;
           var startColIx = drag.startCell.colIndex;
@@ -105,7 +113,7 @@ angular.module('ngPicrossApp').directive('puzzle', function (constantsService, p
             applyOverlay(cells);
           }
         }
-      };
+      });
 
       $scope.cellClasses = function (rowIndex, colIndex) {
         var cellValue = $scope.puzzle.board[rowIndex][colIndex].displayValue;

@@ -1,7 +1,15 @@
 'use strict';
 
 angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, constantsService, puzzleSolverService, puzzleService) {
-  var CellStates = constantsService.CellStates;
+  function printSolutionToConsole (solution) {
+    var solutionLines = _.map(solution, function (solutionRow) {
+      return _.map(solutionRow, function (cell) {
+        return cell === '' ? ' ' : cell;
+      }).join('');
+    });
+
+    console.log(solutionLines);
+  }
 
   $scope.solvePuzzle = function () {
     function toIntegerArray (rawValues) {
@@ -18,15 +26,11 @@ angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, 
       cols: columnHintsArray
     });
 
-    if ($scope.solutions.length == 1) {
+    if ($scope.solutions.length === 1) {
       var solution = $scope.solutions[0];
       $scope.puzzle = puzzleService.makePuzzle(solution);
-      _.each(solution, function (solutionRow, rowIndex) {
-        _.each(solutionRow, function (solutionCol, colIndex) {
-          var displayValue = solutionCol == 'x' ? CellStates.x : CellStates.o;
-          $scope.puzzle.board[rowIndex][colIndex].displayValue = displayValue;
-        });
-      });
+      $scope.puzzle.markAsSolved();
+      printSolutionToConsole(solution);
     } else {
       $scope.puzzle = null;
     }

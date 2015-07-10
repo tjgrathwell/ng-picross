@@ -52,6 +52,15 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
       rowHints: rowHints(solution),
       colHints: colHints(solution),
       fingerprint: fingerprint,
+      markAsSolved: function () {
+        var puzzle = this;
+        _.each(this.solution, function (solutionRow, rowIndex) {
+          _.each(solutionRow, function (solutionCol, colIndex) {
+            var displayValue = solutionCol === 'x' ? CellStates.x : CellStates.o;
+            puzzle.board[rowIndex][colIndex].displayValue = displayValue;
+          });
+        });
+      },
       solved: function () {
         var boardWithOnlyMarkedCells = this.board.map(function (row) {
           return row.map(function (cell) {

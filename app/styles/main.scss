@@ -184,6 +184,10 @@ $puzzle-choice-width: 60px;
     height: $cell-width;
     width: $cell-width;
     background-color: #ddd;
+    [readonly] & {
+      pointer-events: none;
+    }
+
     &:hover {
       background-color: #ccc;
     }
@@ -236,4 +240,13 @@ a.btn {
 .solver-input {
   width: 400px;
   margin: 20px auto;
+
+  textarea {
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 16px;
+    height: 120px;
+    width: 100%;
+    font-family: monospace;
+  }
 }
