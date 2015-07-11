@@ -29,9 +29,20 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function (constant
       }
     }
 
+    var noComputedHints = _.last(computedHints) === 0;
+
+    // If the last hint is 'complete' (there's a space after it)
+    // and it's value is smaller than the real hint, give up.
+    if (!noComputedHints) {
+      var lastComputedHintIndex = computedHints.length - 1;
+      if (_.last(column) !== 'x' && computedHints[lastComputedHintIndex] < realHints[lastComputedHintIndex]) {
+        return false;
+      }
+    }
+
     var remainingSpaces = spaces - column.length;
     var remainingRuns = computedHints.length - realHints.length;
-    if (_.last(computedHints) === 0) {
+    if (noComputedHints) {
       remainingRuns += 1;
     }
     var spacesForRuns = _.sum(realHints) - _.sum(computedHints);
@@ -40,7 +51,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function (constant
     return (spacesForRuns + spacesBetweenRuns) <= remainingSpaces;
   }
 
-  function bruteForce (hints, puzzleMatrix, rowIx, solutions) {
+  function bruteForce (hints, puzzleMatrix, rowIx, solutions, depth) {
     if (rowIx === hints.rows.length) {
       if (hasCorrectColumns(hints, puzzleMatrix)) {
         solutions.push(puzzleMatrix);
@@ -61,7 +72,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function (constant
     for (var i = 0; i < nextArrangements.length; i++) {
       var clone = JSON.parse(JSON.stringify(puzzleMatrix));
       clone.push(nextArrangements[i]);
-      bruteForce(hints, clone, rowIx + 1, solutions);
+      bruteForce(hints, clone, rowIx + 1, solutions, depth + 1);
     }
   }
 
@@ -111,7 +122,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function (constant
 
   this.solutionsForPuzzle = function (hints) {
     var solutions = [];
-    bruteForce(hints, [], 0, solutions);
+    bruteForce(hints, [], 0, solutions, 0);
     return solutions;
   };
 });
