@@ -41,7 +41,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function (constant
     }
 
     var remainingSpaces = spaces - column.length;
-    var remainingRuns = computedHints.length - realHints.length;
+    var remainingRuns = realHints.length - computedHints.length;
     if (noComputedHints) {
       remainingRuns += 1;
     }
