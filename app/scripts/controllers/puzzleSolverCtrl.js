@@ -11,6 +11,9 @@ angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, 
     console.log(solutionLines);
   }
 
+  $scope.solverProps = puzzleSolverService.props;
+  $scope.$watch('solverProps', puzzleSolverService.persistProps, true);
+
   $scope.solvePuzzle = function () {
     function toIntegerArray (rawValues) {
       return _.map(rawValues.split(new RegExp(/[ ,]+/)), function (n) {

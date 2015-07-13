@@ -1,8 +1,17 @@
 'use strict';
 
-angular.module('ngPicrossApp').service('puzzleSolverService', function (constantsService, matrixService, puzzleService) {
+angular.module('ngPicrossApp').service('puzzleSolverService', function (constantsService, matrixService, puzzleService, storageService) {
   var CellStates = constantsService.CellStates;
   var puzzleSolverService = this;
+
+  this.props = storageService.getObj('solverProps');
+
+  this.persistProps = function (newProps) {
+    if (!newProps) {
+      return;
+    }
+    storageService.setObj('solverProps', newProps);
+  };
 
   function hasCorrectColumns (hints, puzzleBoard) {
     for (var colIx = 0; colIx < hints.cols.length; colIx++) {
@@ -51,9 +60,25 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function (constant
     return (spacesForRuns + spacesBetweenRuns) <= remainingSpaces;
   }
 
-  function bruteForce (hints, puzzleMatrix, rowIx, solutions, depth) {
-    if (rowIx === hints.rows.length) {
-      if (hasCorrectColumns(hints, puzzleMatrix)) {
+  function stringify(puzzleBoard) {
+    if (!puzzleBoard) {
+      return null;
+    }
+
+    return "\n" + puzzleBoard.map(function (row) {
+      return row.map(function (cell) {
+        return cell === CellStates.x ? 'x' : ' ';
+      }).join('');
+    }).join("\n");
+  }
+
+  function bruteForce (meta, puzzleMatrix, rowIx, solutions, depth) {
+    if (puzzleSolverService.props.debugDepth && depth > puzzleSolverService.props.debugDepth) {
+      console.log(depth, stringify(puzzleMatrix));
+    }
+
+    if (rowIx === meta.rows.length) {
+      if (hasCorrectColumns(meta, puzzleMatrix)) {
         solutions.push(puzzleMatrix);
       }
       return;
@@ -61,18 +86,18 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function (constant
 
     // Skip branches of the tree where any column is already incorrect
     if (rowIx > 1) {
-      for (var colIx = 0; colIx < hints.cols.length; colIx++) {
-        if (!partialMatch(matrixService.col(puzzleMatrix, colIx), hints.cols[colIx], hints.rows.length)) {
+      for (var colIx = 0; colIx < meta.cols.length; colIx++) {
+        if (!partialMatch(matrixService.col(puzzleMatrix, colIx), meta.cols[colIx], meta.rows.length)) {
           return;
         }
       }
     }
 
-    var nextArrangements = puzzleSolverService.arrangementsForHint(hints.rows[rowIx], hints.cols.length);
+    var nextArrangements = meta.arrangementsForRow(rowIx);
     for (var i = 0; i < nextArrangements.length; i++) {
       var clone = JSON.parse(JSON.stringify(puzzleMatrix));
       clone.push(nextArrangements[i]);
-      bruteForce(hints, clone, rowIx + 1, solutions, depth + 1);
+      bruteForce(meta, clone, rowIx + 1, solutions, depth + 1);
     }
   }
 
@@ -83,6 +108,13 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function (constant
   }
 
   function calculateArrangements (current, remainingHints, totalSpaces, arrangements) {
+    if (_.isEqual(remainingHints, [0])) {
+      var spacey = [];
+      pushN(spacey, CellStates.o, totalSpaces);
+      arrangements.push(spacey);
+      return;
+    }
+
     var remainingSpaces = totalSpaces - current.length;
     if (remainingHints.length === 0) {
       pushN(current, CellStates.o, totalSpaces - current.length);
@@ -109,12 +141,6 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function (constant
   }
 
   this.arrangementsForHint = function (hints, spaces) {
-    if (_.isEqual(hints, [0])) {
-      var spacey = [];
-      pushN(spacey, CellStates.o, spaces);
-      return [spacey];
-    }
-
     var result = [];
     calculateArrangements([], _.clone(hints), spaces, result);
     return result;
@@ -122,7 +148,29 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function (constant
 
   this.solutionsForPuzzle = function (hints) {
     var solutions = [];
-    bruteForce(hints, [], 0, solutions, 0);
+    var start = Date.now();
+    var meta = angular.extend(hints, {
+      calculatedArrangements: {},
+      arrangementsForRow: function (rowIndex) {
+        if (this.calculatedArrangements[rowIndex]) {
+          return this.calculatedArrangements[rowIndex];
+        }
+
+        var result = [];
+        calculateArrangements([], _.clone(this.rows[rowIndex]), this.cols.length, result);
+
+        this.calculatedArrangements[rowIndex] = result;
+        return result;
+      }
+    });
+
+    bruteForce(meta, [], 0, solutions, 0);
+
+    if (solutions.length > 0 && this.props.debugDepth) {
+      var timeTaken = Date.now() - start;
+      console.log("Solving took", timeTaken / 1000, "seconds");
+    }
+
     return solutions;
   };
 });
