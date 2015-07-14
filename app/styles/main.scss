@@ -240,6 +240,7 @@ a.btn {
 .solver-input {
   width: 400px;
   margin: 20px auto;
+  font-family: sans-serif;
 
   textarea {
     border-radius: 8px;
@@ -249,4 +250,8 @@ a.btn {
     width: 100%;
     font-family: monospace;
   }
+}
+
+.form-group {
+  margin: 10px 0;
 }

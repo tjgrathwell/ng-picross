@@ -1,16 +1,12 @@
 <div class="container">
   <div class="solver-input">
-    <div>
-      Row Hints:
-      <div><textarea ng-model="rowHints"></textarea></div>
+    <div class="form-group">
+      Hints:
+      <div><textarea ng-model="solverHints"></textarea></div>
+      <small>(rows first, then columns, separate using two consecutive newlines)</small>
     </div>
 
-    <div>
-      Column Hints:
-      <div><textarea ng-model="columnHints"></textarea></div>
-    </div>
-
-    <div>
+    <div class="form-group">
       <label>
         <div>Debug depth:</div>
         <input ng-model="solverProps.debugDepth">

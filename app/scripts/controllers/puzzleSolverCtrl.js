@@ -16,17 +16,17 @@ angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, 
 
   $scope.solvePuzzle = function () {
     function toIntegerArray (rawValues) {
-      return _.map(rawValues.split(new RegExp(/[ ,]+/)), function (n) {
+      var trimmed = rawValues.replace(/^\s+|\s+$/g, '');
+      return _.map(trimmed.split(new RegExp(/[ ,]+/)), function (n) {
         return parseInt(n, 0);
       });
     }
 
-    var rowHintsArray = _.map($scope.rowHints.split("\n"), toIntegerArray);
-    var columnHintsArray = _.map($scope.columnHints.split("\n"), toIntegerArray);
+    var allHints = $scope.solverHints.split(/\n\n\s*/);
 
     $scope.solutions = puzzleSolverService.solutionsForPuzzle({
-      rows: rowHintsArray,
-      cols: columnHintsArray
+      rows: _.map(allHints[0].split("\n"), toIntegerArray),
+      cols: _.map(allHints[1].split("\n"), toIntegerArray)
     });
 
     if ($scope.solutions.length === 1) {
