@@ -33,6 +33,9 @@ angular.module('ngPicrossApp', ['ngRoute']).config(function ($provide, $routePro
   }).when('/solver', {
     templateUrl: 'views/puzzleSolver.html',
     controller: 'PuzzleSolverCtrl'
+  }).when('/solver_benchmark', {
+    templateUrl: 'views/puzzleSolverBenchmark.html',
+    controller: 'PuzzleSolverBenchmarkCtrl'
   }).otherwise({
     redirectTo: '/'
   });
