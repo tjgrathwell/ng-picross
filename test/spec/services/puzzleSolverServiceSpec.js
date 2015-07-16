@@ -4,14 +4,15 @@ describe('Service: puzzleSolverService', function () {
   beforeEach(module('ngPicrossApp'));
   beforeEach(injectIntoThis('puzzleSolverService', 'constantsService'));
 
-  function stringify(puzzleBoard) {
+  function stringify(puzzleBoard, onState) {
+    onState = onState || CellStates.x;
     if (!puzzleBoard) {
       return null;
     }
 
     return puzzleBoard.map(function (row) {
       return row.map(function (cell) {
-        return cell === CellStates.x ? 'x' : ' ';
+        return cell === onState ? 'x' : ' ';
       }).join('');
     });
   }
@@ -24,7 +25,7 @@ describe('Service: puzzleSolverService', function () {
   describe('#arrangementsForHint', function () {
     it('determines all possible arrangements for a given hint', function () {
       var arrangements = this.puzzleSolverService.arrangementsForHint([1, 1], 5);
-      expect(stringify(arrangements)).toEqual([
+      expect(stringify(arrangements, 1)).toEqual([
         'x x  ',
         'x  x ',
         'x   x',
@@ -34,7 +35,7 @@ describe('Service: puzzleSolverService', function () {
       ]);
 
       arrangements = this.puzzleSolverService.arrangementsForHint([2], 3);
-      expect(stringify(arrangements)).toEqual([
+      expect(stringify(arrangements, 1)).toEqual([
         'xx ',
         ' xx'
       ]);
@@ -42,7 +43,7 @@ describe('Service: puzzleSolverService', function () {
 
     it('returns only one arrangement for an empty line', function () {
       var arrangements = this.puzzleSolverService.arrangementsForHint([0], 5);
-      expect(stringify(arrangements)).toEqual([
+      expect(stringify(arrangements, 1)).toEqual([
         '     '
       ]);
     });
@@ -189,7 +190,7 @@ describe('Service: puzzleSolverService', function () {
         'xxxxxxxxxxx    ',
         'xxxxxxxxxxx    ',
         '               '
-      ])
+      ]);
     });
   });
 });

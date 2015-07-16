@@ -15,11 +15,12 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
     });
   }
 
-  this.hintsForLine = function (line) {
+  this.hintsForLine = function (line, onState) {
+    onState = onState || CellStates.x;
     var run = 0;
     var hints = [];
     _.forEach(line, function (cell) {
-      if (cell === CellStates.x) {
+      if (cell === onState) {
         run += 1;
       } else if (run) {
         hints.push({value: run});

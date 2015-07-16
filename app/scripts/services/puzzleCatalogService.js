@@ -594,7 +594,6 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'xxx x x xxx xxx',
       ' x  xxx  x   x '
     ],
-    // Good solver stress test
     38: [
       '               ',
       '       xxxxxxxx',
@@ -970,6 +969,23 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'xxxxxxxxxxxxxxx'
     ],
     60: [
+      '      xxxx     ',
+      '      xxxx     ',
+      '       xxxxxx  ',
+      '       xxx xxx ',
+      '  x   xxx   xx ',
+      '  x  xxxxxx xx ',
+      '   xxxxx  x  xx',
+      '    xxxx  x   x',
+      '    xxxxx      ',
+      ' x   xxxx      ',
+      ' x   xxxxx     ',
+      ' x xxxxxx      ',
+      ' xxx xxxxxxxx  ',
+      '  x         x  ',
+      '          xxx  '
+    ],
+    61: [
       '  xxxx   xxxx  ',
       ' x    x x    x ',
       '   xxx   xxx   ',
