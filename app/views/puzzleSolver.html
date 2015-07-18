@@ -27,4 +27,8 @@
   <div ng-if="puzzle">
     <puzzle puzzle="puzzle" readonly></puzzle>
   </div>
+
+  <div class='loading-spinner' ng-if='solving'>
+    <span class='loading-spinner-inner'>*</span>
+  </div>
 </div>

@@ -255,3 +255,47 @@ a.btn {
 .form-group {
   margin: 10px 0;
 }
+
+.loading-spinner {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation-name: showLater;
+  animation-duration: 0.25s;
+}
+
+.loading-spinner-inner {
+  display: inline-block;
+  opacity: 0.4;
+  font-size: 240px;
+  height: 200px;
+  animation-iteration-count: infinite;
+  animation-name: rotateForever;
+  animation-timing-function: linear;
+  animation-duration: 3s;
+}
+
+@keyframes showLater {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes rotateForever {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, constantsService, puzzleSolverService, puzzleService) {
+angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, $route, $timeout, constantsService, puzzleCatalogService, puzzleSolverService, puzzleService) {
   function printSolutionToConsole (solution) {
     var solutionLines = _.map(solution, function (solutionRow) {
       return _.map(solutionRow, function (cell) {
@@ -9,6 +9,13 @@ angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, 
     });
 
     console.log(solutionLines);
+  }
+
+  if ($route.current.params.puzzleId) {
+    var puzzle = puzzleCatalogService.getPuzzle(parseInt($route.current.params.puzzleId, 10));
+    var rowHintString = _.map(puzzle.rowHints, function (rowHint) { return _.pluck(rowHint, 'value').join(' '); }).join("\n");
+    var colHintString = _.map(puzzle.colHints, function (colHint) { return _.pluck(colHint, 'value').join(' '); }).join("\n");
+    $scope.solverHints = rowHintString + "\n\n" + colHintString;
   }
 
   $scope.solverProps = puzzleSolverService.props;
@@ -24,20 +31,25 @@ angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, 
 
     var allHints = $scope.solverHints.split(/\n\n\s*/);
 
-    puzzleSolverService.solutionsForPuzzle({
-      rows: _.map(allHints[0].split("\n"), toIntegerArray),
-      cols: _.map(allHints[1].split("\n"), toIntegerArray)
-    }).then(function (solutions) {
-      $scope.solutions = solutions;
+    $scope.solving = true;
+    $scope.puzzle = null;
 
-      if ($scope.solutions.length === 1) {
-        var solution = $scope.solutions[0];
-        $scope.puzzle = puzzleService.makePuzzle(solution);
-        $scope.puzzle.markAsSolved();
-        printSolutionToConsole(solution);
-      } else {
-        $scope.puzzle = null;
-      }
-    });
+    $timeout(function () {
+      puzzleSolverService.solutionsForPuzzle({
+        rows: _.map(allHints[0].split("\n"), toIntegerArray),
+        cols: _.map(allHints[1].split("\n"), toIntegerArray)
+      }).then(function (solutions) {
+        $scope.solving = false;
+
+        if (solutions.length === 1) {
+          var solution = solutions[0];
+          $scope.puzzle = puzzleService.makePuzzle(solution);
+          $scope.puzzle.markAsSolved();
+          printSolutionToConsole(solution);
+        } else {
+          $scope.puzzle = null;
+        }
+      });
+    }, 10);
   };
 });
