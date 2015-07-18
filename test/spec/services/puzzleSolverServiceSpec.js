@@ -2,7 +2,7 @@
 
 describe('Service: puzzleSolverService', function () {
   beforeEach(module('ngPicrossApp'));
-  beforeEach(injectIntoThis('puzzleSolverService', 'constantsService'));
+  beforeEach(injectIntoThis('$timeout', 'puzzleSolverService', 'constantsService'));
 
   function stringify(puzzleBoard, onState) {
     onState = onState || CellStates.x;
@@ -50,8 +50,8 @@ describe('Service: puzzleSolverService', function () {
   });
 
   describe('#solutionsForPuzzle', function () {
-    it("determines the solution for a puzzle from a list of hints", function () {
-      var solvedPuzzle = this.puzzleSolverService.solutionsForPuzzle({
+    it("determines the solution for a puzzle from a list of hints", function (done) {
+      var solutionsPromise = this.puzzleSolverService.solutionsForPuzzle({
         rows: [
           [1, 1],
           [2],
@@ -62,17 +62,23 @@ describe('Service: puzzleSolverService', function () {
           [1],
           [3]
         ]
-      })[0];
+      });
 
-      expect(stringify(solvedPuzzle)).toEqual([
-        'x x',
-        ' xx',
-        '  x'
-      ]);
+      solutionsPromise.then(function (solutions) {
+        expect(stringify(solutions[0])).toEqual([
+          'x x',
+          ' xx',
+          '  x'
+        ]);
+
+        done();
+      });
+
+      this.$timeout.flush();
     });
 
-    it("returns multiple solutions if the puzzle could be solved multiple ways", function () {
-      var solutions = this.puzzleSolverService.solutionsForPuzzle({
+    it("returns multiple solutions if the puzzle could be solved multiple ways", function (done) {
+      var solutionsPromise = this.puzzleSolverService.solutionsForPuzzle({
         rows: [
           [1],
           [1]
@@ -81,21 +87,27 @@ describe('Service: puzzleSolverService', function () {
           [1],
           [1]
         ]
+      })
+
+      solutionsPromise.then(function (solutions) {
+        expect(solutions.length).toEqual(2);
+        expect(stringify(solutions[0])).toEqual([
+          'x ',
+          ' x'
+        ]);
+        expect(stringify(solutions[1])).toEqual([
+          ' x',
+          'x '
+        ]);
+
+        done();
       });
 
-      expect(solutions.length).toEqual(2);
-      expect(stringify(solutions[0])).toEqual([
-        'x ',
-        ' x'
-      ]);
-      expect(stringify(solutions[1])).toEqual([
-        ' x',
-        'x '
-      ]);
+      this.$timeout.flush();
     });
 
-    it("can solve medium puzzles without taking a long time", function () {
-      var solvedPuzzle = this.puzzleSolverService.solutionsForPuzzle({
+    it("can solve medium puzzles without taking a long time", function (done) {
+      var solutionsPromise = this.puzzleSolverService.solutionsForPuzzle({
         rows: [
           [2],
           [2, 1],
@@ -120,24 +132,30 @@ describe('Service: puzzleSolverService', function () {
           [5],
           [2, 2]
         ]
-      })[0];
+      });
 
-      expect(stringify(solvedPuzzle)).toEqual([
-        '    xx    ',
-        '   xx    x',
-        '  xxxx  xx',
-        ' xxxxxx x ',
-        'xx xxxxxx ',
-        ' xxxxxx x ',
-        '  xxxx  xx',
-        '   xx    x',
-        '    xx    ',
-        '     xx   '
-      ]);
+      solutionsPromise.then(function (solutions) {
+        expect(stringify(solutions[0])).toEqual([
+          '    xx    ',
+          '   xx    x',
+          '  xxxx  xx',
+          ' xxxxxx x ',
+          'xx xxxxxx ',
+          ' xxxxxx x ',
+          '  xxxx  xx',
+          '   xx    x',
+          '    xx    ',
+          '     xx   '
+        ]);
+
+        done();
+      });
+
+      this.$timeout.flush();
     });
 
-    it('can solve large puzzles without taking a long time', function () {
-      var solvedPuzzle = this.puzzleSolverService.solutionsForPuzzle({
+    it('can solve large puzzles without taking a long time', function (done) {
+      var solutionsPromise = this.puzzleSolverService.solutionsForPuzzle({
         rows: [
           [0],
           [7],
@@ -172,25 +190,31 @@ describe('Service: puzzleSolverService', function () {
           [1, 5],
           [3]
         ]
-      })[0];
+      });
 
-      expect(stringify(solvedPuzzle)).toEqual([
-        '               ',
-        '  xxxxxxx      ',
-        ' xxxxxxxxx     ',
-        ' xx     xx     ',
-        ' xx     xx     ',
-        ' xx         xxx',
-        'xxxxxxxxxxx x x',
-        'xxxxxxxxxxx xxx',
-        'xxxx   xxxx  x ',
-        'xxxx   xxxx xx ',
-        'xxxxx xxxxx  x ',
-        'xxxxx xxxxx xx ',
-        'xxxxxxxxxxx    ',
-        'xxxxxxxxxxx    ',
-        '               '
-      ]);
+      solutionsPromise.then(function (solutions) {
+        expect(stringify(solutions[0])).toEqual([
+          '               ',
+          '  xxxxxxx      ',
+          ' xxxxxxxxx     ',
+          ' xx     xx     ',
+          ' xx     xx     ',
+          ' xx         xxx',
+          'xxxxxxxxxxx x x',
+          'xxxxxxxxxxx xxx',
+          'xxxx   xxxx  x ',
+          'xxxx   xxxx xx ',
+          'xxxxx xxxxx  x ',
+          'xxxxx xxxxx xx ',
+          'xxxxxxxxxxx    ',
+          'xxxxxxxxxxx    ',
+          '               '
+        ]);
+
+        done();
+      });
+
+      this.$timeout.flush();
     });
   });
 });

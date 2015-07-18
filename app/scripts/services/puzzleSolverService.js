@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('ngPicrossApp').service('puzzleSolverService', function (constantsService, matrixService, puzzleService, storageService) {
+angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $timeout, constantsService, matrixService, puzzleService, storageService) {
   var CellStates = constantsService.CellStates;
   var CELL_ON = 1;
   var CELL_OFF = 0;
@@ -76,7 +76,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function (constant
 
     return "\n" + puzzleBoard.map(function (row) {
       if (!row) {
-        return '<nil>'
+        return '<nil>';
       }
       return row.map(function (cell) {
         return cell === CELL_ON ? 'x' : ' ';
@@ -84,39 +84,41 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function (constant
     }).join("\n");
   }
 
-  function bruteForce (meta, puzzleMatrix, rowIx, solutions) {
+  function bruteForce (puzzleMatrix, rowIx) {
     if (puzzleSolverService.props.debugDepth && rowIx > puzzleSolverService.props.debugDepth) {
       console.log(rowIx, stringify(puzzleMatrix));
     }
 
-    if (rowIx === meta.rows.length) {
-      if (hasCorrectColumns(meta, puzzleMatrix)) {
-        solutions.push(puzzleMatrix);
+    if (rowIx === this.rows.length) {
+      if (hasCorrectColumns(this, puzzleMatrix)) {
+        this.solutions.push(puzzleMatrix);
       }
       return;
     }
 
     // Skip branches of the tree where any column is already incorrect
     if (rowIx > 1) {
-      for (var colIx = 0; colIx < meta.cols.length; colIx++) {
-        if (!partialMatch(matrixService.col(puzzleMatrix, colIx), meta.cols[colIx], meta.rows.length)) {
+      for (var colIx = 0; colIx < this.cols.length; colIx++) {
+        if (!partialMatch(matrixService.col(puzzleMatrix, colIx), this.cols[colIx], this.rows.length)) {
           return;
         }
       }
     }
 
     if (puzzleMatrix[rowIx]) {
-      bruteForce(meta, puzzleMatrix, rowIx + 1, solutions);
-      return;
+      return [[puzzleMatrix, rowIx + 1]];
     }
 
-    var nextArrangements = meta.calculatedArrangements[rowIx];
+    var nextArrangements = this.calculatedArrangements[rowIx];
     var matrixString = JSON.stringify(puzzleMatrix);
+
+    var nextArgs = [];
     for (var i = 0; i < nextArrangements.length; i++) {
       var clone = JSON.parse(matrixString);
       clone[rowIx] = nextArrangements[i];
-      bruteForce(meta, clone, rowIx + 1, solutions);
+      nextArgs.push([clone, rowIx + 1]);
     }
+    return nextArgs;
   }
 
   function pushN (arr, item, n) {
@@ -164,11 +166,23 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function (constant
     return result;
   };
 
+  function binaryToCellStates (solution) {
+    return _.map(solution, function (solutionRows) {
+      return _.map(solutionRows, function (solutionCol) {
+        if (solutionCol === CELL_ON) {
+          return CellStates.x;
+        } else {
+          return CellStates.o;
+        }
+      });
+    });
+  }
+
   this.solutionsForPuzzle = function (hints) {
-    var solutions = [];
     var start = Date.now();
     var meta = angular.extend(hints, {
-      calculatedArrangements: []
+      calculatedArrangements: [],
+      solutions: []
     });
 
     var puzzleMatrix = [];
@@ -186,23 +200,52 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function (constant
       }
     }
 
-    bruteForce(meta, puzzleMatrix, 0, solutions);
+    var deferred = $q.defer();
 
-    if (solutions.length > 0 && this.props.debugDepth) {
-      var timeTaken = Date.now() - start;
-      console.log("Solving took", timeTaken / 1000, "seconds");
+    function runRounds (meta, bruteForceArgs) {
+      var startTime = new Date();
+
+      while (bruteForceArgs.length > 0) {
+        var elapsed = new Date() - startTime;
+        if (elapsed > 1000) {
+          return true;
+        }
+
+        var theseArgs = bruteForceArgs.shift();
+        var newArgs = bruteForce.apply(meta, theseArgs);
+        if (newArgs) {
+          Array.prototype.unshift.apply(bruteForceArgs, newArgs);
+        }
+      }
+
+      return false;
     }
 
-    return _.map(solutions, function (solution) {
-      return _.map(solution, function (solutionRows) {
-        return _.map(solutionRows, function (solutionCol) {
-          if (solutionCol == CELL_ON) {
-            return CellStates.x;
-          } else {
-            return CellStates.o;
-          }
-        });
-      });
+    function solveIteratively (meta, bruteForceArgs) {
+      var deferred = $q.defer();
+
+      function go () {
+        if (runRounds(meta, bruteForceArgs)) {
+          $timeout(go, 0);
+        } else {
+          deferred.resolve();
+        }
+      }
+
+      go();
+
+      return deferred.promise;
+    }
+
+    solveIteratively(meta, [[puzzleMatrix, 0]]).then(function () {
+      if (meta.solutions.length > 0 && puzzleSolverService.props.debugDepth) {
+        var timeTaken = Date.now() - start;
+        console.log("Solving took", timeTaken / 1000, "seconds");
+      }
+
+      deferred.resolve(_.map(meta.solutions, binaryToCellStates));
     });
+
+    return deferred.promise;
   };
 });
