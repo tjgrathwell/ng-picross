@@ -11,13 +11,6 @@ angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, 
     console.log(solutionLines);
   }
 
-  if ($route.current.params.puzzleId) {
-    var puzzle = puzzleCatalogService.getPuzzle(parseInt($route.current.params.puzzleId, 10));
-    var rowHintString = _.map(puzzle.rowHints, function (rowHint) { return _.pluck(rowHint, 'value').join(' '); }).join("\n");
-    var colHintString = _.map(puzzle.colHints, function (colHint) { return _.pluck(colHint, 'value').join(' '); }).join("\n");
-    $scope.solverHints = rowHintString + "\n\n" + colHintString;
-  }
-
   $scope.solverProps = puzzleSolverService.props;
   $scope.$watch('solverProps', puzzleSolverService.persistProps, true);
 
@@ -33,18 +26,22 @@ angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, 
 
     $scope.solving = true;
     $scope.puzzle = null;
+    $scope.solutionTime = null;
+    var solverStartTime = new Date();
 
     $timeout(function () {
       puzzleSolverService.solutionsForPuzzle({
         rows: _.map(allHints[0].split("\n"), toIntegerArray),
         cols: _.map(allHints[1].split("\n"), toIntegerArray)
       }).then(function (solutions) {
+        $scope.solutions = solutions;
         $scope.solving = false;
 
         if (solutions.length === 1) {
           var solution = solutions[0];
           $scope.puzzle = puzzleService.makePuzzle(solution);
           $scope.puzzle.markAsSolved();
+          $scope.solutionTime = (new Date() - solverStartTime) / 1000;
           printSolutionToConsole(solution);
         } else {
           $scope.puzzle = null;
@@ -52,4 +49,13 @@ angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, 
       });
     }, 10);
   };
+
+  if ($route.current.params.puzzleId) {
+    var puzzle = puzzleCatalogService.getPuzzle(parseInt($route.current.params.puzzleId, 10));
+    var rowHintString = _.map(puzzle.rowHints, function (rowHint) { return _.pluck(rowHint, 'value').join(' '); }).join("\n");
+    var colHintString = _.map(puzzle.colHints, function (colHint) { return _.pluck(colHint, 'value').join(' '); }).join("\n");
+    $scope.solverHints = rowHintString + "\n\n" + colHintString;
+
+    $scope.solvePuzzle();
+  }
 });

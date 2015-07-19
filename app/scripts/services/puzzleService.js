@@ -19,30 +19,34 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
     onState = onState || CellStates.x;
     var run = 0;
     var hints = [];
-    _.forEach(line, function (cell) {
-      if (cell === onState) {
+    for (var i = 0; i < line.length; i++) {
+      if (line[i] === onState) {
         run += 1;
       } else if (run) {
-        hints.push({value: run});
+        hints.push(run);
         run = 0;
       }
-    });
+    }
     if (run) {
-      hints.push({value: run});
+      hints.push(run);
     }
 
-    return hints.length === 0 ? [{value: 0}] : hints;
+    return hints.length === 0 ? [0] : hints;
   };
 
   function rowHints (puzzle) {
     return puzzle.map(function (row) {
-      return puzzleService.hintsForLine(row);
+      return _.map(puzzleService.hintsForLine(row), function (hint) {
+        return {value: hint};
+      });
     });
   }
 
   function colHints (puzzle) {
     return puzzle[0].map(function (col, ix) {
-      return puzzleService.hintsForLine(matrixService.col(puzzle, ix));
+      return _.map(puzzleService.hintsForLine(matrixService.col(puzzle, ix)), function (hint) {
+        return {value: hint};
+      });
     });
   }
 

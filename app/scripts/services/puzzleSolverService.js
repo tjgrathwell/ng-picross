@@ -20,7 +20,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
       var colHint = hints.cols[colIx];
       var computedColHints = puzzleService.hintsForLine(matrixService.col(puzzleBoard, colIx), CELL_ON);
 
-      if (!_.isEqual(colHint, _.pluck(computedColHints, 'value'))) {
+      if (!_.isEqual(colHint, computedColHints)) {
         return false;
       }
     }
@@ -32,7 +32,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
     var firstUnchosenIndex = column.indexOf(null);
     var completedColumn = column.slice(0, firstUnchosenIndex === -1 ? undefined : firstUnchosenIndex);
 
-    var computedHints = _.pluck(puzzleService.hintsForLine(completedColumn, CELL_ON), 'value');
+    var computedHints = puzzleService.hintsForLine(completedColumn, CELL_ON);
     if (computedHints.length > realHints.length) {
       return false;
     }

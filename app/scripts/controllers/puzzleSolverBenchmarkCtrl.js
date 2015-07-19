@@ -6,6 +6,8 @@ angular.module('ngPicrossApp').controller('PuzzleSolverBenchmarkCtrl', function 
 
   $scope.totalTime = 0;
 
+  $scope.solving = true;
+
   function benchmarkPuzzle () {
     var start = Date.now();
     var listPuzzle = allPuzzles.shift();
@@ -27,6 +29,8 @@ angular.module('ngPicrossApp').controller('PuzzleSolverBenchmarkCtrl', function 
 
       if (allPuzzles.length > 0) {
         $timeout(benchmarkPuzzle, 0);
+      } else {
+        $scope.solving = false;
       }
     });
   }

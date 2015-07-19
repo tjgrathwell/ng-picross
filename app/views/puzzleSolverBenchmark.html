@@ -1,11 +1,12 @@
 <div class="container">
-  <div>
+  <div class="center-message mt30">
     Total Time Taken: {{totalTime | number:4}}
+    <div class="small-spinner" ng-if="solving">*</div>
   </div>
 
   <ul>
     <li ng-repeat="solvedPuzzle in solutionTimes">
-      Puzzle {{solvedPuzzle.id}}: {{solvedPuzzle.time | number:4 }} seconds
+      <a ng-href="/solver/{{solvedPuzzle.id}}">Puzzle {{solvedPuzzle.id}}</a>: {{solvedPuzzle.time | number:4 }} seconds
     </li>
   </ul>
 </div>

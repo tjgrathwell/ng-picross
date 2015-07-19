@@ -16,16 +16,19 @@
     <button class='btn' ng-click="solvePuzzle()">Check It!</button>
   </div>
 
-  <div ng-if="solutions.length == 0">
+  <div ng-if="solutions.length == 0" class="center-message">
     No solutions found...
   </div>
 
-  <div ng-if="solutions.length > 1">
+  <div ng-if="solutions.length > 1" class="center-message">
     More than one unique solution found...
   </div>
 
   <div ng-if="puzzle">
     <puzzle puzzle="puzzle" readonly></puzzle>
+    <div class="center-message">
+      Solver took {{solutionTime | number:2}} seconds.
+    </div>
   </div>
 
   <div class='loading-spinner' ng-if='solving'>
