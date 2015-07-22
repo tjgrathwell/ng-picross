@@ -11,6 +11,12 @@
         <div>Debug depth:</div>
         <input ng-model="solverProps.debugDepth">
       </label>
+
+      <div>
+        <label>
+          <input type=checkbox ng-model="solverProps.showProgress">Show Progress
+        </label>
+      </div>
     </div>
 
     <button class='btn' ng-click="solvePuzzle()">Check It!</button>
@@ -26,7 +32,7 @@
 
   <div ng-if="puzzle">
     <puzzle puzzle="puzzle" readonly></puzzle>
-    <div class="center-message">
+    <div class="center-message" ng-if="solutionTime">
       Solver took {{solutionTime | number:2}} seconds.
     </div>
   </div>

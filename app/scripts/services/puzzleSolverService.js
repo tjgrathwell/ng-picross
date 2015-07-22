@@ -202,7 +202,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
     for (var columnIndex = 0; columnIndex < arrangements[0].length; columnIndex++) {
       var mark = CELL_ON;
       for (var arrangementIndex = 0; arrangementIndex < arrangements.length; arrangementIndex++) {
-        if (arrangements[arrangementIndex][columnIndex] == CELL_OFF) {
+        if (arrangements[arrangementIndex][columnIndex] === CELL_OFF) {
           mark = null;
           break;
         }
@@ -242,7 +242,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
     return [result];
   }
 
-  this.solutionsForPuzzle = function (hints) {
+  this.solutionsForPuzzle = function (hints, options) {
     var meta = angular.extend(hints, {
       calculatedArrangements: [],
       solutions: []
@@ -289,6 +289,10 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
       function go () {
         if (runRounds(meta, bruteForceArgs)) {
           $timeout(go, 0);
+          if (options.showProgress) {
+            var partialPuzzleSolution = binaryToCellStates(bruteForceArgs[0][0]);
+            deferred.notify(partialPuzzleSolution);
+          }
         } else {
           deferred.resolve();
         }
@@ -303,7 +307,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
 
     solveIteratively(meta, initialPuzzleMatrices).then(function () {
       deferred.resolve(_.map(meta.solutions, binaryToCellStates));
-    });
+    }, null, deferred.notify);
 
     return deferred.promise;
   };

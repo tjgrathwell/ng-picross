@@ -30,10 +30,14 @@ angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, 
     var solverStartTime = new Date();
 
     $timeout(function () {
-      puzzleSolverService.solutionsForPuzzle({
+      var puzzleToSolve = {
         rows: _.map(allHints[0].split("\n"), toIntegerArray),
         cols: _.map(allHints[1].split("\n"), toIntegerArray)
-      }).then(function (solutions) {
+      };
+      var options = {
+        showProgress: $scope.solverProps.showProgress
+      };
+      puzzleSolverService.solutionsForPuzzle(puzzleToSolve, options).then(function (solutions) {
         $scope.solutions = solutions;
         $scope.solving = false;
 
@@ -46,6 +50,19 @@ angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, 
         } else {
           $scope.puzzle = null;
         }
+      }, null, function progress (partialPuzzleSolution) {
+        $scope.puzzle = puzzleService.makePuzzle(partialPuzzleSolution);
+        $scope.puzzle.rowHints = _.map(puzzleToSolve.rows, function (r) {
+          return _.map(r, function (v) {
+            return {value: v};
+          });
+        });
+        $scope.puzzle.colHints = _.map(puzzleToSolve.cols, function (c) {
+          return _.map(c, function (v) {
+            return {value: v};
+          });
+        });
+        $scope.puzzle.markAsSolved();
       });
     }, 10);
   };
