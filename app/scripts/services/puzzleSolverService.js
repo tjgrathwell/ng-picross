@@ -84,14 +84,20 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
         return '<nil>';
       }
       return row.map(function (cell) {
-        return cell === CELL_ON ? 'x' : ' ';
+        if (cell === CELL_ON) {
+          return 'x';
+        }
+        if (cell === CELL_OFF) {
+          return '_';
+        }
+        return '?';
       }).join('');
     }).join("\n");
   }
 
   function cannotMatch (fullLine, partialLine) {
     for (var i = 0; i < partialLine.length; i++) {
-      if (partialLine[i] === CELL_ON && fullLine[i] !== CELL_ON) {
+      if (partialLine[i] != null && partialLine[i] !== fullLine[i]) {
         return true;
       }
     }
@@ -123,16 +129,11 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
       return [[puzzleMatrix, rowIx + 1]];
     }
 
-    var nextArrangements = this.calculatedArrangements[rowIx];
+    var nextArrangements = this.possibleRowArrangements[rowIx];
     var matrixString = JSON.stringify(puzzleMatrix);
-    var hasPartialMarks = puzzleMatrix[rowIx].indexOf(CELL_ON) !== -1;
 
     var nextArgs = [];
     for (var i = 0; i < nextArrangements.length; i++) {
-      if (hasPartialMarks && cannotMatch(nextArrangements[i], puzzleMatrix[rowIx])) {
-        continue;
-      }
-
       var clone = JSON.parse(matrixString);
       clone[rowIx] = nextArrangements[i];
       nextArgs.push([clone, rowIx + 1]);
@@ -146,7 +147,11 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
     }
   }
 
-  function calculateArrangements (current, remainingHints, totalSpaces, arrangements) {
+  function calculateArrangements (remainingHints, totalSpaces, arrangements, current) {
+    if (!current) {
+      current = [];
+    }
+
     if (_.isEqual(remainingHints, [0])) {
       var spacey = [];
       pushN(spacey, CELL_OFF, totalSpaces);
@@ -175,13 +180,13 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
         pushN(nextCurrent, CELL_OFF, 1);
       }
 
-      calculateArrangements(nextCurrent, _.clone(remainingHints), totalSpaces, arrangements);
+      calculateArrangements(_.clone(remainingHints), totalSpaces, arrangements, nextCurrent);
     }
   }
 
   this.arrangementsForHint = function (hints, spaces) {
     var result = [];
-    calculateArrangements([], _.clone(hints), spaces, result);
+    calculateArrangements(_.clone(hints), spaces, result);
     return result;
   };
 
@@ -199,10 +204,10 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
 
   function commonMarks (arrangements) {
     var result = [];
-    for (var columnIndex = 0; columnIndex < arrangements[0].length; columnIndex++) {
-      var mark = CELL_ON;
-      for (var arrangementIndex = 0; arrangementIndex < arrangements.length; arrangementIndex++) {
-        if (arrangements[arrangementIndex][columnIndex] === CELL_OFF) {
+    for (var cellIndex = 0; cellIndex < arrangements[0].length; cellIndex++) {
+      var mark = arrangements[0][cellIndex];
+      for (var arrangementIndex = 1; arrangementIndex < arrangements.length; arrangementIndex++) {
+        if (arrangements[arrangementIndex][cellIndex] !== mark) {
           mark = null;
           break;
         }
@@ -212,11 +217,64 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
     return result;
   }
 
-  function createInitialMatrices (calculatedArrangements, columnHints) {
+  function markLine (matrix, marks, rowOrColumnIndex, isColumn) {
+    var changed = false;
+    for (var markIndex = 0; markIndex < marks.length; markIndex++) {
+      var value = marks[markIndex];
+      if (value !== null) {
+        var existingRowValue;
+        if (isColumn) {
+          existingRowValue = matrix[markIndex][rowOrColumnIndex];
+        } else {
+          existingRowValue = matrix[rowOrColumnIndex][markIndex];
+        }
+        if (existingRowValue !== value) {
+          changed = true;
+          if (isColumn) {
+            matrix[markIndex][rowOrColumnIndex] = value;
+          } else {
+            matrix[rowOrColumnIndex][markIndex] = value;
+          }
+        }
+      }
+    }
+    return changed;
+  }
+
+  function markRequiredCells (meta, matrix) {
+    var changed = false;
+
+    for (var columnIndex = 0; columnIndex < meta.cols.length; columnIndex++) {
+      var column = matrixService.col(matrix, columnIndex);
+      var hasPartialColumnMarks = column.indexOf(CELL_ON) !== -1;
+      if (hasPartialColumnMarks) {
+        meta.possibleColumnArrangements[columnIndex] = meta.possibleColumnArrangements[columnIndex].filter(function (arrangement) {
+          return !cannotMatch(arrangement, column);
+        });
+      }
+
+      changed = changed || markLine(matrix, commonMarks(meta.possibleColumnArrangements[columnIndex]), columnIndex, true);
+    }
+
+    for (var rowIndex = 0; rowIndex < meta.rows.length; rowIndex++) {
+      var hasPartialRowMarks = matrix[rowIndex].indexOf(CELL_ON) !== -1;
+      if (hasPartialRowMarks) {
+        meta.possibleRowArrangements[rowIndex] = meta.possibleRowArrangements[rowIndex].filter(function (arrangement) {
+          return !cannotMatch(arrangement, matrix[rowIndex]);
+        });
+      }
+
+      changed = changed || markLine(matrix, commonMarks(meta.possibleRowArrangements[rowIndex]), rowIndex);
+    }
+
+    return changed;
+  }
+
+  function createInitialMatrices (meta) {
     var result = [];
 
-    for (var i = 0; i < calculatedArrangements.length; i++) {
-      var arrangements = calculatedArrangements[i];
+    for (var i = 0; i < meta.possibleRowArrangements.length; i++) {
+      var arrangements = meta.possibleRowArrangements[i];
 
       // If there's only one possible arrangement, add it to the matrix unconditionally
       // with hope that it will speed up some of the column checks
@@ -227,16 +285,9 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
       }
     }
 
-    for (var columnIndex = 0; columnIndex < columnHints.length; columnIndex++) {
-      var columnArrangements = [];
-      calculateArrangements([], _.clone(columnHints[columnIndex]), columnHints.length, columnArrangements);
-      var columnMarks = commonMarks(columnArrangements);
-      for (var markIndex = 0; markIndex < columnMarks.length; markIndex++) {
-        var value = columnMarks[markIndex];
-        if (value === CELL_ON) {
-          result[markIndex][columnIndex] = CELL_ON;
-        }
-      }
+    var changed = true;
+    while (changed) {
+      changed = markRequiredCells(meta, result);
     }
 
     return [result];
@@ -244,14 +295,21 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
 
   this.solutionsForPuzzle = function (hints, options) {
     var meta = angular.extend(hints, {
-      calculatedArrangements: [],
+      possibleRowArrangements: [],
+      possibleColumnArrangements: [],
       solutions: []
     });
 
-    for (var i = 0; i < meta.rows.length; i++) {
-      var arrangements = [];
-      calculateArrangements([], _.clone(meta.rows[i]), meta.cols.length, arrangements);
-      meta.calculatedArrangements.push(arrangements);
+    for (var rowIndex = 0; rowIndex < meta.rows.length; rowIndex++) {
+      var rowArrangements = [];
+      calculateArrangements(_.clone(meta.rows[rowIndex]), meta.cols.length, rowArrangements);
+      meta.possibleRowArrangements.push(rowArrangements);
+    }
+
+    for (var colIndex = 0; colIndex < meta.cols.length; colIndex++) {
+      var colArrangements = [];
+      calculateArrangements(_.clone(meta.cols[colIndex]), meta.rows.length, colArrangements);
+      meta.possibleColumnArrangements.push(colArrangements);
     }
 
     meta.colTotals = [];
@@ -289,7 +347,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
       function go () {
         if (runRounds(meta, bruteForceArgs)) {
           $timeout(go, 0);
-          if (options.showProgress) {
+          if (options && options.showProgress) {
             var partialPuzzleSolution = binaryToCellStates(bruteForceArgs[0][0]);
             deferred.notify(partialPuzzleSolution);
           }
@@ -303,7 +361,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
       return deferred.promise;
     }
 
-    var initialPuzzleMatrices = createInitialMatrices(meta.calculatedArrangements, meta.cols);
+    var initialPuzzleMatrices = createInitialMatrices(meta);
 
     solveIteratively(meta, initialPuzzleMatrices).then(function () {
       deferred.resolve(_.map(meta.solutions, binaryToCellStates));
