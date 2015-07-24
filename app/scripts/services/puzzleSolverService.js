@@ -97,7 +97,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
 
   function cannotMatch (fullLine, partialLine) {
     for (var i = 0; i < partialLine.length; i++) {
-      if (partialLine[i] != null && partialLine[i] !== fullLine[i]) {
+      if (partialLine[i] !== null && partialLine[i] !== fullLine[i]) {
         return true;
       }
     }
@@ -195,9 +195,10 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
       return _.map(solutionRows, function (solutionCol) {
         if (solutionCol === CELL_ON) {
           return CellStates.x;
-        } else {
-          return CellStates.o;
+        } else if (solutionCol === CELL_OFF) {
+          return CellStates.b;
         }
+        return CellStates.o;
       });
     });
   }
@@ -270,7 +271,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
     return changed;
   }
 
-  function createInitialMatrices (meta) {
+  function createInitialMatrix (meta, createOptions) {
     var result = [];
 
     for (var i = 0; i < meta.possibleRowArrangements.length; i++) {
@@ -285,12 +286,33 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
       }
     }
 
-    var changed = true;
-    while (changed) {
-      changed = markRequiredCells(meta, result);
+    var deferred = $q.defer();
+
+    function chainTimeout () {
+      $timeout(function () {
+        if (markRequiredCells(meta, result)) {
+          chainTimeout();
+          if (createOptions.showProgress) {
+            var partialPuzzleSolution = binaryToCellStates(result);
+            createOptions.progressDeferred.notify(partialPuzzleSolution);
+          }
+        } else {
+          deferred.resolve(result);
+        }
+      }, 0);
     }
 
-    return [result];
+    if (createOptions.showProgress) {
+      chainTimeout();
+    } else {
+      var keepGoing = true;
+      while (keepGoing) {
+        keepGoing = markRequiredCells(meta, result);
+      }
+      deferred.resolve(result);
+    }
+
+    return deferred.promise;
   }
 
   this.solutionsForPuzzle = function (hints, options) {
@@ -317,8 +339,6 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
       meta.colTotals.push(_.sum(meta.cols[j]));
     }
 
-    var deferred = $q.defer();
-
     function runRounds (meta, bruteForceArgs) {
       var startTime = new Date();
 
@@ -338,11 +358,9 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
       return false;
     }
 
-    function solveIteratively (meta, initialPuzzleMatrices) {
+    function solveIteratively (meta, initialPuzzleMatrix) {
       var deferred = $q.defer();
-      var bruteForceArgs = _.map(initialPuzzleMatrices, function (matrix) {
-        return [matrix, 0];
-      });
+      var bruteForceArgs = [[initialPuzzleMatrix, 0]];
 
       function go () {
         if (runRounds(meta, bruteForceArgs)) {
@@ -361,11 +379,14 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
       return deferred.promise;
     }
 
-    var initialPuzzleMatrices = createInitialMatrices(meta);
+    var deferred = $q.defer();
+    var createOptions = _.extend({progressDeferred: deferred}, options || {});
 
-    solveIteratively(meta, initialPuzzleMatrices).then(function () {
-      deferred.resolve(_.map(meta.solutions, binaryToCellStates));
-    }, null, deferred.notify);
+    createInitialMatrix(meta, createOptions).then(function (initialPuzzleMatrix) {
+      solveIteratively(meta, initialPuzzleMatrix).then(function () {
+        deferred.resolve(_.map(meta.solutions, binaryToCellStates));
+      }, null, deferred.notify);
+    });
 
     return deferred.promise;
   };

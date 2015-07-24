@@ -61,8 +61,7 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
         var puzzle = this;
         _.each(this.solution, function (solutionRow, rowIndex) {
           _.each(solutionRow, function (solutionCol, colIndex) {
-            var displayValue = solutionCol === 'x' ? CellStates.x : CellStates.o;
-            puzzle.board[rowIndex][colIndex].displayValue = displayValue;
+            puzzle.board[rowIndex][colIndex].displayValue = solutionCol;
           });
         });
       },

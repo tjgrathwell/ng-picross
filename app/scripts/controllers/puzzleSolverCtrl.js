@@ -4,7 +4,7 @@ angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, 
   function printSolutionToConsole (solution) {
     var solutionLines = _.map(solution, function (solutionRow) {
       return _.map(solutionRow, function (cell) {
-        return cell === '' ? ' ' : cell;
+        return cell === 'b' ? ' ' : cell;
       }).join('');
     });
 
