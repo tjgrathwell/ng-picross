@@ -4,9 +4,16 @@
     <div class="small-spinner" ng-if="solving">*</div>
   </div>
 
-  <ul>
-    <li ng-repeat="solvedPuzzle in solutionTimes">
-      <a ng-href="/solver/{{solvedPuzzle.id}}">Puzzle {{solvedPuzzle.id}}</a>: {{solvedPuzzle.time | number:4 }} seconds
-    </li>
-  </ul>
+  <table class="benchmark-table">
+    <thead>
+      <th><a href='' ng-click="orderBy('id')">Puzzle</a></th>
+      <th><a href='' ng-click="orderBy('time')">Time</a></th>
+    </thead>
+    <tbody>
+      <tr ng-repeat="solvedPuzzle in solutionTimes | orderBy : sortColumn : sortReverse">
+        <td><a ng-href="/solver/{{solvedPuzzle.id}}">Puzzle {{solvedPuzzle.id}}</a></td>
+        <td>{{solvedPuzzle.time | number:4 }} seconds</td>
+      </tr>
+    </tbody>
+  </table>
 </div>

@@ -319,3 +319,13 @@ a.btn {
   animation-timing-function: linear;
   animation-duration: 2s;
 }
+
+.benchmark-table {
+  margin: 30px auto;
+  border-collapse: collapse;
+
+  td, th {
+    border: 1px solid #ccc;
+    padding: 5px;
+  }
+}
