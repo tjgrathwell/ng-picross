@@ -63,34 +63,34 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
     }
   };
 
-  var puzzles = {
-    1: [
+  var puzzles = [
+    [
       'x x',
       ' xx',
       '  x'
     ],
-    2: [
+    [
       '  x  ',
       ' xxx ',
       'xxxxx',
       'xxxxx',
       'xxxxx'
     ],
-    3: [
+    [
       '  x  ',
       ' xxx ',
       'xxxxx',
       ' xxx ',
       '  x  '
     ],
-    4: [
+    [
       'xx  x',
       'xxx x',
       'xxxxx',
       'xx xx',
       'xx  x'
     ],
-    5: [
+    [
       'xxxxxxxxxx',
       'xxx xxxxxx',
       'x xxxxxxxx',
@@ -102,7 +102,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'xxxxxxxxxx',
       'xxxxxx x x'
     ],
-    6: [
+    [
       '     x    ',
       '  xxxxxxx ',
       '   xxxxx  ',
@@ -114,7 +114,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       ' xxxxxxxxx',
       '  xxxxxxx '
     ],
-    7: [
+    [
       '   xxx    ',
       '  xxx x   ',
       '  xx  xx  ',
@@ -126,7 +126,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '  x   x   ',
       ' xxxxxx   '
     ],
-    8: [
+    [
       '      xxxx',
       '     xxx  ',
       '    xxx   ',
@@ -138,7 +138,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'xx        ',
       ' x        '
     ],
-    9: [
+    [
       '          ',
       ' xx    xx ',
       'x  x  x  x',
@@ -150,7 +150,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'x  x  x  x',
       ' xxx  xxx '
     ],
-    10: [
+    [
       '     xxx  ',
       '  xxxxxx  ',
       'xxxxxxxxx ',
@@ -162,7 +162,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'xxx       ',
       'x x       '
     ],
-    11: [
+    [
       '    xx    ',
       '   xx    x',
       '  xxxx  xx',
@@ -174,7 +174,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '    xx    ',
       '     xx   '
     ],
-    12: [
+    [
       ' x        ',
       ' xx       ',
       ' xxx   xx ',
@@ -186,7 +186,91 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '  x xxx   ',
       '  x x     '
     ],
-    13: [
+    [
+      'xxx x x  x',
+      'x x x x  x',
+      'xx xxxxxxx',
+      'x x    xxx',
+      'xx     xxx',
+      'xx   xxxxx',
+      'xx   xxxxx',
+      'xxx   xxxx',
+      'xxx   xxxx',
+      'xxx   xxxx'
+    ],
+    [
+      '          ',
+      '          ',
+      '  xxx    x',
+      ' xx  x xxx',
+      'xx xxxxx  ',
+      'xxxxxxxxxx',
+      ' xxxxx xxx',
+      '  xxx    x',
+      '          ',
+      '          '
+    ],
+    [
+      'xx xxxx xx',
+      'x xx x x x',
+      'x x x xx x',
+      'x xx   x x',
+      'xx xx  x x',
+      ' xxxxxxxxx',
+      '  x  x    ',
+      '  x x     ',
+      ' xxxxxxx  ',
+      'xx     xx '
+    ],
+    [
+      '  xxxx    ',
+      ' x x  xxxx',
+      'x     x  x',
+      'xx    x  x',
+      'x     xxxx',
+      'x    xx x ',
+      ' xxxxx xx ',
+      ' x  x x x ',
+      ' x  xxxxx ',
+      ' xxxx     '
+    ],
+    [
+      " xxxxxxxx ",
+      "xx      xx",
+      "x  xxxx  x",
+      "x x    x x",
+      "x x xx x x",
+      "x x x  x x",
+      "x x xxx  x",
+      "x x     xx",
+      "x  xxxxxx ",
+      " x        "
+    ],
+    [
+      '     xxxx ',
+      '  xx xxxx ',
+      '  xxxxxxx ',
+      ' x xxxxxx ',
+      '  xxxxx   ',
+      '     xx   ',
+      '  xxxxx   ',
+      'xx   x  x ',
+      '     xxx x',
+      '          '
+    ],
+    [
+      'xxx    xxx',
+      '   xxxx   ',
+      '  x    x  ',
+      '  x x xx  ',
+      'xxx x xx  ',
+      '       xx ',
+      '        x ',
+      '  x xxxxx ',
+      '  x xxx   ',
+      '   x xx   '
+    ],
+    [
       '  xxxxxxxxxxx  ',
       '  x    x    x  ',
       '  xxxxxxxxxxx  ',
@@ -203,7 +287,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '      xxx      ',
       '      xxx      '
     ],
-    14: [
+    [
       'xxxxxxxxxxxxxx ',
       'x  xxxxxxxxx  x',
       'x  xxxxx  xx  x',
@@ -220,7 +304,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'x x         x x',
       'xxxxxxxxxxxxxxx'
     ],
-    15: [
+    [
       '   x       x   ',
       '   xxxxxxxxx   ',
       '    xxxxxxx    ',
@@ -237,7 +321,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'xxxxxxx xxxxxxx',
       '               '
     ],
-    16: [
+    [
       '               ',
       '  xxxxxxx      ',
       ' xxxxxxxxx     ',
@@ -254,7 +338,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'xxxxxxxxxxx    ',
       '               '
     ],
-    17: [
+    [
       'x   xxxxxxxxxxx',
       'x     xxxxxxxxx',
       'xx xx  xxxxxxxx',
@@ -271,7 +355,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'xxxxxxxxx xx x ',
       'xxxxxxxx  x   x'
     ],
-    18: [
+    [
       '    xxxxxxx    ',
       '  xxxx   xxxx  ',
       '  xx   x   xx  ',
@@ -288,7 +372,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       ' xx         xx ',
       ' xxxxxxxxxxxxx '
     ],
-    20: [
+    [
       'xxxxxxxxxxxxxxx',
       'xxxx      xxxxx',
       'xx         xxxx',
@@ -305,7 +389,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'xxx xxx   xx x ',
       'xxxxxxxxx      '
     ],
-    21: [
+    [
       ' xxx x x xxx xx',
       ' x         x xx',
       ' x xxxxxxx x x ',
@@ -322,7 +406,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'x x       x x  ',
       'xxxxxxxxxxxxx  '
     ],
-    22: [
+    [
       ' x  x   x  x  x',
       '               ',
       'xxxxxxx xxxxxxx',
@@ -339,7 +423,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       ' xx       xxxx ',
       '  xxxxxxxxxxx  '
     ],
-    23: [
+    [
       '         x     ',
       '        xx     ',
       '  xx   xxx     ',
@@ -356,7 +440,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '  xx        xx ',
       '  xxxxxxxxxxxx '
     ],
-    24: [
+    [
       '          xxxxx',
       'x         x   x',
       'xx        xx  x',
@@ -373,7 +457,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'xxxxxxxxxxx   x',
       '          xxxxx'
     ],
-    25: [
+    [
       '      x        ',
       '      x        ',
       'xxxxx x        ',
@@ -390,7 +474,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '    x x   x    ',
       'xxxxx x   x    '
     ],
-    26: [
+    [
       '     xxxxx     ',
       '    xx   xx    ',
       '    x     x    ',
@@ -407,7 +491,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'xx  xxxxxxx  xx',
       ' xxxxxxxxxxxxx '
     ],
-    27: [
+    [
       '  xxx          ',
       ' x   x         ',
       ' xx xx    xxx  ',
@@ -424,7 +508,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       ' x   x  x     x',
       ' xxxxx  xxxxxxx'
     ],
-    28: [
+    [
       '   xxxxxxxxx   ',
       '  xxxxxxxxxxx  ',
       '  xx       xx  ',
@@ -441,7 +525,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '      x x      ',
       '      xxx      '
     ],
-    29: [
+    [
       '               ',
       '         x     ',
       '      x  xx    ',
@@ -458,7 +542,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '               ',
       '           x   '
     ],
-    30: [
+    [
       '               ',
       '  x            ',
       ' xxx     xxx  x',
@@ -475,7 +559,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'x             x',
       'xxxxxxxxxxxxxxx'
     ],
-    31: [
+    [
       '     xxxxx     ',
       '    x     x    ',
       '     xxxxx     ',
@@ -492,7 +576,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'xxxxxxxxxxxxxxx',
       ' xxxxxxxxxxxxx '
     ],
-    32: [
+    [
       '  xxxxxxxxxxx  ',
       '  x  xxxxx  x  ',
       '  x  xxxxx  x  ',
@@ -509,7 +593,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '  x  xx xx  x  ',
       '  xxxx   xxxx  '
     ],
-    33: [
+    [
       '               ',
       '               ',
       ' xxxxx xx xxxx ',
@@ -526,7 +610,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '   xxx    xxx  ',
       'xxxxxxxxxxxxxxx'
     ],
-    34: [
+    [
       '               ',
       '               ',
       '               ',
@@ -543,7 +627,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '               ',
       '               '
     ],
-    35: [
+    [
       '   xxxxxxxxx   ',
       '  xxx  x   xx  ',
       ' xxx x xx xxxx ',
@@ -560,7 +644,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '       x       ',
       '       x       '
     ],
-    36: [
+    [
       '    xx         ',
       '   xxxx        ',
       '   xx x        ',
@@ -577,7 +661,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       ' x xxx  xxxxx  ',
       '      xxx  xx  '
     ],
-    37: [
+    [
       '               ',
       ' x   x   x   x ',
       ' xxxxx   xxxxx ',
@@ -594,7 +678,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'xxx x x xxx xxx',
       ' x  xxx  x   x '
     ],
-    38: [
+    [
       '               ',
       '       xxxxxxxx',
       '          x    ',
@@ -611,7 +695,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '           x   ',
       'xxxxxxxxxxxxxxx'
     ],
-    39: [
+    [
       '   xxxxxxxxx   ',
       ' xxx x   x xxx ',
       ' x x  x x  x x ',
@@ -628,7 +712,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'x     xxx     x',
       'x      x      x'
     ],
-    40: [
+    [
       'xx           xx',
       'xx           xx',
       'xxxxxxxxxxxxxxx',
@@ -645,7 +729,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '     x   x     ',
       '    xx   xx    '
     ],
-    41: [
+    [
       '    xxxx xxxx  ',
       '    x  x x  x  ',
       '    x xxxxx x  ',
@@ -662,7 +746,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'x     xx      x',
       'xxxxxxxxxxxxxxx'
     ],
-    42: [
+    [
       '               ',
       '               ',
       '      xxxx     ',
@@ -679,7 +763,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       ' x             ',
       ' x             '
     ],
-    43: [
+    [
       ' xx            ',
       ' x xxxxxxxxxx  ',
       'xx x       xxx ',
@@ -696,7 +780,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       ' xxxxxxxxxxx   ',
       ' x        x    '
     ],
-    44: [
+    [
       ' xxx       xxx ',
       ' xxxx     xxxx ',
       '   xx     xx   ',
@@ -713,7 +797,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '  xxxxxxxxxxx  ',
       '   xxxxxxxxx   '
     ],
-    45: [
+    [
       '         xx    ',
       '        xxxx   ',
       ' xxx    xxxxx  ',
@@ -730,7 +814,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '   xxxxxxxxx   ',
       '   xxxxxxxx    '
     ],
-    46: [
+    [
       'xxxxxxxxxxxxxxx',
       'xxxxxxx      xx',
       'xxxxxx   xx   x',
@@ -747,7 +831,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'xx        xxxxx',
       'xxxxxxxxxxxxxxx'
     ],
-    47: [
+    [
       '    xxx        ',
       '     x         ',
       '    xxx        ',
@@ -764,7 +848,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '        xxxx   ',
       '  xxxxxxxxxx   '
     ],
-    48: [
+    [
       '  xxx          ',
       '  x x          ',
       'xxxxxxx        ',
@@ -781,7 +865,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '  x x     xxxx ',
       '  xxx    x x x '
     ],
-    49: [
+    [
       '      xx       ',
       '     xxxx      ',
       '      xx       ',
@@ -798,7 +882,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '     x x       ',
       '    xx xx      '
     ],
-    50: [
+    [
       '    xxxxxxx    ',
       '   xx     xx   ',
       '  xx xxxxx xx  ',
@@ -815,7 +899,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       ' x           x ',
       ' xxxxxxxxxxxxx '
     ],
-    51: [
+    [
       '  xxxx   xxxx  ',
       ' xx  xxxxx  xx ',
       ' x    xxx    x ',
@@ -832,7 +916,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '     xxxxx     ',
       '      xxx      '
     ],
-    52: [
+    [
       '    xxxxxxx    ',
       '  xxxxxxxxxxx  ',
       ' xx         xx ',
@@ -849,7 +933,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '  x         x  ',
       '  x         x  '
     ],
-    53: [
+    [
       '         xx    ',
       '   xxx xxxxx   ',
       '  xxx xx       ',
@@ -866,7 +950,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '      xxxx     ',
       '       xx      '
     ],
-    54: [
+    [
       'xxxxxxxxxxxxxx ',
       'x            x ',
       'x xx xx xx   x ',
@@ -883,7 +967,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       ' xxx xxxxxxxxxx',
       '     x        x'
     ],
-    55: [
+    [
       '      xxx      ',
       '    xxxxxxx    ',
       '   x xxx xxx   ',
@@ -900,7 +984,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '     x   x     ',
       '     xxxxx     '
     ],
-    56: [
+    [
       'xxxx        xx ',
       'x  x        xx ',
       'x  x        xx ',
@@ -917,7 +1001,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'x xxxxx   xxxxx',
       'xxxxxxx    xxxx'
     ],
-    57: [
+    [
       '               ',
       '   x  x        ',
       '   x  x        ',
@@ -934,7 +1018,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'xx  xxxxxxxxxxx',
       '  xxxxxxxxxxxxx'
     ],
-    58: [
+    [
       '     xxxx      ',
       '   xx   xx     ',
       '   xxx   x     ',
@@ -951,7 +1035,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       ' x xx   xx  xx ',
       ' xxxxxxxxxxxx  '
     ],
-    59: [
+    [
       '               ',
       '               ',
       '               ',
@@ -968,7 +1052,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '   xxxxxxxxxxx ',
       'xxxxxxxxxxxxxxx'
     ],
-    60: [
+    [
       '      xxxx     ',
       '      xxxx     ',
       '       xxxxxx  ',
@@ -985,7 +1069,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '  x         x  ',
       '          xxx  '
     ],
-    61: [
+    [
       '     xxx       ',
       '    xxxx       ',
       '     xxxx      ',
@@ -1002,7 +1086,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '    x  xxxx    ',
       '   xx          '
     ],
-    62: [
+    [
       '      x    xxxx',
       'xxxx  x    x  x',
       'x  x  x   x  xx',
@@ -1019,7 +1103,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '  xx     xx    ',
       ' xx  xxx  xxx  '
     ],
-    63: [
+    [
       '     x         ',
       '   x x         ',
       '   xxxx        ',
@@ -1036,7 +1120,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '  xx xx     xx ',
       'xxx xx    xxxx '
     ],
-    64: [
+    [
       '        x      ',
       '       xx      ',
       '       xxxx    ',
@@ -1053,7 +1137,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       ' xxx  x    x   ',
       '      x        '
     ],
-    65: [
+    [
       '  xx           ',
       ' x xx          ',
       'xx  xxx        ',
@@ -1070,7 +1154,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '      xxxxxx x ',
       '            xx '
     ],
-    66: [
+    [
       '     x x       ',
       '     x xxxxx   ',
       '  xxxx xx xxxx ',
@@ -1087,7 +1171,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       ' xxxxxxxxxxxx  ',
       '     xxxxx     '
     ],
-    67: [
+    [
       'xx          xxx',
       ' xx       xxxx ',
       '  xx     xx    ',
@@ -1104,7 +1188,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '    xxxxx      ',
       '     xxx       '
     ],
-    68: [
+    [
       'xx x       xx x',
       'xxx  x   x xxx ',
       '       x       ',
@@ -1121,7 +1205,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'xx x xxxxx x xx',
       'xx  xxxxxxx  xx'
     ],
-    69: [
+    [
       '      xx       ',
       '      xx       ',
       ' xx    xx      ',
@@ -1138,7 +1222,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '    x   xx  x  ',
       '   xx   x  xx  '
     ],
-    70: [
+    [
       ' xxxx          ',
       'xx  xxx        ',
       'x  x  x        ',
@@ -1155,7 +1239,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '    x  x       ',
       '  xxxxxxxx     '
     ],
-    71: [
+    [
       '           xxxx',
       '  xxxxxxxxx   x',
       ' xxx       xxxx',
@@ -1172,7 +1256,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '      x        ',
       '      xx       '
     ],
-    72: [
+    [
       '     xx xx     ',
       '    x  x  x    ',
       '       x  x    ',
@@ -1189,7 +1273,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '   xxxxxxxxx   ',
       '   x      xx   '
     ],
-    73: [
+    [
       'xx    x x      ',
       'xx    xxx      ',
       '     x xxx     ',
@@ -1206,7 +1290,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '  xxx  xx     x',
       '    xxxxx    xx'
     ],
-    74: [
+    [
       ' xxxxx xxxxx   ',
       'x  xxxxx  xxx  ',
       '  xxx xxxx xx  ',
@@ -1223,7 +1307,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '  xx       x   ',
       'xxxxx      xx  '
     ],
-    75: [
+    [
       '     xxxxx     ',
       '    x     x    ',
       '   x xxxxx x   ',
@@ -1240,7 +1324,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '    xx   xx    ',
       '               '
     ],
-    76: [
+    [
       '               ',
       '   xxxxxxxx    ',
       '   xx x x xx   ',
@@ -1257,7 +1341,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '   x x x xxx   ',
       '    xxxxxxx    '
     ],
-    77: [
+    [
       '    xxx   xx   ',
       '       xxxxxx  ',
       '     xxxxx x   ',
@@ -1274,7 +1358,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '    xxxxx      ',
       '     xxx       '
     ],
-    78: [
+    [
       '             x ',
       '            xx ',
       '   xx      x x ',
@@ -1291,7 +1375,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '    xxxxxx x   ',
       '          xx   '
     ],
-    79: [
+    [
       '  xxxx         ',
       ' xx  xx        ',
       'xx x  x        ',
@@ -1308,7 +1392,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '     x  x      ',
       '   xxxxxxxx    '
     ],
-    80: [
+    [
       '         xx    ',
       '        x  x   ',
       'xx xx  xxxxxx  ',
@@ -1325,7 +1409,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'xxxxxxxxxxxxxx ',
       '             x '
     ],
-    81: [
+    [
       '         x     ',
       'xxx     xxx    ',
       '  x     x x    ',
@@ -1342,7 +1426,313 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       '    x x  x  x  ',
       '  xx x    xx xx'
     ],
-    82: [
+    [
+      '     xxxxx     ',
+      '   xx  x  xx   ',
+      '  xx x x x xx  ',
+      '  x x xxx x x  ',
+      ' xxxxxxxxxxxxx ',
+      ' x xx     x  x ',
+      ' xxx xx xx xxx ',
+      ' x x   x   x x ',
+      ' xxxx     xxxx ',
+      ' x   x   x   x ',
+      ' xxxxxx xxxxxx ',
+      ' x    x x    x ',
+      ' xxxxxx xxxxxx ',
+      ' x    x x    x ',
+      ' xxxxxxxxxxxxx '
+    ],
+    [
+      '               ',
+      '               ',
+      '               ',
+      '   xxxxxxxx    ',
+      '   x  x   x    ',
+      '   xxxxxxxx    ',
+      '   x      xx   ',
+      '  xx    x  xx  ',
+      '  x     x   x  ',
+      ' xx     xx  xx ',
+      ' x       x   x ',
+      'xx   x   xx  xx',
+      'x   xxx   x   x',
+      'x   xxx   x   x',
+      'xxxxxxxxxxxxxxx'
+    ],
+    [
+      '       x       ',
+      '     xx xx     ',
+      '   xxxx  xxx   ',
+      '  xxxxx   xxx  ',
+      ' xxxxxx    xxx ',
+      'xxxxxxx     xxx',
+      'xxxxxxxxxxxxxxx',
+      '       x       ',
+      '       x       ',
+      '       x       ',
+      '       x       ',
+      '       x       ',
+      '       x       ',
+      '       x x     ',
+      '        x      '
+    ],
+    [
+      'xxxxxxxxxxxxxxx',
+      'x   xxxxxxxxxxx',
+      'x  xxx   xxxxxx',
+      'xxxxx     xxxxx',
+      'xxxxx     xxxxx',
+      'xxxxx     x   x',
+      'xxxxxx   xxxx x',
+      'xxxxxxxxxxxxxxx',
+      'x   xxxxxxxx  x',
+      'x      xxx    x',
+      'x       x     x',
+      'x x   x  xx   x',
+      'x         xx  x',
+      'x   x  x   xx x',
+      'xxxxxxxxxxxxxxx'
+    ],
+    [
+      'xxxxxxxxx xxxxx',
+      'xxx xxxxxxxxxxx',
+      'xxxxxxxxxxxxxxx',
+      'xxxxxxxxxxxxxxx',
+      'xxxxxxxxxxxxxxx',
+      'xxxxx x x xxxxx',
+      'xxxxxxxxxxxxxxx',
+      'xxxxxxxxxxxxxxx',
+      'xxxxxxxxxxxxxxx',
+      'xxxxxxxxxxx xxx',
+      '  xx xxxxxxxxxx',
+      'x xxxxxxxxxxxx ',
+      '  xxxxx        ',
+      'x       x x x  ',
+      '   x x         '
+    ],
+    [
+      '               ',
+      '      xxx      ',
+      '      x x      ',
+      'xxx   xxx      ',
+      'x x   xxxxxx   ',
+      'xxx   x xx x   ',
+      'xxx   xxxxxx   ',
+      'x x   xxx      ',
+      'xxx   x x      ',
+      'xxx   xxx   xxx',
+      'x x         x x',
+      'xxx         xxx',
+      'xxx   xxxxxxxxx',
+      'x x   x xx xx x',
+      'xxx   xxxxxxxxx'
+    ],
+    [
+      '  xxx xxx      ',
+      ' xx x x xx xxx ',
+      '  xxx xxx  x xx',
+      '  xxx xxx  xxx ',
+      ' xxxxxxxxx xxx ',
+      ' xxxxxxxxxxxxxx',
+      'xxxxxxxxxxxxxxx',
+      'x             x',
+      'xxxxxxxxxxxxxxx',
+      'x             x',
+      'xxxxxxxxxxxxxxx',
+      ' x          xx ',
+      ' xxxxxx   xxxx ',
+      '  xxx    xxxx  ',
+      '    xxxxxxx    '
+    ],
+    [
+      '  xxx  xxx   xx',
+      '  x xx xx  x xx',
+      '  x  xxx  xx xx',
+      '  x   xx xxx xx',
+      '  x    xxxxx xx',
+      '  x    xxxxx xx',
+      '  x    xxxxx xx',
+      '  x    xxxxx xx',
+      '  x    xxxxx xx',
+      '  xx   xxxx  xx',
+      '   x   xxxx xxx',
+      '   xx  xxx xxxx',
+      '    xx xx xxxxx',
+      '     xxx xxxxxx',
+      '      xx xxxxxx'
+    ],
+    [
+      '    xxxxx xx   ',
+      'xxxxx   xxxxxxx',
+      'x      xx xxx  ',
+      'xxx xxx   xxxxx',
+      ' x xxxxx  xxx x',
+      '   xx  x  xxxxx',
+      '  xxxxxxx x x x',
+      ' xxxxxxxxxxx xx',
+      'xxxxxxxxxxxxx x',
+      'xx x   x  x xxx',
+      '   xxxxx  x x x',
+      '   xxxxx  x xxx',
+      '   xx xx  x  xx',
+      '  xxx xxx x   x',
+      '  xxx xxx x    '
+    ],
+    [
+      'xxxxxxxxxxxxxxx',
+      'xxxxxxxxxxxxxxx',
+      'xx           xx',
+      'xx   xxx     xx',
+      'xx   xxx     xx',
+      'xx   xxx     xx',
+      'xx       xx  xx',
+      'xxx  xxxxxxx xx',
+      'xxxxxxxxx  xx x',
+      'xx xx xxxx xx x',
+      'xx     xxx   xx',
+      'xx    xxxxx xxx',
+      'xx   xxx xxxxxx',
+      'xx  xxx   xx xx',
+      'xx xxx       xx'
+    ],
+    [
+      '    xx         ',
+      '  xxxxxx       ',
+      ' xxxxxxxxxx    ',
+      ' xxxxxxxxxxx   ',
+      'xxxxxxxxxxxx   ',
+      'xxxxxxxxxxxxxx ',
+      'xxxxxxxxxxxxx  ',
+      ' xxx  xxxxxxx  ',
+      '      xxxxxxx  ',
+      '     xxxxxxx   ',
+      '     xxxxxx  x ',
+      '     xxxxxx  x ',
+      '      xxxxx  x ',
+      '      xxxx     ',
+      '       xx      '
+    ],
+    [
+      '     xxxxx     ',
+      '   xxxxxxxxx   ',
+      '  xxxxxxxxxxx  ',
+      '  xx       xx  ',
+      ' xx  x   x  xx ',
+      ' xx x x xxx xx ',
+      ' xx  x   x  xx ',
+      ' xx x  x  x xx ',
+      'xxx xxxxxxx xxx',
+      'xxxx       xxxx',
+      'xx xxxxxxxxx xx',
+      'xx x x x x x xx',
+      ' x x x x x x x ',
+      ' xxx x x x xxx ',
+      '  xxxxxxxxxxx  '
+    ],
+    [
+      '               ',
+      '               ',
+      '               ',
+      '               ',
+      '    xxxxx      ',
+      '    x   xx   xx',
+      'xxxxxxxxxxxxxxx',
+      'x x x x       x',
+      'xx  xxx    xxxx',
+      ' xxx     xxx xx',
+      '   xxxxxxxx    ',
+      '         xx    ',
+      '               ',
+      '               ',
+      '               '
+    ],
+    [
+      '               ',
+      '            xxx',
+      '  xxx     xxxx ',
+      ' x   x    xxxxx',
+      ' x x x    xxx  ',
+      ' x   xx  xxxxx ',
+      'xxxxxxxx xxx   ',
+      'x  xxxxxxxxxxx ',
+      'xx xxxxxxxxx   ',
+      ' x xxxxx xxxxx ',
+      ' xxx xx   xx   ',
+      '     xxx  xxxx ',
+      '      xx   xxxx',
+      '               ',
+      '               '
+    ],
+    [
+      '  xx   xxxx    ',
+      ' xxxxxxxxxxxx  ',
+      ' xxxxxxxxxxxxx ',
+      ' xxxxxxxx  xxx ',
+      '  xxxx     xxx ',
+      '     x xx xxxx ',
+      '   xx    xx xx ',
+      '   x  x  xx xx ',
+      '   xxxx xx  xx ',
+      '     x  xx  x  ',
+      '    xxxxxxxxxx ',
+      '    x xxxxxxxx ',
+      '    x xxxxxxxx ',
+      '    xxxxxxxxxxx',
+      '   xxxxxxxxxxxx'
+    ],
+    [
+      '     xxxxx     ',
+      '    xxxxxxx    ',
+      '   xxx   xxx   ',
+      '  xxx     xxx  ',
+      ' xxx       xxx ',
+      'xxx xxx xxx xxx',
+      ' x    x x x  x ',
+      ' x  xxx xxx  x ',
+      ' x           x ',
+      ' x   xxxxx   x ',
+      ' x  xxxxxxx  x ',
+      ' x  xxxxxxx  x ',
+      ' x  xxxxxxx  x ',
+      ' x  xxxxxxx  x ',
+      ' xxxxxxxxxxxxx '
+    ],
+    [
+      '   xxxxxx      ',
+      '  xxxxxxxx     ',
+      ' xxxxxxxxxx    ',
+      'xxxxxxx x xx  x',
+      'x  x  xxxxxx xx',
+      'xx xx xx x xxxx',
+      'x  x  xxxxxxx x',
+      'xxxxxxx  xxxxxx',
+      'xx   xx  xxxx x',
+      'xx x xxx x  xxx',
+      'xx   xxxxx  x x',
+      'xxxxxx     xxxx',
+      'xx        xx xx',
+      ' xx      xx   x',
+      '  xxxxxxxx     '
+    ],
+    [
+      '               ',
+      '             x ',
+      'xxx   xxx      ',
+      'x  x x  x      ',
+      'x   x   x    x ',
+      ' x  x  x       ',
+      ' x xxx x       ',
+      ' xx x xx     x ',
+      '               ',
+      '               ',
+      '    x        x ',
+      '               ',
+      '               ',
+      '    x  x  x  x ',
+      '               '
+    ],
+    [
       '  xxxx   xxxx  ',
       ' x    x x    x ',
       '   xxx   xxx   ',
@@ -1358,8 +1748,8 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'xxxx       xxxx',
       ' xxxxxxxxxxxxx ',
       '  xxx xxx xxx  '
-    ]
-  };
+    ],
+  ];
 
   function generateFingerprint (lines) {
     return lines.map(function (line) {
@@ -1368,20 +1758,20 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
   }
 
   this.getPuzzle = function (id) {
-    var puzzleStrings = puzzles[id];
+    var puzzleStrings = puzzles[id - 1];
     var puzzleMatrix = _.map(puzzleStrings, function (line) {
       return _.map(line.split(''), function (c) {
         return c === 'x' ? CellStates.x : CellStates.o;
       });
     });
-    return puzzleService.makePuzzle(puzzleMatrix, generateFingerprint(puzzles[id]));
+    return puzzleService.makePuzzle(puzzleMatrix, generateFingerprint(puzzleStrings));
   };
 
   this.getAvailablePuzzles = function () {
-    return _.keys(puzzles).map(function (puzzleId) {
+    return puzzles.map(function (puzzle, puzzleIndex) {
       return {
-        id: puzzleId,
-        completed: puzzleHistoryService.isCompleted(generateFingerprint(puzzles[puzzleId]))
+        id: puzzleIndex + 1,
+        completed: puzzleHistoryService.isCompleted(generateFingerprint(puzzle))
       };
     });
   };
