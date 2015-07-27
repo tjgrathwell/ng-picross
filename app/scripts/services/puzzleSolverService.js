@@ -270,7 +270,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
 
     for (var columnIndex = 0; columnIndex < meta.cols.length; columnIndex++) {
       var column = matrixService.col(candidatePuzzle.matrix, columnIndex);
-      var hasPartialColumnMarks = column.indexOf(CELL_ON) !== -1;
+      var hasPartialColumnMarks = _.contains(column, CELL_ON) || _.contains(column, CELL_OFF);
       if (hasPartialColumnMarks) {
         candidatePuzzle.possibleColumnArrangements[columnIndex] = candidatePuzzle.possibleColumnArrangements[columnIndex].filter(function (arrangement) {
           return !cannotMatch(arrangement, column);
@@ -287,7 +287,8 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
     }
 
     for (var rowIndex = 0; rowIndex < meta.rows.length; rowIndex++) {
-      var hasPartialRowMarks = candidatePuzzle.matrix[rowIndex].indexOf(CELL_ON) !== -1;
+      var row = candidatePuzzle.matrix[rowIndex];
+      var hasPartialRowMarks = _.contains(row, CELL_ON) || _.contains(row, CELL_OFF);
       if (hasPartialRowMarks) {
         candidatePuzzle.possibleRowArrangements[rowIndex] = candidatePuzzle.possibleRowArrangements[rowIndex].filter(function (arrangement) {
           return !cannotMatch(arrangement, candidatePuzzle.matrix[rowIndex]);
