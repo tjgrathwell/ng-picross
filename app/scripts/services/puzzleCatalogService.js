@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('ngPicrossApp').service('puzzleCatalogService', function (constantsService, puzzleService, puzzleHistoryService, puzzleSolverService) {
+angular.module('ngPicrossApp').service('puzzleCatalogService', function ($q, constantsService, puzzleService, puzzleHistoryService, puzzleSolverService) {
   var CellStates = constantsService.CellStates;
 
   function randomBoard () {
@@ -40,7 +40,8 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
     return (_.values(rowHasCells).length === rows) && (_.values(colHasCells).length === cols);
   }
 
-  function puzzleHasUniqueSolution(puzzle) {
+  function computeSolutions(puzzle) {
+    var deferred = $q.defer();
     var puzzleObj = puzzleService.makePuzzle(puzzle);
     var hints = {
       rows: puzzleObj.rowHints.map(function (hintObj) {
@@ -51,16 +52,34 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       })
     };
 
-    return puzzleSolverService.solutionsForPuzzle(hints).length > 1;
+    puzzleSolverService.solutionsForPuzzle(hints).then(function (solutions) {
+      deferred.resolve(solutions)
+    });
+
+    return deferred.promise;
   }
 
   this.generateRandomPuzzle = function () {
-    var puzzle;
-    while ((puzzle = randomBoard())) {
-      if (puzzleHasMerit(puzzle) && puzzleHasUniqueSolution(puzzle)) {
-        return puzzleService.makePuzzle(puzzle);
+    var deferred = $q.defer();
+
+    function tryPuzzle () {
+      var puzzle = randomBoard();
+      if (puzzleHasMerit(puzzle)) {
+        computeSolutions(puzzle).then(function (solutions) {
+          if (solutions && solutions.length === 1) {
+            deferred.resolve(puzzleService.makePuzzle(puzzle));
+          } else {
+            tryPuzzle();
+          }
+        });
+      } else {
+        tryPuzzle();
       }
     }
+
+    tryPuzzle();
+
+    return deferred.promise;
   };
 
   var puzzles = [
@@ -2005,6 +2024,108 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       ' x  x  xxxx  x '
     ],
     [
+      '            xxx',
+      '      xxxx  x x',
+      '     xxxxxx x x',
+      '   xxxxxxxx x x',
+      ' x   xx  xx x x',
+      'x x  x    x xxx',
+      ' xxxxxxxxxxxx x',
+      ' x x        xxx',
+      ' xxx  xxxx  x x',
+      '   xx      xxxx',
+      '    xxxxxxxx   ',
+      '    x      x   ',
+      '     x xxx x   ',
+      '     xxx xxx   ',
+      '    xxxx xxxx  '
+    ],
+    [
+      '     xxxxx     ',
+      '    xx x xx    ',
+      '    x     x    ',
+      '   xx x x xx   ',
+      '   x x   x x   ',
+      ' xxxx xxx xxxx ',
+      ' xxxx  x  xxxx ',
+      ' xx x  x  x xx ',
+      '   xxxxxxxxx   ',
+      '    x     x   x',
+      '    xx   xx  xx',
+      '   xxxxxxxxx x ',
+      '   xxxxxxxxx x ',
+      ' xxxx xx  xxxx ',
+      ' x  x  xxxx  x '
+    ],
+    [
+      '  x  xxxxxxxx  ',
+      ' x  x       xx ',
+      ' x  x xxxxxx x ',
+      ' xx xxxxxxxxxx ',
+      'xxx x  xxxxx  x',
+      'x x xx  xxxxx  ',
+      '  x x x  xxx xx',
+      '  x x xxxxxx x ',
+      ' xx x xxxxxx x ',
+      ' x  x xxxxx x  ',
+      'xx  x xxxxx x  ',
+      'x   x xxxx xx  ',
+      ' x  x xxxx  xxx',
+      '    xx   xxx   ',
+      'x     xx  xxxxx'
+    ],
+    [
+      ' xxx xxxxx xxx ',
+      ' x  xx x xx  x ',
+      ' x x  xxx  x x ',
+      ' x     x     x ',
+      'xx  x xxx x  xx',
+      'x   x  x  x   x',
+      ' xx x     x xx ',
+      'x     xxx     x',
+      ' xx x  x  x xx ',
+      'x    xx xx    x',
+      'xxxx x   x xxxx',
+      '   x x   x x   ',
+      ' xxx  xxx  xxx ',
+      'xx xx     xx xx',
+      'x   xxxxxxx   x'
+    ],
+    [
+      '     xxxxx     ',
+      '   xxx x xxx   ',
+      '  x x     x x  ',
+      '  x x x x x x  ',
+      ' xx xx   xx xx ',
+      ' xxxx     xxxx ',
+      ' xx  x x x  xx ',
+      ' xxxx xxx xxxx ',
+      '   xx     xx   ',
+      '    x     x   x',
+      '    xx   xx  xx',
+      '   xxxxxxxxx x ',
+      '   xxxxxxxxx x ',
+      ' xxxx xx  xxxx ',
+      ' x  x  xxxx  x '
+    ],
+    [
+      "         x     ",
+      "     xxxxx     ",
+      "    xx   xx    ",
+      "   xx     xx   ",
+      "   x  x x  x   ",
+      "   x  x x  x   ",
+      "   x       x   ",
+      "   xx xxx xx   ",
+      "    xx   xx    ",
+      "    xxxxxx     ",
+      "   xx    xx    ",
+      "  xx      x    ",
+      "  x     x  x   ",
+      "  xx   xx xx   ",
+      "   xxxxx xx    "
+    ],
+    [
       '  xxxx   xxxx  ',
       ' x    x x    x ',
       '   xxx   xxx   ',
@@ -2020,6 +2141,50 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function (constan
       'xxxx       xxxx',
       ' xxxxxxxxxxxxx ',
       '  xxx xxx xxx  '
+    ],
+    [
+      '     x x x x x x x x',
+      '     x x x x x x x x',
+      '     x x x x x x x x',
+      '     x x x x x x x x',
+      '     x x x x x x x x',
+      'xxxxxxxxxxxxxxxxxxxx',
+      '     x x x x x x x x',
+      'xxxxxxx x x x x x xx',
+      '     x x x x x x x x',
+      'xxxxxxx x x x x x xx',
+      '     x x x x x x x x',
+      'xxxxxxx x x x x x xx',
+      '     x x x x x x x x',
+      'xxxxxxx x x x x x xx',
+      '     x x x x x x x x',
+      'xxxxxxx x x x x x xx',
+      '     x x x x x x x x',
+      'xxxxxxx x x x x x xx',
+      '     x x x x x x x x',
+      'xxxxxxxxxxxxxxxxxxxx'
+    ],
+    [
+      "              xxxxxx",
+      "              x    x",
+      "              x xx x",
+      "              x    x",
+      "        xxxxx  xxxx ",
+      " xxx   x     x xx x ",
+      "xxxxxxxxxxxxxxxxxxxx",
+      "xx  xxx x   x      x",
+      "xxx xxxxx   xxxxxx x",
+      "xxx xxxxxxxxxxxxxx x",
+      "xxx xxxx     xxxxx x",
+      "xxx xxx  xxx  x xx x",
+      "xxx xxx xx  x xxxx x",
+      "xxx xxx xx  x x xx x",
+      "xxx xxx xxxxx xxxx x",
+      "xxx xxx  xxx  xxxx x",
+      "xxx xxxx     xxxxx x",
+      "xxx xxxxxxxxxxxxxx x",
+      "xxxxxxxxxxxxxxxxxxx ",
+      "                    "
     ],
   ];
 

@@ -19,7 +19,9 @@ angular.module('ngPicrossApp').controller('PuzzleBoardCtrl', function ($scope, $
 
   $scope.randomPuzzle = function () {
     if ($location.path() === '/random') {
-      startPuzzle(puzzleCatalogService.generateRandomPuzzle());
+      puzzleCatalogService.generateRandomPuzzle().then(function (puzzle) {
+        startPuzzle(puzzle);
+      });
     } else {
       $location.path('/random');
     }
