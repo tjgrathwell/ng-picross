@@ -6,7 +6,7 @@ angular.module('ngPicrossApp').controller('PuzzleBoardCtrl', function ($scope, $
     if ((match = $location.path().match(/\/puzzles\/(\d+)/))) {
       var nextPuzzleNumber = parseInt(match[1], 10) + 1;
       if (puzzleCatalogService.getAvailablePuzzles()[nextPuzzleNumber]) {
-        return '/puzzles/' + nextPuzzleNumber;
+        return 'puzzles/' + nextPuzzleNumber;
       }
     }
   }
