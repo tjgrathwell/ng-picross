@@ -329,3 +329,14 @@ a.btn {
     padding: 5px;
   }
 }
+
+.solver-puzzle-definition {
+  position: relative;
+  .solver-puzzle-size {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 12px;
+    color: #ccc;
+  }
+}

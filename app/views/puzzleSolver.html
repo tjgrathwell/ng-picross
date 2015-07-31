@@ -2,16 +2,16 @@
   <div class="solver-input">
     <div class="form-group">
       Hints:
-      <div><textarea ng-model="solverHints"></textarea></div>
+      <div class="solver-puzzle-definition">
+        <textarea ng-model="solverHints"></textarea>
+        <div class='solver-puzzle-size'>
+          {{solverHintRows.length}} x {{solverHintCols.length}}
+        </div>
+      </div>
       <small>(rows first, then columns, separate using two consecutive newlines)</small>
     </div>
 
     <div class="form-group">
-      <label>
-        <div>Debug depth:</div>
-        <input ng-model="solverProps.debugDepth">
-      </label>
-
       <div>
         <label>
           <input type=checkbox ng-model="solverProps.showProgress">Show Progress

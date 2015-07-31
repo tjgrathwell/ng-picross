@@ -4,7 +4,6 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
   var CellStates = constantsService.CellStates;
   var CELL_ON = 1;
   var CELL_OFF = 0;
-  var puzzleSolverService = this;
 
   this.props = storageService.getObj('solverProps');
 
@@ -115,10 +114,6 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
   }
 
   function bruteForce (candidatePuzzle, rowIx) {
-    if (puzzleSolverService.props.debugDepth && rowIx > puzzleSolverService.props.debugDepth) {
-      console.log(rowIx, stringify(candidatePuzzle.matrix));
-    }
-
     if (rowIx === this.rows.length) {
       if (hasCorrectHints(this, candidatePuzzle)) {
         this.solutions.push(candidatePuzzle.matrix);

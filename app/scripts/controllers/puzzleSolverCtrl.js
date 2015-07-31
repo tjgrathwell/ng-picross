@@ -13,8 +13,13 @@ angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, 
 
   $scope.solverProps = puzzleSolverService.props;
   $scope.$watch('solverProps', puzzleSolverService.persistProps, true);
+  $scope.$watch('solverHints', function (newValue) {
+    if (!newValue) {
+      return;
+    }
 
-  $scope.solvePuzzle = function () {
+    var allHints = newValue.split(/\n\n\s*/);
+
     function toIntegerArray (rawValues) {
       var trimmed = rawValues.replace(/^\s+|\s+$/g, '');
       return _.map(trimmed.split(new RegExp(/[ ,]+/)), function (n) {
@@ -22,18 +27,18 @@ angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, 
       });
     }
 
-    var allHints = $scope.solverHints.split(/\n\n\s*/);
+    $scope.solverHintRows = _.map(allHints[0].split("\n"), toIntegerArray);
+    $scope.solverHintCols = _.map(allHints[1].split("\n"), toIntegerArray);
+  });
 
+  $scope.solvePuzzle = function () {
     $scope.solving = true;
     $scope.puzzle = null;
     $scope.solutionTime = null;
     var solverStartTime = new Date();
 
     $timeout(function () {
-      var puzzleToSolve = {
-        rows: _.map(allHints[0].split("\n"), toIntegerArray),
-        cols: _.map(allHints[1].split("\n"), toIntegerArray)
-      };
+      var puzzleToSolve = {rows: $scope.solverHintRows, cols: $scope.solverHintCols};
       var options = {
         showProgress: $scope.solverProps.showProgress
       };
