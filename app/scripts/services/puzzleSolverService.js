@@ -113,42 +113,146 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
     return false;
   }
 
-  function bruteForce (candidatePuzzle, rowIx) {
-    if (rowIx === this.rows.length) {
-      if (hasCorrectHints(this, candidatePuzzle)) {
-        this.solutions.push(candidatePuzzle.matrix);
-      }
-      return;
+  var PuzzleSolver = function (options) {
+    angular.extend(this, options);
+
+    this.colTotals = [];
+    for (var j = 0; j < this.cols.length; j++) {
+      this.colTotals.push(_.sum(this.cols[j]));
     }
 
-    // Skip branches of the tree where any column is already incorrect
-    if (rowIx > 1) {
-      for (var colIx = 0; colIx < this.cols.length; colIx++) {
-        if (!partialMatch(matrixService.col(candidatePuzzle.matrix, colIx), this.cols[colIx], this.colTotals[colIx], this.rows.length)) {
-          return;
+    this.createInitialCandidatePuzzle = function () {
+      var candidatePuzzle = {
+        possibleRowArrangements: [],
+        possibleColumnArrangements: [],
+      };
+
+      for (var rowIndex = 0; rowIndex < this.rows.length; rowIndex++) {
+        var rowArrangements = [];
+        calculateArrangements(_.clone(this.rows[rowIndex]), this.cols.length, rowArrangements);
+        candidatePuzzle.possibleRowArrangements.push(rowArrangements);
+      }
+
+      for (var colIndex = 0; colIndex < this.cols.length; colIndex++) {
+        var colArrangements = [];
+        calculateArrangements(_.clone(this.cols[colIndex]), this.rows.length, colArrangements);
+        candidatePuzzle.possibleColumnArrangements.push(colArrangements);
+      }
+
+      return candidatePuzzle;
+    };
+
+    this.bruteForce = function (candidatePuzzle, rowIx) {
+      if (rowIx === this.rows.length) {
+        if (hasCorrectHints(this, candidatePuzzle)) {
+          this.solutions.push(candidatePuzzle.matrix);
+        }
+        return;
+      }
+
+      // Skip branches of the tree where any column is already incorrect
+      if (rowIx > 1) {
+        for (var colIx = 0; colIx < this.cols.length; colIx++) {
+          if (!partialMatch(matrixService.col(candidatePuzzle.matrix, colIx), this.cols[colIx], this.colTotals[colIx], this.rows.length)) {
+            return;
+          }
         }
       }
-    }
 
-    if (candidatePuzzle.matrix[rowIx].indexOf(null) === -1) {
-      return [[candidatePuzzle, rowIx + 1]];
-    }
-
-    var nextArrangements = candidatePuzzle.possibleRowArrangements[rowIx];
-    var puzzleString = JSON.stringify(candidatePuzzle);
-
-    var nextArgs = [];
-    for (var i = 0; i < nextArrangements.length; i++) {
-      var clone = JSON.parse(puzzleString);
-      clone.matrix[rowIx] = nextArrangements[i];
-      markAllRequiredCells(this, clone);
-      if (clone.cannotMatch) {
-        continue;
+      if (candidatePuzzle.matrix[rowIx].indexOf(null) === -1) {
+        return [[candidatePuzzle, rowIx + 1]];
       }
-      nextArgs.push([clone, rowIx + 1]);
+
+      var nextArrangements = candidatePuzzle.possibleRowArrangements[rowIx];
+      var puzzleString = JSON.stringify(candidatePuzzle);
+
+      var nextArgs = [];
+      for (var i = 0; i < nextArrangements.length; i++) {
+        var clone = JSON.parse(puzzleString);
+        clone.matrix[rowIx] = nextArrangements[i];
+        this.markAllRequiredCells(this, clone);
+        if (clone.cannotMatch) {
+          continue;
+        }
+        nextArgs.push([clone, rowIx + 1]);
+      }
+      return nextArgs;
+    };
+
+    this.markRequiredCells = function (candidatePuzzle) {
+      var changed = false;
+
+      for (var columnIndex = 0; columnIndex < this.cols.length; columnIndex++) {
+        var column = matrixService.col(candidatePuzzle.matrix, columnIndex);
+        var hasPartialColumnMarks = _.contains(column, CELL_ON) || _.contains(column, CELL_OFF);
+        if (hasPartialColumnMarks) {
+          candidatePuzzle.possibleColumnArrangements[columnIndex] = candidatePuzzle.possibleColumnArrangements[columnIndex].filter(function (arrangement) {
+            return !cannotMatch(arrangement, column);
+          });
+
+          if (candidatePuzzle.possibleColumnArrangements[columnIndex].length === 0) {
+            candidatePuzzle.cannotMatch = true;
+            candidatePuzzle.stillChecking = false;
+            return;
+          }
+        }
+
+        changed = changed || markLine(candidatePuzzle.matrix, commonMarks(candidatePuzzle.possibleColumnArrangements[columnIndex]), columnIndex, true);
+      }
+
+      for (var rowIndex = 0; rowIndex < this.rows.length; rowIndex++) {
+        var row = candidatePuzzle.matrix[rowIndex];
+        var hasPartialRowMarks = _.contains(row, CELL_ON) || _.contains(row, CELL_OFF);
+        if (hasPartialRowMarks) {
+          candidatePuzzle.possibleRowArrangements[rowIndex] = candidatePuzzle.possibleRowArrangements[rowIndex].filter(function (arrangement) {
+            return !cannotMatch(arrangement, candidatePuzzle.matrix[rowIndex]);
+          });
+
+          if (candidatePuzzle.possibleRowArrangements[rowIndex].length === 0) {
+            candidatePuzzle.cannotMatch = true;
+            candidatePuzzle.stillChecking = false;
+            return;
+          }
+        }
+
+        changed = changed || markLine(candidatePuzzle.matrix, commonMarks(candidatePuzzle.possibleRowArrangements[rowIndex]), rowIndex);
+      }
+
+      candidatePuzzle.stillChecking = changed;
+    };
+
+    this.markAllRequiredCells = function (candidatePuzzle, progressDeferred) {
+      var deferred = $q.defer();
+
+      var self = this;
+      function chainTimeout () {
+        $timeout(function () {
+          self.markRequiredCells(candidatePuzzle);
+          if (candidatePuzzle.stillChecking) {
+            chainTimeout();
+            if (progressDeferred) {
+              var partialPuzzleSolution = binaryToCellStates(candidatePuzzle.matrix);
+              progressDeferred.notify(partialPuzzleSolution);
+            }
+          } else {
+            deferred.resolve(candidatePuzzle);
+          }
+        }, 0);
+      }
+
+      if (progressDeferred) {
+        chainTimeout();
+      } else {
+        candidatePuzzle.stillChecking = true;
+        while (candidatePuzzle.stillChecking) {
+          this.markRequiredCells(candidatePuzzle);
+        }
+        deferred.resolve(candidatePuzzle);
+      }
+
+      return deferred.promise;
     }
-    return nextArgs;
-  }
+  };
 
   function pushN (arr, item, n) {
     for (var i = 0; i < n; i++) {
@@ -260,80 +364,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
     return changed;
   }
 
-  function markRequiredCells (meta, candidatePuzzle) {
-    var changed = false;
-
-    for (var columnIndex = 0; columnIndex < meta.cols.length; columnIndex++) {
-      var column = matrixService.col(candidatePuzzle.matrix, columnIndex);
-      var hasPartialColumnMarks = _.contains(column, CELL_ON) || _.contains(column, CELL_OFF);
-      if (hasPartialColumnMarks) {
-        candidatePuzzle.possibleColumnArrangements[columnIndex] = candidatePuzzle.possibleColumnArrangements[columnIndex].filter(function (arrangement) {
-          return !cannotMatch(arrangement, column);
-        });
-
-        if (candidatePuzzle.possibleColumnArrangements[columnIndex].length === 0) {
-          candidatePuzzle.cannotMatch = true;
-          candidatePuzzle.stillChecking = false;
-          return;
-        }
-      }
-
-      changed = changed || markLine(candidatePuzzle.matrix, commonMarks(candidatePuzzle.possibleColumnArrangements[columnIndex]), columnIndex, true);
-    }
-
-    for (var rowIndex = 0; rowIndex < meta.rows.length; rowIndex++) {
-      var row = candidatePuzzle.matrix[rowIndex];
-      var hasPartialRowMarks = _.contains(row, CELL_ON) || _.contains(row, CELL_OFF);
-      if (hasPartialRowMarks) {
-        candidatePuzzle.possibleRowArrangements[rowIndex] = candidatePuzzle.possibleRowArrangements[rowIndex].filter(function (arrangement) {
-          return !cannotMatch(arrangement, candidatePuzzle.matrix[rowIndex]);
-        });
-
-        if (candidatePuzzle.possibleRowArrangements[rowIndex].length === 0) {
-          candidatePuzzle.cannotMatch = true;
-          candidatePuzzle.stillChecking = false;
-          return;
-        }
-      }
-
-      changed = changed || markLine(candidatePuzzle.matrix, commonMarks(candidatePuzzle.possibleRowArrangements[rowIndex]), rowIndex);
-    }
-
-    candidatePuzzle.stillChecking = changed;
-  }
-
-  function markAllRequiredCells (meta, candidatePuzzle, progressDeferred) {
-    var deferred = $q.defer();
-
-    function chainTimeout () {
-      $timeout(function () {
-        markRequiredCells(meta, candidatePuzzle);
-        if (candidatePuzzle.stillChecking) {
-          chainTimeout();
-          if (progressDeferred) {
-            var partialPuzzleSolution = binaryToCellStates(candidatePuzzle.matrix);
-            progressDeferred.notify(partialPuzzleSolution);
-          }
-        } else {
-          deferred.resolve(candidatePuzzle);
-        }
-      }, 0);
-    }
-
-    if (progressDeferred) {
-      chainTimeout();
-    } else {
-      candidatePuzzle.stillChecking = true;
-      while (candidatePuzzle.stillChecking) {
-        markRequiredCells(meta, candidatePuzzle);
-      }
-      deferred.resolve(candidatePuzzle);
-    }
-
-    return deferred.promise;
-  }
-
-  function createInitialMatrix (meta, candidatePuzzle, createOptions) {
+  function createInitialMatrix (solver, candidatePuzzle, createOptions) {
     candidatePuzzle.matrix = [];
 
     for (var i = 0; i < candidatePuzzle.possibleRowArrangements.length; i++) {
@@ -349,35 +380,13 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
     }
 
     var progressDeferred = createOptions.showProgress ? createOptions.progressDeferred : null;
-    return markAllRequiredCells(meta, candidatePuzzle, progressDeferred);
+    return solver.markAllRequiredCells(candidatePuzzle, progressDeferred);
   }
 
   this.solutionsForPuzzle = function (hints, options) {
-    var meta = angular.extend(hints, {solutions: []});
+    var solver = new PuzzleSolver(angular.extend(hints, {solutions: []}));
 
-    meta.colTotals = [];
-    for (var j = 0; j < meta.cols.length; j++) {
-      meta.colTotals.push(_.sum(meta.cols[j]));
-    }
-
-    var candidatePuzzle = {
-      possibleRowArrangements: [],
-      possibleColumnArrangements: [],
-    };
-
-    for (var rowIndex = 0; rowIndex < meta.rows.length; rowIndex++) {
-      var rowArrangements = [];
-      calculateArrangements(_.clone(meta.rows[rowIndex]), meta.cols.length, rowArrangements);
-      candidatePuzzle.possibleRowArrangements.push(rowArrangements);
-    }
-
-    for (var colIndex = 0; colIndex < meta.cols.length; colIndex++) {
-      var colArrangements = [];
-      calculateArrangements(_.clone(meta.cols[colIndex]), meta.rows.length, colArrangements);
-      candidatePuzzle.possibleColumnArrangements.push(colArrangements);
-    }
-
-    function runRounds (meta, bruteForceArgs) {
+    function runRounds (solver, bruteForceArgs) {
       var startTime = new Date();
 
       while (bruteForceArgs.length > 0) {
@@ -387,7 +396,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
         }
 
         var theseArgs = bruteForceArgs.shift();
-        var newArgs = bruteForce.apply(meta, theseArgs);
+        var newArgs = solver.bruteForce.apply(solver, theseArgs);
         if (newArgs) {
           Array.prototype.unshift.apply(bruteForceArgs, newArgs);
         }
@@ -396,12 +405,12 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
       return false;
     }
 
-    function solveIteratively (meta, initialPuzzle) {
+    function solveIteratively (solver, initialPuzzle) {
       var deferred = $q.defer();
       var bruteForceArgs = [[initialPuzzle, 0]];
 
       function go () {
-        if (runRounds(meta, bruteForceArgs)) {
+        if (runRounds(solver, bruteForceArgs)) {
           $timeout(go, 0);
           if (options && options.showProgress) {
             var partialPuzzleSolution = binaryToCellStates(bruteForceArgs[0][0].matrix);
@@ -419,10 +428,11 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
 
     var deferred = $q.defer();
     var createOptions = _.extend({progressDeferred: deferred}, options || {});
+    var candidatePuzzle = solver.createInitialCandidatePuzzle();
 
-    createInitialMatrix(meta, candidatePuzzle, createOptions).then(function (initialPuzzle) {
-      solveIteratively(meta, initialPuzzle).then(function () {
-        deferred.resolve(_.map(meta.solutions, binaryToCellStates));
+    createInitialMatrix(solver, candidatePuzzle, createOptions).then(function (initialPuzzle) {
+      solveIteratively(solver, initialPuzzle).then(function () {
+        deferred.resolve(_.map(solver.solutions, binaryToCellStates));
       }, null, deferred.notify);
     });
 
