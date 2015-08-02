@@ -1,0 +1,35 @@
+.solver-input {
+  width: 400px;
+  margin: 20px auto;
+  font-family: sans-serif;
+
+  textarea {
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 16px;
+    height: 120px;
+    width: 100%;
+    font-family: monospace;
+  }
+}
+
+.benchmark-table {
+  margin: 30px auto;
+  border-collapse: collapse;
+
+  td, th {
+    border: 1px solid #ccc;
+    padding: 5px;
+  }
+}
+
+.solver-puzzle-definition {
+  position: relative;
+  .solver-puzzle-size {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 12px;
+    color: #ccc;
+  }
+}

@@ -22,16 +22,6 @@ body > header {
   height: 100%;
 }
 
-.home-actions {
-  width: 400px;
-  margin: 45px auto;
-
-  h1 {
-    text-align: center;
-    font-family: monospace;
-  }
-}
-
 h1 {
   letter-spacing: 10px;
   font-size: 32px;
@@ -45,177 +35,6 @@ h1 {
 
 .text-center {
   text-align: center;
-}
-
-.solved-message {
-  font-size: 32px;
-  text-align: center;
-}
-
-$puzzle-choice-width: 60px;
-.puzzle-choices {
-  padding: 12px;
-  font-size: 0;
-  font-family: monospace;
-  text-align: center;
-
-  .puzzle-spacer, .puzzle-choice {
-    display: inline-block;
-    width: $puzzle-choice-width;
-    line-height: $puzzle-choice-width;
-    margin-right: 15px;
-    margin-bottom: 8px;
-  }
-}
-
-.puzzle-choice {
-  height: $puzzle-choice-width;
-  font-size: 32px;
-  text-align: center;
-  border-radius: 50%;
-  border: 1px dashed rgba(233, 233, 233, 0.5);
-  color: black;
-  text-decoration: none;
-  position: relative;
-
-  &.puzzle-choice-solved {
-    border-color: transparent;
-    background-color: rgba(152, 232, 186, 0.48);
-  }
-
-  &:hover {
-    &:before, &:after {
-      display: inline-block;
-      position: absolute;
-      animation-iteration-count: infinite;
-      animation-name: rotateForever;
-      animation-timing-function: linear;
-      content: ' ';
-      background-image: url('../images/dashed-circle.svg');
-    }
-
-    &:before {
-      left: 0;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      animation-duration: 10s;
-    }
-
-    &:after {
-      left: 2px;
-      right: 2px;
-      top: 2px;
-      bottom: 2px;
-      animation-direction: reverse;
-      animation-duration: 12s;
-    }
-  }
-}
-
-@keyframes rotateForever {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.board {
-  $cell-width: 20px;
-  $cell-border: 1px solid grey;
-
-  &, *, * * {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-  }
-
-  border-collapse: collapse;
-  margin: 40px auto;
-  text-align: center;
-  font-size: 0;
-
-  .col-hint, .row-hint {
-    font-size: 16px;
-    font-family: sans-serif;
-    width: $cell-width;
-    height: $cell-width;
-    white-space: nowrap;
-  }
-
-  .col-hint {
-    vertical-align: bottom;
-  }
-
-  .row-hint {
-    text-align: right;
-    padding-right: 10px;
-  }
-
-  .col-hint:not(.last) {
-    border-right: 1px solid #cdd;
-  }
-
-  .row-hint:not(.last) {
-    border-bottom: 1px solid #cdd;
-  }
-
-  .row-hint-number, .col-hint-number {
-    &.off {
-      color: #ccc;
-      text-decoration: line-through;
-    }
-  }
-
-  .row-hint-number {
-    display: inline-block;
-    width: 20px;
-  }
-
-  .cell {
-    border-top: $cell-border;
-    border-left: $cell-border;
-    height: $cell-width;
-    width: $cell-width;
-    background-color: #ddd;
-    [readonly] & {
-      pointer-events: none;
-    }
-
-    &:hover {
-      background-color: #ccc;
-    }
-
-    &.off {
-      background-color: white;
-      &:hover {
-        background-color: #f0f0f0;
-      }
-    }
-
-    &.on {
-      background-color: #999;
-      &:hover {
-        background-color: #acacac;
-      }
-    }
-
-    &:last-child {
-      border-right: $cell-border;
-    }
-  }
-
-  .row:last-child {
-    .cell {
-      border-bottom: $cell-border;
-    }
-  }
 }
 
 .btn {
@@ -234,21 +53,6 @@ a.btn {
   &:link, &:visited {
     text-decoration: none;
     color: inherit;
-  }
-}
-
-.solver-input {
-  width: 400px;
-  margin: 20px auto;
-  font-family: sans-serif;
-
-  textarea {
-    border-radius: 8px;
-    padding: 8px;
-    font-size: 16px;
-    height: 120px;
-    width: 100%;
-    font-family: monospace;
   }
 }
 
@@ -276,30 +80,6 @@ a.btn {
   animation-duration: 3s;
 }
 
-@keyframes showLater {
-  0% {
-    opacity: 0;
-  }
-
-  50% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes rotateForever {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .mt30 {
   margin-top: 30px;
 }
@@ -318,25 +98,4 @@ a.btn {
   animation-name: rotateForever;
   animation-timing-function: linear;
   animation-duration: 2s;
-}
-
-.benchmark-table {
-  margin: 30px auto;
-  border-collapse: collapse;
-
-  td, th {
-    border: 1px solid #ccc;
-    padding: 5px;
-  }
-}
-
-.solver-puzzle-definition {
-  position: relative;
-  .solver-puzzle-size {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    padding: 12px;
-    color: #ccc;
-  }
 }
