@@ -121,6 +121,24 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
       this.colTotals.push(_.sum(this.cols[j]));
     }
 
+    this.createInitialMatrix = function (candidatePuzzle, createOptions) {
+      candidatePuzzle.matrix = [];
+
+      for (var i = 0; i < candidatePuzzle.possibleRowArrangements.length; i++) {
+        var arrangements = candidatePuzzle.possibleRowArrangements[i];
+
+        // If there's only one possible arrangement, add it to the matrix unconditionally
+        // with hope that it will speed up some of the column checks
+        if (arrangements.length === 1) {
+          candidatePuzzle.matrix.push(arrangements[0]);
+        } else {
+          candidatePuzzle.matrix.push(commonMarks(arrangements));
+        }
+      }
+
+      return this.markAllRequiredCells(candidatePuzzle);
+    };
+
     this.createInitialCandidatePuzzle = function () {
       var candidatePuzzle = {
         possibleRowArrangements: [],
@@ -170,7 +188,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
       for (var i = 0; i < nextArrangements.length; i++) {
         var clone = JSON.parse(puzzleString);
         clone.matrix[rowIx] = nextArrangements[i];
-        this.markAllRequiredCells(this, clone);
+        this.markAllRequiredCells(clone);
         if (clone.cannotMatch) {
           continue;
         }
@@ -221,7 +239,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
       candidatePuzzle.stillChecking = changed;
     };
 
-    this.markAllRequiredCells = function (candidatePuzzle, progressDeferred) {
+    this.markAllRequiredCells = function (candidatePuzzle) {
       var deferred = $q.defer();
 
       var self = this;
@@ -230,9 +248,9 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
           self.markRequiredCells(candidatePuzzle);
           if (candidatePuzzle.stillChecking) {
             chainTimeout();
-            if (progressDeferred) {
+            if (this.showProgress) {
               var partialPuzzleSolution = binaryToCellStates(candidatePuzzle.matrix);
-              progressDeferred.notify(partialPuzzleSolution);
+              this.progressDeferred.notify(partialPuzzleSolution);
             }
           } else {
             deferred.resolve(candidatePuzzle);
@@ -240,7 +258,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
         }, 0);
       }
 
-      if (progressDeferred) {
+      if (this.showProgress) {
         chainTimeout();
       } else {
         candidatePuzzle.stillChecking = true;
@@ -364,28 +382,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
     return changed;
   }
 
-  function createInitialMatrix (solver, candidatePuzzle, createOptions) {
-    candidatePuzzle.matrix = [];
-
-    for (var i = 0; i < candidatePuzzle.possibleRowArrangements.length; i++) {
-      var arrangements = candidatePuzzle.possibleRowArrangements[i];
-
-      // If there's only one possible arrangement, add it to the matrix unconditionally
-      // with hope that it will speed up some of the column checks
-      if (arrangements.length === 1) {
-        candidatePuzzle.matrix.push(arrangements[0]);
-      } else {
-        candidatePuzzle.matrix.push(commonMarks(arrangements));
-      }
-    }
-
-    var progressDeferred = createOptions.showProgress ? createOptions.progressDeferred : null;
-    return solver.markAllRequiredCells(candidatePuzzle, progressDeferred);
-  }
-
   this.solutionsForPuzzle = function (hints, options) {
-    var solver = new PuzzleSolver(angular.extend(hints, {solutions: []}));
-
     function runRounds (solver, bruteForceArgs) {
       var startTime = new Date();
 
@@ -427,10 +424,13 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
     }
 
     var deferred = $q.defer();
-    var createOptions = _.extend({progressDeferred: deferred}, options || {});
+    var solver = new PuzzleSolver(angular.extend(hints, (options || {}), {
+      solutions: [],
+      progressDeferred: deferred
+    }));
     var candidatePuzzle = solver.createInitialCandidatePuzzle();
 
-    createInitialMatrix(solver, candidatePuzzle, createOptions).then(function (initialPuzzle) {
+    solver.createInitialMatrix(candidatePuzzle).then(function (initialPuzzle) {
       solveIteratively(solver, initialPuzzle).then(function () {
         deferred.resolve(_.map(solver.solutions, binaryToCellStates));
       }, null, deferred.notify);
