@@ -4,7 +4,7 @@
       Hints:
       <div class="solver-puzzle-definition">
         <textarea ng-model="solverHints"></textarea>
-        <div class='solver-puzzle-size'>
+        <div class='solver-puzzle-size' ng-if="solverHintRows.length">
           {{solverHintRows.length}} x {{solverHintCols.length}}
         </div>
       </div>
