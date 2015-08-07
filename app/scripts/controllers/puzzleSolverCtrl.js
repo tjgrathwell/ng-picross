@@ -27,12 +27,23 @@ angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, 
       });
     }
 
+    function ensureValid (integerArray) {
+      for (var i = 0; i < integerArray.length; i++) {
+        for (var j = 0; j < integerArray[i].length; j++) {
+          if (_.isNaN(integerArray[i][j])) {
+            return undefined;
+          }
+        }
+      }
+      return integerArray;
+    }
+
     $scope.solverHintRows = undefined;
     $scope.solverHintCols = undefined;
 
     if (allHints.length >= 2) {
-      $scope.solverHintRows = _.map(allHints[0].split("\n"), toIntegerArray);
-      $scope.solverHintCols = _.map(allHints[1].split("\n"), toIntegerArray);
+      $scope.solverHintRows = ensureValid(_.map(allHints[0].split("\n"), toIntegerArray));
+      $scope.solverHintCols = ensureValid(_.map(allHints[1].split("\n"), toIntegerArray));
     }
   });
 

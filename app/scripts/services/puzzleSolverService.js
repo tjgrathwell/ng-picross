@@ -248,9 +248,9 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
           self.markRequiredCells(candidatePuzzle);
           if (candidatePuzzle.stillChecking) {
             chainTimeout();
-            if (this.showProgress) {
+            if (self.showProgress) {
               var partialPuzzleSolution = binaryToCellStates(candidatePuzzle.matrix);
-              this.progressDeferred.notify(partialPuzzleSolution);
+              self.progressDeferred.notify(partialPuzzleSolution);
             }
           } else {
             deferred.resolve(candidatePuzzle);
