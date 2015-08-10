@@ -150,7 +150,9 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
     this.createInitialCandidatePuzzle = function () {
       var candidatePuzzle = {
         possibleRowArrangements: [],
-        possibleColumnArrangements: []
+        possibleColumnArrangements: [],
+        rowCommonMarksCache: [],
+        colCommonMarksCache: []
       };
 
       for (var rowIndex = 0; rowIndex < this.rows.length; rowIndex++) {
@@ -216,13 +218,20 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
     }
 
     function _markRequiredCells (candidatePuzzle, hints, arrangements, actual, isColumn) {
+      var commonMarksCache = isColumn ? candidatePuzzle.colCommonMarksCache : candidatePuzzle.rowCommonMarksCache;
+
       var changed = false;
       for (var i = 0; i < hints.length; i++) {
+        var recalculateCommonMarks = false;
         var line = actual[i];
         if (hasPartialMarks(line)) {
+          var arrangementCount = arrangements[i].length;
           arrangements[i] = arrangements[i].filter(function (arrangement) {
             return !cannotMatch(arrangement, line);
           });
+          if (arrangements[i].length < arrangementCount) {
+            recalculateCommonMarks = true;
+          }
 
           if (arrangements[i].length === 0) {
             candidatePuzzle.cannotMatch = true;
@@ -231,7 +240,10 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
           }
         }
 
-        changed = changed || markLine(candidatePuzzle, commonMarks(arrangements[i]), i, isColumn);
+        if (recalculateCommonMarks || !commonMarksCache[i]) {
+          commonMarksCache[i] = commonMarks(arrangements[i]);
+        }
+        changed = changed || markLine(candidatePuzzle, commonMarksCache[i], i, isColumn);
       }
       return changed;
     }
@@ -281,10 +293,10 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
         }, 0);
       }
 
+      candidatePuzzle.stillChecking = true;
       if (this.showProgress) {
         chainTimeout();
       } else {
-        candidatePuzzle.stillChecking = true;
         while (candidatePuzzle.stillChecking) {
           this.markRequiredCells(candidatePuzzle);
         }
