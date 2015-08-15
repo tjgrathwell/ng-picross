@@ -31,10 +31,13 @@
   </div>
 
   <div ng-if="puzzle">
-    <puzzle puzzle="puzzle" readonly></puzzle>
-    <div class="center-message" ng-if="solutionTime">
-      Solver took {{solutionTime | number:2}} seconds.
+    <div class="center-message" ng-if="!solutionTime">
+      Iteration {{solutionIterationsCount}}
     </div>
+    <div class="center-message" ng-if="solutionTime">
+      Solver took {{solutionTime | number:2}} seconds in {{solutionIterationsCount}} iterations.
+    </div>
+    <puzzle puzzle="puzzle" readonly></puzzle>
   </div>
 
   <div class='loading-spinner' ng-if='solving'>

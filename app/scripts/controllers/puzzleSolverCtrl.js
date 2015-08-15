@@ -51,6 +51,7 @@ angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, 
     $scope.solving = true;
     $scope.puzzle = null;
     $scope.solutionTime = null;
+    $scope.solutionIterationsCount = 0;
     var solverStartTime = new Date();
 
     $timeout(function () {
@@ -72,6 +73,7 @@ angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, 
           $scope.puzzle = null;
         }
       }, null, function progress (partialPuzzleSolution) {
+        $scope.solutionIterationsCount += 1;
         $scope.puzzle = puzzleService.makePuzzle(partialPuzzleSolution);
         $scope.puzzle.rowHints = _.map(puzzleToSolve.rows, function (r) {
           return _.map(r, function (v) {
