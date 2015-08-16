@@ -1,7 +1,12 @@
 'use strict';
 
-angular.module('ngPicrossApp').controller('PuzzleSolverBenchmarkCtrl', function ($scope, $timeout, puzzleSolverService, puzzleCatalogService) {
+angular.module('ngPicrossApp').controller('PuzzleSolverBenchmarkCtrl', function ($scope, $timeout, $route, puzzleSolverService, puzzleCatalogService) {
   var allPuzzles = puzzleCatalogService.getAvailablePuzzles();
+
+  if ($route.current.params.limit) {
+    allPuzzles = allPuzzles.splice(0, $route.current.params.limit);
+  }
+
   $scope.solutionTimes = [];
 
   $scope.sortColumn = 'id';
@@ -27,14 +32,19 @@ angular.module('ngPicrossApp').controller('PuzzleSolverBenchmarkCtrl', function 
     puzzleSolverService.solutionsForPuzzle({
       rows: puzzle.rowHints.map(function (h) { return _.pluck(h, 'value'); }),
       cols: puzzle.colHints.map(function (h) { return _.pluck(h, 'value'); })
-    }).then(function (solutions) {
+    }).then(function (solutionData) {
+      var solutions = solutionData.solutions;
       if (solutions.length !== 1) {
         console.log("Something wrong with", listPuzzle.id);
       }
 
       var timeTaken = (Date.now() - start) / 1000;
 
-      $scope.solutionTimes.push({id: parseInt(listPuzzle.id, 10), time: timeTaken});
+      $scope.solutionTimes.push({
+        id: parseInt(listPuzzle.id, 10),
+        time: timeTaken,
+        iterations: solutionData.iterations
+      });
 
       $scope.totalTime += timeTaken;
 

@@ -8,11 +8,13 @@
     <thead>
       <th><a href='' ng-click="orderBy('id')">Puzzle</a></th>
       <th><a href='' ng-click="orderBy('time')">Time</a></th>
+      <th><a href='' ng-click="orderBy('iterations')">Iterations</a></th>
     </thead>
     <tbody>
       <tr ng-repeat="solvedPuzzle in solutionTimes | orderBy : sortColumn : sortReverse">
         <td><a ng-href="solver/{{solvedPuzzle.id}}">Puzzle {{solvedPuzzle.id}}</a></td>
         <td>{{solvedPuzzle.time | number:4 }} seconds</td>
+        <td>{{solvedPuzzle.iterations}}</td>
       </tr>
     </tbody>
   </table>

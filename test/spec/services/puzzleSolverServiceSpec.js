@@ -64,8 +64,8 @@ describe('Service: puzzleSolverService', function () {
         ]
       });
 
-      solutionsPromise.then(function (solutions) {
-        expect(stringify(solutions[0])).toEqual([
+      solutionsPromise.then(function (solutionData) {
+        expect(stringify(solutionData.solutions[0])).toEqual([
           'x x',
           ' xx',
           '  x'
@@ -87,15 +87,15 @@ describe('Service: puzzleSolverService', function () {
           [1],
           [1]
         ]
-      })
+      });
 
-      solutionsPromise.then(function (solutions) {
-        expect(solutions.length).toEqual(2);
-        expect(stringify(solutions[0])).toEqual([
+      solutionsPromise.then(function (solutionData) {
+        expect(solutionData.solutions.length).toEqual(2);
+        expect(stringify(solutionData.solutions[0])).toEqual([
           'x ',
           ' x'
         ]);
-        expect(stringify(solutions[1])).toEqual([
+        expect(stringify(solutionData.solutions[1])).toEqual([
           ' x',
           'x '
         ]);
@@ -134,8 +134,8 @@ describe('Service: puzzleSolverService', function () {
         ]
       });
 
-      solutionsPromise.then(function (solutions) {
-        expect(stringify(solutions[0])).toEqual([
+      solutionsPromise.then(function (solutionData) {
+        expect(stringify(solutionData.solutions[0])).toEqual([
           '    xx    ',
           '   xx    x',
           '  xxxx  xx',
@@ -192,8 +192,8 @@ describe('Service: puzzleSolverService', function () {
         ]
       });
 
-      solutionsPromise.then(function (solutions) {
-        expect(stringify(solutions[0])).toEqual([
+      solutionsPromise.then(function (solutionData) {
+        expect(stringify(solutionData.solutions[0])).toEqual([
           '               ',
           '  xxxxxxx      ',
           ' xxxxxxxxx     ',

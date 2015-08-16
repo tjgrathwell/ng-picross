@@ -59,7 +59,8 @@ angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, 
       var options = {
         showProgress: $scope.solverProps.showProgress
       };
-      puzzleSolverService.solutionsForPuzzle(puzzleToSolve, options).then(function (solutions) {
+      puzzleSolverService.solutionsForPuzzle(puzzleToSolve, options).then(function (solutionData) {
+        var solutions = solutionData.solutions;
         $scope.solutions = solutions;
         $scope.solving = false;
 

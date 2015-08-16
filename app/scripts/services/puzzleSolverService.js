@@ -122,6 +122,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
 
     this.createInitialMatrix = function (candidatePuzzle, createOptions) {
       candidatePuzzle.rowMatrix = [];
+      candidatePuzzle.iterations = 0;
 
       for (var i = 0; i < candidatePuzzle.possibleRowArrangements.length; i++) {
         var arrangements = candidatePuzzle.possibleRowArrangements[i];
@@ -249,6 +250,8 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
     }
 
     this.markRequiredCells = function (candidatePuzzle) {
+      candidatePuzzle.iterations += 1;
+
       var changed = false;
 
       changed = changed || _markRequiredCells(
@@ -473,7 +476,10 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
 
     solver.createInitialMatrix(candidatePuzzle).then(function (initialPuzzle) {
       solveIteratively(solver, initialPuzzle).then(function () {
-        deferred.resolve(_.map(solver.solutions, binaryToCellStates));
+        deferred.resolve({
+          solutions: _.map(solver.solutions, binaryToCellStates),
+          iterations: initialPuzzle.iterations
+        });
       }, null, deferred.notify);
     });
 

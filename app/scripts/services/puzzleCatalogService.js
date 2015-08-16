@@ -52,8 +52,8 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function ($q, con
       })
     };
 
-    puzzleSolverService.solutionsForPuzzle(hints).then(function (solutions) {
-      deferred.resolve(solutions);
+    puzzleSolverService.solutionsForPuzzle(hints).then(function (solutionData) {
+      deferred.resolve(solutionData.solutions);
     });
 
     return deferred.promise;
