@@ -5,7 +5,7 @@ describe('ng-picross', function() {
 
   describe("visiting the first puzzle", function () {
     beforeEach(function () {
-      $('li a').click();
+      $('.puzzle-choices a').click();
     });
 
     it('has a 3x3 puzzle to start with', function () {

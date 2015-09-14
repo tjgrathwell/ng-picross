@@ -4,11 +4,11 @@ An AngularJS implementation of the puzzle game Picross, often terribly refered t
 
 ## Running the server
 
-`grunt serve`
+`gulp serve`
 
 ## Running the tests
 
-`grunt test`
+`gulp test`
 
 `protractor protractor.conf.js`
 

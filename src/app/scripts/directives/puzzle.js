@@ -3,7 +3,7 @@
 angular.module('ngPicrossApp').directive('puzzle', function (constantsService, puzzleService, puzzleHistoryService) {
   return {
     restrict: 'E',
-    templateUrl: 'views/directives/puzzle.html',
+    templateUrl: 'app/views/directives/puzzle.html',
     scope: {
       puzzle: '=',
       solved: '='

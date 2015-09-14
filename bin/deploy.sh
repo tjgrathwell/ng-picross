@@ -4,7 +4,7 @@ git checkout -b gh-pages
 
 perl -i -nle'/^dist$/||print' .gitignore
 
-grunt build
+gulp build
 
 git add .
 

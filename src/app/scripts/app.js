@@ -12,10 +12,10 @@ angular.module('ngPicrossApp', ['ngRoute']).config(function ($provide, $routePro
   $locationProvider.html5Mode(true);
 
   $routeProvider.when('/', {
-    templateUrl: 'views/home.html',
+    templateUrl: 'app/views/home.html',
     controller: 'HomeCtrl'
   }).when('/puzzles/:id', {
-    templateUrl: 'views/puzzleBoard.html',
+    templateUrl: 'app/views/puzzleBoard.html',
     controller: 'PuzzleBoardCtrl',
     resolve: {
       puzzle: function ($route, puzzleCatalogService) {
@@ -23,7 +23,7 @@ angular.module('ngPicrossApp', ['ngRoute']).config(function ($provide, $routePro
       }
     }
   }).when('/random', {
-    templateUrl: 'views/puzzleBoard.html',
+    templateUrl: 'app/views/puzzleBoard.html',
     controller: 'PuzzleBoardCtrl',
     resolve: {
       puzzle: function (puzzleCatalogService) {
@@ -31,10 +31,10 @@ angular.module('ngPicrossApp', ['ngRoute']).config(function ($provide, $routePro
       }
     }
   }).when('/solver/:puzzleId?', {
-    templateUrl: 'views/puzzleSolver.html',
+    templateUrl: 'app/views/puzzleSolver.html',
     controller: 'PuzzleSolverCtrl'
   }).when('/solver_benchmark', {
-    templateUrl: 'views/puzzleSolverBenchmark.html',
+    templateUrl: 'app/views/puzzleSolverBenchmark.html',
     controller: 'PuzzleSolverBenchmarkCtrl'
   }).otherwise({
     redirectTo: '/'
