@@ -8,7 +8,7 @@ An AngularJS implementation of the puzzle game Picross, often terribly refered t
 
 ## Running the tests
 
-`gulp test`
+`gulp jasmine` (browser) or `gulp jasmine-phantom` (headless)
 
 `protractor protractor.conf.js`
 
