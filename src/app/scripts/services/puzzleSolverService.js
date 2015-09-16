@@ -82,27 +82,6 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
     return (spacesForRuns + spacesBetweenRuns) <= remainingSpaces;
   }
 
-  function stringify(puzzleBoard) {
-    if (!puzzleBoard) {
-      return null;
-    }
-
-    return "\n" + puzzleBoard.map(function (row) {
-      if (!row) {
-        return '<nil>';
-      }
-      return row.map(function (cell) {
-        if (cell === CELL_ON) {
-          return 'x';
-        }
-        if (cell === CELL_OFF) {
-          return '_';
-        }
-        return '?';
-      }).join('');
-    }).join("\n");
-  }
-
   function cannotMatch (fullLine, partialLine) {
     for (var i = 0; i < partialLine.length; i++) {
       if (partialLine[i] !== null && partialLine[i] !== fullLine[i]) {
@@ -120,7 +99,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
       this.colTotals.push(_.sum(this.cols[j]));
     }
 
-    this.createInitialMatrix = function (candidatePuzzle, createOptions) {
+    this.createInitialMatrix = function (candidatePuzzle) {
       candidatePuzzle.rowMatrix = [];
       candidatePuzzle.iterations = 0;
 
@@ -211,7 +190,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
 
     function hasPartialMarks (line) {
       for (var i = 0; i < line.length; i++) {
-        if (line[i] != null) {
+        if (line[i] !== null) {
           return true;
         }
       }
@@ -227,9 +206,11 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
         var line = actual[i];
         if (hasPartialMarks(line)) {
           var arrangementCount = arrangements[i].length;
+          /* jshint -W083 */
           arrangements[i] = arrangements[i].filter(function (arrangement) {
             return !cannotMatch(arrangement, line);
           });
+          /* jshint +W083 */
           if (arrangements[i].length < arrangementCount) {
             recalculateCommonMarks = true;
           }
@@ -307,7 +288,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
       }
 
       return deferred.promise;
-    }
+    };
   };
 
   function pushN (arr, item, n) {

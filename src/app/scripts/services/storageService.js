@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('ngPicrossApp').service('storageService', function () {
-  this.supported = function () {
+  this.supported = (function () {
     try {
       localStorage.setItem('foo', 'bar');
       localStorage.removeItem('foo');
@@ -9,7 +9,7 @@ angular.module('ngPicrossApp').service('storageService', function () {
     } catch (e) {
       return false;
     }
-  }();
+  })();
 
   this.get = function (key) {
     return localStorage[key];
