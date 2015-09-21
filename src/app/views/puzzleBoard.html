@@ -2,7 +2,7 @@
 
 <div class='solved-message' ng-if='solved'>
   <h1>SOLVED</h1>
-  <a class="btn" href="/">Home</a>
+  <a href ng-click="goHome()">Home</a>
   <a class="btn" ng-click='randomPuzzle()' href="">Random</a>
   <a class="btn" ng-href='{{nextPuzzleLink}}' ng-if='nextPuzzleLink'>Next</a>
 </div>
