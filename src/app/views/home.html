@@ -4,7 +4,7 @@
   <div class="puzzle-choices">
     <a ng-repeat='puzzle in puzzles'
        ng-class="{'puzzle-choice': true, 'puzzle-choice-solved': puzzle.completed}"
-       ng-href="{{'puzzles/' + puzzle.id}}">
+       fancy-link="{{'puzzles/' + puzzle.id}}">
       {{puzzle.id}}
     </a>
     <a class="puzzle-choice" href="random">?</a>

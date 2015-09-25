@@ -12,7 +12,7 @@
     </thead>
     <tbody>
       <tr ng-repeat="solvedPuzzle in solutionTimes | orderBy : sortColumn : sortReverse">
-        <td><a ng-href="solver/{{solvedPuzzle.id}}">Puzzle {{solvedPuzzle.id}}</a></td>
+        <td><a fancy-link="solver/{{solvedPuzzle.id}}">Puzzle {{solvedPuzzle.id}}</a></td>
         <td>{{solvedPuzzle.time | number:4 }} seconds</td>
         <td>{{solvedPuzzle.iterations}}</td>
       </tr>
