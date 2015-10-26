@@ -45,6 +45,9 @@
     "wiredep": "~2.2.2",
     "wrench": "~1.5.8"
   },
+  "scripts": {
+    "test": "gulp jasmine-phantom"
+  },
   "engines": {
     "node": ">=0.10.0"
   }

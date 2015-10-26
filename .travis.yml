@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  - 4.2.1
+before_script:
+  - npm install -g bower
+  - bower install
+# TODO: get protractor tests working on TravisCI
+#  - npm install -g protractor
+#  - webdriver-manager update
+sudo: false
