@@ -69,6 +69,7 @@ angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, 
           $scope.puzzle = puzzleService.makePuzzle(solution);
           $scope.puzzle.markAsSolved();
           $scope.solutionTime = (new Date() - solverStartTime) / 1000;
+          $scope.solutionIterationsCount += solutionData.iterations;
           printSolutionToConsole(solution);
         } else {
           $scope.puzzle = null;
