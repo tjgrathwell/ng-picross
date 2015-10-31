@@ -7,3 +7,5 @@ window.injectIntoThis = function () {
     }
   });
 };
+
+beforeEach(module('ngPicrossApp'));

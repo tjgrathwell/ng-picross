@@ -1,7 +1,6 @@
 'use strict';
 
 describe('Service: puzzleService', function () {
-  beforeEach(module('ngPicrossApp'));
   beforeEach(injectIntoThis('puzzleService', 'constantsService'));
 
   var CellStates;

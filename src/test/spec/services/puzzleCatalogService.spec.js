@@ -1,7 +1,6 @@
 'use strict';
 
 describe('Service: puzzleCatalogService', function () {
-  beforeEach(module('ngPicrossApp'));
   beforeEach(injectIntoThis('$timeout', 'puzzleCatalogService'));
 
   describe("generateRandomPuzzle", function () {

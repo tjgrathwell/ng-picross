@@ -1,7 +1,6 @@
 'use strict';
 
 describe('Service: puzzleSolverService', function () {
-  beforeEach(module('ngPicrossApp'));
   beforeEach(injectIntoThis('$timeout', 'puzzleSolverService', 'constantsService'));
 
   function stringify(puzzleBoard, onState) {
@@ -11,9 +10,7 @@ describe('Service: puzzleSolverService', function () {
     }
 
     return puzzleBoard.map(function (row) {
-      return row.map(function (cell) {
-        return cell === onState ? 'x' : ' ';
-      }).join('');
+      return row.map(cell => cell === onState ? 'x' : ' ').join('');
     });
   }
 
