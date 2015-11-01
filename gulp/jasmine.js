@@ -4,11 +4,11 @@ var conf = require('./conf');
 var _ = require('lodash');
 var wiredep = require('wiredep');
 var path = require('path');
-var angularFilesort = require('gulp-angular-filesort');
 var merge2 = require('merge2');
 var webpack = require('webpack-stream');
+var $ = require('gulp-load-plugins')();
 
-function listFiles() {
+function listFiles(options) {
   var wiredepOptions = _.extend({}, conf.wiredep, {
     dependencies: true,
     devDependencies: true
@@ -29,13 +29,20 @@ function listFiles() {
     plugins: [plugin]
   };
 
+  webpackConfig.watch = options && options.watch;
+
+  var templates = gulp.src([
+    path.join(conf.paths.src, '/app/**/*.html'),
+  ]).pipe($.angularTemplatecache('templateCacheHtml.js', {
+    module: 'ngPicrossApp',
+    root: 'app'
+  }));
+
   return merge2(
     gulp.src(wiredep(wiredepOptions).js),
-    gulp.src(path.join(conf.paths.src, '/app/**/*.js')).pipe(angularFilesort()),
-    gulp.src([
-      path.join(conf.paths.src, '/**/specHelper.js'),
-      path.join(conf.paths.src, '/**/*.html')
-    ]),
+    gulp.src(path.join(conf.paths.src, '/app/**/*.js')).pipe($.angularFilesort()),
+    gulp.src(path.join(conf.paths.src, '/**/specHelper.js')),
+    templates,
     gulp.src([
       path.join(conf.paths.src, '/test/spec/**/*.spec.js'),
     ]).pipe(webpack(webpackConfig))
@@ -43,7 +50,7 @@ function listFiles() {
 }
 
 gulp.task('jasmine', function() {
-  return listFiles()
+  return listFiles({watch: true})
     .pipe(jasmineBrowser.specRunner())
     .pipe(jasmineBrowser.server());
 });

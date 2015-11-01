@@ -30,22 +30,16 @@ describe('Service: puzzleService', function () {
   });
 
   describe("_annotateHints", function () {
-    function makeHints () {
-      return _.map(Array.prototype.slice.call(arguments), function (value) {
-        return {value: value, solved: false};
-      });
+    function makeHints (...values) {
+      return values.map(value => ({value, solved: false}));
     }
 
-    function makeLine () {
-      return _.map(Array.prototype.slice.call(arguments), function (mark) {
-        return {displayValue: mark ? CellStates.x : CellStates.b};
-      });
+    function makeLine (...values) {
+      return values.map(mark => ({displayValue: mark ? CellStates.x : CellStates.b}));
     }
 
     function solvedHints (hints) {
-      return _.map(hints, function (hint) {
-        return [hint.value, hint.solved];
-      });
+      return hints.map(hint => [hint.value, hint.solved]);
     }
 
     it("marks hints as 'solved' if they must be solved given the marked board spaces", function () {
