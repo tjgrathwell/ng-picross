@@ -49,6 +49,8 @@ function listFiles(options) {
   );
 }
 
+// TODO: the server needs to be restarted if the app code changes,
+// is there a way to fix this without going full webpack?
 gulp.task('jasmine', function() {
   return listFiles({watch: true})
     .pipe(jasmineBrowser.specRunner())

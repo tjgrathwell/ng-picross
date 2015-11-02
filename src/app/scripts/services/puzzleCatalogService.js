@@ -60,6 +60,7 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function ($q, con
   }
 
   this.generateRandomPuzzle = function () {
+    // TODO: pass down user options for random puzzle (size, % filled, etc)
     var deferred = $q.defer();
 
     function tryPuzzle () {
@@ -3439,6 +3440,28 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function ($q, con
       '       xxxxxx       ',
       '     xxxx xxx       ',
       '    xxxxxxxxxxx     '
+    ],
+    [
+      '   xxxxx     x      ',
+      ' xxxxxxxx    xx     ',
+      ' x   xxxx     xx    ',
+      '  xxxxxxx      xx   ',
+      '     xxx        xx  ',
+      '    xxxx        xxx ',
+      '   xxxx          xxx',
+      '   xxxxxx        xxx',
+      '   xxxxxx       xxxx',
+      ' xxxx  xxxx   xxxxxx',
+      ' x xx xxxxxxxxxxxxx ',
+      ' xx x  xxxxxxxxxxx  ',
+      '    xxxxxxxxxxxxxx  ',
+      '     xxxxxxxxxxxx   ',
+      '      xxxxxxxxxxx   ',
+      '        xxx  xxx    ',
+      '         xxx  xxx   ',
+      '        xxx  xxx    ',
+      '     xxxxx xxxxx    ',
+      '     x xx  x xx     '
     ],
     [
       '                         ',
