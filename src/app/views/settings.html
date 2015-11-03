@@ -1,0 +1,20 @@
+<h2 class="text-center" style="margin: 30px 0;">Settings</h2>
+
+<div class="settings">
+  <h3>Random Puzzles</h3>
+  <form name="sizeForm">
+    <label>
+      <input type="checkbox" ng-model="properties.specifySize"> Specify Size
+    </label>
+
+    <div ng-if="properties.specifySize">
+      <input type="number"
+             placeholder="?"
+             ng-model="properties.size.rows">
+      x
+      <input type="number"
+             placeholder="?"
+             ng-model="properties.size.cols">
+    </div>
+  </form>
+</div>

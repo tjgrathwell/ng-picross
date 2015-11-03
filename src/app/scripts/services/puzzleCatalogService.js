@@ -1,11 +1,20 @@
 'use strict';
 
-angular.module('ngPicrossApp').service('puzzleCatalogService', function ($q, constantsService, puzzleService, puzzleHistoryService, puzzleSolverService) {
+angular.module('ngPicrossApp').service('puzzleCatalogService', function ($q, constantsService, puzzleService, puzzleHistoryService, puzzleSolverService, storageService) {
   var CellStates = constantsService.CellStates;
 
+  function randomBoardDimensionCount (rowsOrCols) {
+    var settings = storageService.getObj('settings');
+    if (settings.specifySize && settings.size.rows && settings.size.cols) {
+      return settings.size[rowsOrCols];
+    } else {
+      return 1 + Math.ceil(Math.random() * 9);
+    }
+  }
+
   function randomBoard () {
-    var rows = 1 + Math.ceil(Math.random() * 9);
-    var cols = 1 + Math.ceil(Math.random() * 9);
+    var rows = randomBoardDimensionCount('rows');
+    var cols = randomBoardDimensionCount('cols');
 
     var ticks = Math.ceil(Math.random() * 10);
     var distribution = Math.random();
@@ -3462,6 +3471,50 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function ($q, con
       '        xxx  xxx    ',
       '     xxxxx xxxxx    ',
       '     x xx  x xx     '
+    ],
+    [
+      '                    ',
+      '                    ',
+      '                    ',
+      '   xxx xxx          ',
+      ' xxxxxxxxxx         ',
+      ' xx   x   x         ',
+      'xxx xxx xxxx    xxx ',
+      'xxx x xxx xx   x x x',
+      'x  xxx  xxxxxxxxxxxx',
+      'x                  x',
+      'x       xxxxxxxxxxx ',
+      'x   xxxxx x x x x   ',
+      'x    xxx x x x x xx ',
+      'x xx   xxxxxxxxxxxx ',
+      'x  xx             x ',
+      'x   xxxxxxxxxxxxxx  ',
+      'x x x x  xx         ',
+      'x  xxxxxxxxx        ',
+      'x x  x x  xx        ',
+      'x  xxxxxxx x        '
+    ],
+    [
+      '    xxx             ',
+      '   xx xxx           ',
+      '   xxxxx            ',
+      '    xx              ',
+      '    xx              ',
+      '    xx              ',
+      '   xx               ',
+      '  xxx    xxxxxx     ',
+      '  xx   xxxxxxxxxx   ',
+      '  xx  xxxxxxxxxxxx  ',
+      '   xxxxxxxxxxxxxxxx ',
+      '   xxxxxxxxxxxxxxxxx',
+      '     xxxxxxxxxxxxx  ',
+      '       xxxxxxxx     ',
+      '          xxx       ',
+      '          x xx      ',
+      '         xx xx      ',
+      '         xx  x      ',
+      '        xx   xx     ',
+      '      xxxx  xxx     '
     ],
     [
       '                         ',
