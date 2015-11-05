@@ -38,9 +38,11 @@ function listFiles(options) {
     root: 'app'
   }));
 
+  var srcFiles = path.join(conf.paths.src, '/app/**/*.js');
+
   return merge2(
     gulp.src(wiredep(wiredepOptions).js),
-    gulp.src(path.join(conf.paths.src, '/app/**/*.js')).pipe($.angularFilesort()),
+    gulp.src(srcFiles).pipe($.angularFilesort()),
     gulp.src(path.join(conf.paths.src, '/**/specHelper.js')),
     templates,
     gulp.src([
@@ -49,8 +51,6 @@ function listFiles(options) {
   );
 }
 
-// TODO: the server needs to be restarted if the app code changes,
-// is there a way to fix this without going full webpack?
 gulp.task('jasmine', function() {
   return listFiles({watch: true})
     .pipe(jasmineBrowser.specRunner())
