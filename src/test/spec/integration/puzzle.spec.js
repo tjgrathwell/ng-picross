@@ -4,6 +4,18 @@ describe('Directive: puzzle', function () {
   beforeEach(injectIntoThis('puzzleService', 'puzzleCatalogService', 'constantsService', '$controller', '$rootScope', '$compile'));
   var view, $scope;
 
+  function clickCell (rowIndex, colIndex) {
+    var row = view[0].querySelectorAll('.row')[rowIndex];
+    var $cell = angular.element(row.querySelectorAll('.cell')[colIndex]);
+    $cell.triggerHandler('mousedown').triggerHandler('mouseup');
+
+    // TODO: triggering 'mouseup' on the cell should suffice, but for now
+    // this hack will ensure the associated 'mouseup' happens
+    var mouseupFunction = view[0].querySelector('.board').getAttribute('document-mouseup');
+    view.isolateScope().$eval(mouseupFunction);
+    $scope.$eval(mouseupFunction);
+  }
+
   beforeEach(function () {
     $scope = this.$rootScope.$new();
 
@@ -20,19 +32,36 @@ describe('Directive: puzzle', function () {
     expect(view[0].querySelectorAll('.cell').length).toEqual(9);
   });
 
-  it("marks the puzzle as 'solved' when all appropriate cells are marked", function () {
-    function clickCell (rowIndex, colIndex) {
-      var row = view[0].querySelectorAll('.row')[rowIndex];
-      var $cell = angular.element(row.querySelectorAll('.cell')[colIndex]);
-      $cell.triggerHandler('mousedown').triggerHandler('mouseup');
+  it('renders hints based on the puzzle solution', function () {
+    var rowHints = _.map(view[0].querySelectorAll('.row-hint'), function (rowHint) {
+      return _.map(rowHint.querySelectorAll('.row-hint-number'), function (number) {
+        return number.textContent;
+      });
+    });
 
-      // TODO: triggering 'mouseup' on the cell should suffice, but for now
-      // this hack will ensure the associated 'mouseup' happens
-      var mouseupFunction = view[0].querySelector('.board').getAttribute('document-mouseup');
-      view.isolateScope().$eval(mouseupFunction);
-      $scope.$eval(mouseupFunction);
+    var colHints = _.map(view[0].querySelectorAll('.col-hint'), function (colHint) {
+      return _.map(colHint.querySelectorAll('.col-hint-number'), function (number) {
+        return number.textContent;
+      });
+    });
+
+    expect(rowHints).toEqual([ [ '1', '1' ], [ '2' ], [ '1' ] ]);
+    expect(colHints).toEqual([ [ '1' ], [ '1' ], [ '3' ] ]);
+  });
+
+  it("marks a cell as 'on' when it is clicked", function () {
+    function firstCellChecked () {
+      return view[0].querySelector('.row').querySelector('.cell').classList.contains('on');
     }
 
+    expect(firstCellChecked()).toBeFalsy();
+
+    clickCell(0, 0);
+
+    expect(firstCellChecked()).toBeTruthy();
+  });
+
+  it("marks the puzzle as 'solved' when all appropriate cells are marked", function () {
     expect($scope.puzzle.solved()).toEqual(false);
 
     clickCell(0, 0);
