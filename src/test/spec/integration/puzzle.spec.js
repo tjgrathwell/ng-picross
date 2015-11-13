@@ -7,13 +7,9 @@ describe('Directive: puzzle', function () {
   function clickCell (rowIndex, colIndex) {
     var row = view[0].querySelectorAll('.row')[rowIndex];
     var $cell = angular.element(row.querySelectorAll('.cell')[colIndex]);
-    $cell.triggerHandler('mousedown').triggerHandler('mouseup');
-
-    // TODO: triggering 'mouseup' on the cell should suffice, but for now
-    // this hack will ensure the associated 'mouseup' happens
-    var mouseupFunction = view[0].querySelector('.board').getAttribute('document-mouseup');
-    view.isolateScope().$eval(mouseupFunction);
-    $scope.$eval(mouseupFunction);
+    $cell.triggerHandler('mousedown');
+    // TODO: 'mouseup' on the cell should bubble to the document but doesn't :'(
+    angular.element(document).triggerHandler('mouseup');
   }
 
   beforeEach(function () {

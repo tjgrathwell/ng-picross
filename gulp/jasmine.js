@@ -48,7 +48,7 @@ function listFiles(options) {
     gulp.src([
       path.join(conf.paths.src, '/test/spec/**/*.spec.js'),
     ]).pipe(webpack(webpackConfig))
-  );
+  ).pipe($.watch(srcFiles));
 }
 
 gulp.task('jasmine', function() {
