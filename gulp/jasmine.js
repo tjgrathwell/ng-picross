@@ -40,7 +40,7 @@ function listFiles(options) {
 
   var srcFiles = path.join(conf.paths.src, '/app/**/*.js');
 
-  return merge2(
+  var mergedStreams = merge2(
     gulp.src(wiredep(wiredepOptions).js),
     gulp.src(srcFiles).pipe($.angularFilesort()),
     gulp.src(path.join(conf.paths.src, '/**/specHelper.js')),
@@ -48,7 +48,13 @@ function listFiles(options) {
     gulp.src([
       path.join(conf.paths.src, '/test/spec/**/*.spec.js'),
     ]).pipe(webpack(webpackConfig))
-  ).pipe($.watch(srcFiles));
+  );
+
+  if (options && options.watch) {
+    return mergedStreams.pipe($.watch(srcFiles));
+  } else {
+    return mergedStreams;
+  }
 }
 
 gulp.task('jasmine', function() {
