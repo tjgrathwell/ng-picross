@@ -8,9 +8,10 @@ exports.config = {
 
   // Capabilities to be passed to the webdriver instance.
   capabilities: {
-    'browserName': 'chrome'
+    'browserName': process.env.CI ? 'firefox' : 'chrome'
   },
 
+  framework: 'jasmine2',
   baseUrl: 'http://localhost:3000',
 
   // Spec patterns are relative to the current working directly when
