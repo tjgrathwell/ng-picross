@@ -197,35 +197,93 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
       return false;
     }
 
+    this.hasUnmarkedRequiredCells = function (puzzle, rowOrColumnIndex, isColumn) {
+      var candidatePuzzle = this.createInitialCandidatePuzzle();
+
+      var originalBoard = _.map(puzzle.board, function (row) {
+        return _.map(row, function (cell) {
+          if (cell.displayValue === 'x') {
+            return 1;
+          }
+          if (cell.displayValue === 'o') {
+            return 0;
+          }
+          return null;
+        });
+      });
+      candidatePuzzle.rowMatrix = angular.copy(originalBoard);
+      this.syncColumnMatrix(candidatePuzzle);
+
+      var oldLine, newLine;
+      if (isColumn) {
+        _markRequiredCellsForLine(
+          candidatePuzzle,
+          candidatePuzzle.possibleColumnArrangements,
+          candidatePuzzle.colMatrix,
+          rowOrColumnIndex,
+          isColumn
+        );
+
+        this.syncColumnMatrix(candidatePuzzle);
+        oldLine = matrixService.col(originalBoard, rowOrColumnIndex);
+        newLine = candidatePuzzle.colMatrix[rowOrColumnIndex];
+      } else {
+        _markRequiredCellsForLine(
+          candidatePuzzle,
+          candidatePuzzle.possibleRowArrangements,
+          candidatePuzzle.rowMatrix,
+          rowOrColumnIndex,
+          isColumn
+        );
+
+        oldLine = matrixService.row(originalBoard, rowOrColumnIndex);
+        newLine = candidatePuzzle.rowMatrix[rowOrColumnIndex];
+      }
+
+      return angular.toJson(oldLine) !== angular.toJson(newLine);
+    };
+
+    function _markRequiredCellsForLine (candidatePuzzle, arrangements, actual, rowOrColumnIndex, isColumn, commonMarksCache) {
+      var recalculateCommonMarks = !commonMarksCache || commonMarksCache[rowOrColumnIndex];
+      var line = actual[rowOrColumnIndex];
+      if (hasPartialMarks(line)) {
+        var arrangementCount = arrangements[rowOrColumnIndex].length;
+        /* jshint -W083 */
+        arrangements[rowOrColumnIndex] = arrangements[rowOrColumnIndex].filter(function (arrangement) {
+          return !cannotMatch(arrangement, line);
+        });
+        /* jshint +W083 */
+        if (arrangements[rowOrColumnIndex].length < arrangementCount) {
+          recalculateCommonMarks = true;
+        }
+
+        if (arrangements[rowOrColumnIndex].length === 0) {
+          candidatePuzzle.cannotMatch = true;
+          candidatePuzzle.stillChecking = false;
+          return;
+        }
+      }
+
+      var theseCommonMarks;
+      if (recalculateCommonMarks) {
+        theseCommonMarks = commonMarks(arrangements[rowOrColumnIndex]);
+        if (commonMarksCache) {
+          commonMarksCache[rowOrColumnIndex] = theseCommonMarks;
+        }
+      } else {
+        theseCommonMarks = commonMarksCache[rowOrColumnIndex];
+      }
+
+      return markLine(candidatePuzzle, theseCommonMarks, rowOrColumnIndex, isColumn);
+    }
+
     function _markRequiredCells (candidatePuzzle, hints, arrangements, actual, isColumn) {
       var commonMarksCache = isColumn ? candidatePuzzle.colCommonMarksCache : candidatePuzzle.rowCommonMarksCache;
 
       var changed = false;
       for (var i = 0; i < hints.length; i++) {
-        var recalculateCommonMarks = false;
-        var line = actual[i];
-        if (hasPartialMarks(line)) {
-          var arrangementCount = arrangements[i].length;
-          /* jshint -W083 */
-          arrangements[i] = arrangements[i].filter(function (arrangement) {
-            return !cannotMatch(arrangement, line);
-          });
-          /* jshint +W083 */
-          if (arrangements[i].length < arrangementCount) {
-            recalculateCommonMarks = true;
-          }
+        changed = changed || _markRequiredCellsForLine(candidatePuzzle, arrangements, actual, i, isColumn, commonMarksCache);
 
-          if (arrangements[i].length === 0) {
-            candidatePuzzle.cannotMatch = true;
-            candidatePuzzle.stillChecking = false;
-            return;
-          }
-        }
-
-        if (recalculateCommonMarks || !commonMarksCache[i]) {
-          commonMarksCache[i] = commonMarks(arrangements[i]);
-        }
-        changed = changed || markLine(candidatePuzzle, commonMarksCache[i], i, isColumn);
       }
       return changed;
     }
@@ -387,25 +445,34 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
     var changed = false;
     for (var markIndex = 0; markIndex < marks.length; markIndex++) {
       var value = marks[markIndex];
-      if (value !== null) {
-        var existingRowValue;
+      if (value === null) {
+        continue;
+      }
+
+      var existingRowValue;
+      if (isColumn) {
+        existingRowValue = matrix[markIndex][rowOrColumnIndex];
+      } else {
+        existingRowValue = matrix[rowOrColumnIndex][markIndex];
+      }
+      if (existingRowValue !== value) {
+        changed = true;
         if (isColumn) {
-          existingRowValue = matrix[markIndex][rowOrColumnIndex];
+          setMatrixCell(candidatePuzzle, markIndex, rowOrColumnIndex, value);
         } else {
-          existingRowValue = matrix[rowOrColumnIndex][markIndex];
-        }
-        if (existingRowValue !== value) {
-          changed = true;
-          if (isColumn) {
-            setMatrixCell(candidatePuzzle, markIndex, rowOrColumnIndex, value);
-          } else {
-            setMatrixCell(candidatePuzzle, rowOrColumnIndex, markIndex, value);
-          }
+          setMatrixCell(candidatePuzzle, rowOrColumnIndex, markIndex, value);
         }
       }
     }
     return changed;
   }
+
+  this.createSolverFromPuzzle = function (puzzle) {
+    return new PuzzleSolver({
+      rows: puzzle.rowHints.map(function (h) { return _.pluck(h, 'value'); }),
+      cols: puzzle.colHints.map(function (h) { return _.pluck(h, 'value'); }),
+    });
+  };
 
   this.solutionsForPuzzle = function (hints, options) {
     function runRounds (solver, bruteForceArgs) {

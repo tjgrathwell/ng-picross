@@ -27,6 +27,14 @@
     width: $cell-width;
     height: $cell-width;
     white-space: nowrap;
+
+    &.highlighted {
+      .row-hint-number, .col-hint-number {
+        &, .off {
+          color: blue;
+        }
+      }
+    }
   }
 
   .col-hint {

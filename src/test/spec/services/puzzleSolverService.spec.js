@@ -1,7 +1,7 @@
 'use strict';
 
 describe('Service: puzzleSolverService', function () {
-  beforeEach(injectIntoThis('$timeout', 'puzzleSolverService', 'constantsService'));
+  beforeEach(injectIntoThis('$timeout', 'puzzleSolverService', 'constantsService', 'puzzleService'));
 
   function stringify(puzzleBoard, onState) {
     onState = onState || CellStates.x;
@@ -17,6 +17,73 @@ describe('Service: puzzleSolverService', function () {
   var CellStates;
   beforeEach(function () {
     CellStates = this.constantsService.CellStates;
+  });
+
+  describe('#hasUnmarkedRequiredCells', function () {
+    var puzzle;
+    var solver;
+    beforeEach(function () {
+      var solution = [
+        ['x', 'x', ' '],
+        ['x', ' ', ' '],
+        [' ', ' ', ' '],
+      ];
+
+      puzzle = this.puzzleService.makePuzzle(solution);
+    });
+
+    describe('when no spaces have been filled in', function () {
+      beforeEach(function () {
+        solver = this.puzzleSolverService.createSolverFromPuzzle(puzzle);
+      });
+
+      describe('rows', function () {
+        it('returns true if a row has cells that could be marked', function () {
+          expect(solver.hasUnmarkedRequiredCells(puzzle, 0, false)).toBeTruthy();
+        });
+
+        it('returns false if a row has no cells that could be marked', function () {
+          expect(solver.hasUnmarkedRequiredCells(puzzle, 1, false)).toBeFalsy();
+        });
+      });
+
+      describe('cols', function () {
+        it('returns true if a column has cells that could be marked', function () {
+          expect(solver.hasUnmarkedRequiredCells(puzzle, 0, true)).toBeTruthy();
+        });
+
+        it('returns false if a column has no cells that could be marked', function () {
+          expect(solver.hasUnmarkedRequiredCells(puzzle, 1, true)).toBeFalsy();
+        });
+      });
+    });
+
+    describe('when spaces have been filled in', function () {
+      beforeEach(function () {
+        puzzle.board[0][0].value = puzzle.board[0][0].displayValue = CellStates.x;
+        solver = this.puzzleSolverService.createSolverFromPuzzle(puzzle);
+      });
+
+      describe('rows', function () {
+        it('returns true if a row has cells that could be marked', function () {
+          expect(solver.hasUnmarkedRequiredCells(puzzle, 0, false)).toBeTruthy();
+        });
+
+        it('returns false if a row has no cells that could be marked', function () {
+          expect(solver.hasUnmarkedRequiredCells(puzzle, 1, false)).toBeFalsy();
+        });
+      });
+
+      describe('cols', function () {
+        it('returns true if a column has cells that could be marked', function () {
+          expect(solver.hasUnmarkedRequiredCells(puzzle, 0, true)).toBeTruthy();
+        });
+
+        it('returns false if a column has no cells that could be marked', function () {
+          expect(solver.hasUnmarkedRequiredCells(puzzle, 1, true)).toBeFalsy();
+        });
+      });
+    });
   });
 
   describe('#arrangementsForHint', function () {

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('ngPicrossApp').directive('puzzle', function (constantsService, puzzleService, puzzleHistoryService) {
+angular.module('ngPicrossApp').directive('puzzle', function (constantsService, puzzleService, puzzleHistoryService, puzzleSolverService) {
   return {
     restrict: 'E',
     templateUrl: 'app/views/directives/puzzle.html',
@@ -60,6 +60,11 @@ angular.module('ngPicrossApp').directive('puzzle', function (constantsService, p
         return handler;
       }
 
+      var solver;
+      $scope.$watch('puzzle', function (newPuzzle) {
+        solver = puzzleSolverService.createSolverFromPuzzle(newPuzzle);
+      });
+
       $scope.mouseupBoard = disableIfReadonly(function () {
         if (drag) {
           drag = {};
@@ -114,6 +119,14 @@ angular.module('ngPicrossApp').directive('puzzle', function (constantsService, p
           }
         }
       });
+
+      $scope.shouldHighlightRow = function (rowIndex) {
+        return solver.hasUnmarkedRequiredCells($scope.puzzle, rowIndex, false);
+      };
+
+      $scope.shouldHighlightCol = function (colIndex) {
+        return solver.hasUnmarkedRequiredCells($scope.puzzle, colIndex, true);
+      };
 
       $scope.cellClasses = function (rowIndex, colIndex) {
         var cellValue = $scope.puzzle.board[rowIndex][colIndex].displayValue;
