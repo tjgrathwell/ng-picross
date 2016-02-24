@@ -11,6 +11,7 @@ exports.config = {
     'browserName': process.env.CI ? 'firefox' : 'chrome'
   },
 
+  directConnect: true,
   framework: 'jasmine2',
   baseUrl: 'http://localhost:3000',
 

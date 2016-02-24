@@ -20,7 +20,11 @@ function listFiles(options) {
   var webpackConfig = {
     module: {
       loaders: [
-        {test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader'}
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          loader: 'babel?presets[]=es2015',
+        }
       ]
     },
     output: {
@@ -45,9 +49,8 @@ function listFiles(options) {
     gulp.src(srcFiles).pipe($.angularFilesort()),
     gulp.src(path.join(conf.paths.src, '/**/specHelper.js')),
     templates,
-    gulp.src([
-      path.join(conf.paths.src, '/test/spec/**/*.spec.js'),
-    ]).pipe(webpack(webpackConfig))
+    gulp.src(path.join(conf.paths.src, '/test/spec/**/*.spec.js'))
+      .pipe(webpack(webpackConfig))
   );
 
   if (options && options.watch) {
