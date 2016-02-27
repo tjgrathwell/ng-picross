@@ -3,6 +3,37 @@
   text-align: center;
 }
 
+.puzzle-container {
+  text-align: center;
+  position: relative;
+
+  puzzle {
+    text-align: right;
+    display: inline-block;
+  }
+}
+
+.show-clues-toggle {
+  border-radius: 50%;
+  height: 24px;
+  width: 24px;
+  background-color: transparent;
+  -webkit-appearance:none;
+  outline: none;
+  margin-top: 5px;
+  border: 1px solid #AAA;
+
+  &:hover {
+    background-color: #EEE;
+    cursor: pointer;
+  }
+
+  &.active {
+    background-color: black;
+    color: white;
+  }
+}
+
 .board {
   $cell-width: 20px;
   $cell-border: 1px solid grey;
@@ -17,7 +48,7 @@
   }
 
   border-collapse: collapse;
-  margin: 40px auto;
+  margin: 40px auto 0 auto;
   text-align: center;
   font-size: 0;
 

@@ -6,12 +6,14 @@ angular.module('ngPicrossApp').directive('puzzle', function (constantsService, p
     templateUrl: 'app/views/directives/puzzle.html',
     scope: {
       puzzle: '=',
+      allowClues: '@',
       solved: '='
     },
     link: function ($scope, $element, $attrs) {
       var drag = {};
       var CellStates = constantsService.CellStates;
       var Button = constantsService.Button;
+      $scope.showClues = false;
 
       function applyOverlay (cells) {
         discardOverlayValues();
@@ -121,10 +123,16 @@ angular.module('ngPicrossApp').directive('puzzle', function (constantsService, p
       });
 
       $scope.shouldHighlightRow = function (rowIndex) {
+        if (!$scope.showClues) {
+          return false;
+        }
         return solver.hasUnmarkedRequiredCells($scope.puzzle, rowIndex, false);
       };
 
       $scope.shouldHighlightCol = function (colIndex) {
+        if (!$scope.showClues) {
+          return false;
+        }
         return solver.hasUnmarkedRequiredCells($scope.puzzle, colIndex, true);
       };
 
@@ -135,6 +143,10 @@ angular.module('ngPicrossApp').directive('puzzle', function (constantsService, p
           off: cellValue === CellStates.b
         };
       };
+
+      $scope.toggleShowClues = function () {
+        $scope.showClues = !$scope.showClues;
+      }
     }
   };
 });

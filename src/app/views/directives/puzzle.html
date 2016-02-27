@@ -28,3 +28,8 @@
     </td>
   </tr>
 </table>
+
+<button ng-if="allowClues"
+        class="show-clues-toggle"
+        ng-class="{active: showClues}"
+        ng-click="toggleShowClues()">?</button>
