@@ -84,6 +84,34 @@ describe('Service: puzzleSolverService', function () {
         });
       });
     });
+
+    describe('when an entire line has been filled in', function () {
+      describe('rows', function () {
+        beforeEach(function () {
+          puzzle.board[0][0].value = puzzle.board[0][0].displayValue = CellStates.x;
+          puzzle.board[0][1].value = puzzle.board[0][1].displayValue = CellStates.x;
+          puzzle.board[0][2].value = puzzle.board[0][2].displayValue = CellStates.b;
+          solver = this.puzzleSolverService.createSolverFromPuzzle(puzzle);
+        });
+
+        it('returns false because there are no cells left to be marked', function () {
+          expect(solver.hasUnmarkedRequiredCells(puzzle, 0, false)).toBeFalsy();
+        });
+      });
+
+      describe('cols', function () {
+        beforeEach(function () {
+          puzzle.board[0][0].value = puzzle.board[0][0].displayValue = CellStates.x;
+          puzzle.board[1][0].value = puzzle.board[1][0].displayValue = CellStates.x;
+          puzzle.board[2][0].value = puzzle.board[2][0].displayValue = CellStates.b;
+          solver = this.puzzleSolverService.createSolverFromPuzzle(puzzle);
+        });
+
+        it('returns false because there are no cells left to be marked', function () {
+          expect(solver.hasUnmarkedRequiredCells(puzzle, 0, true)).toBeFalsy();
+        });
+      });
+    });
   });
 
   describe('#arrangementsForHint', function () {

@@ -205,7 +205,7 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
           if (cell.displayValue === 'x') {
             return 1;
           }
-          if (cell.displayValue === 'o') {
+          if (cell.displayValue === 'b') {
             return 0;
           }
           return null;
