@@ -13,6 +13,8 @@ angular.module('ngPicrossApp').directive('puzzle', function (constantsService, p
       var drag = {};
       var CellStates = constantsService.CellStates;
       var Button = constantsService.Button;
+      var highlighter;
+
       $scope.showClues = false;
 
       function applyOverlay (cells) {
@@ -62,9 +64,8 @@ angular.module('ngPicrossApp').directive('puzzle', function (constantsService, p
         return handler;
       }
 
-      var solver;
       $scope.$watch('puzzle', function (newPuzzle) {
-        solver = puzzleSolverService.createSolverFromPuzzle(newPuzzle);
+        highlighter = new HintHighlighter(newPuzzle);
       });
 
       $scope.mouseupBoard = disableIfReadonly(function () {
@@ -117,23 +118,18 @@ angular.module('ngPicrossApp').directive('puzzle', function (constantsService, p
             } while (cellCount !== 0);
           }
           if (cells && !angular.equals(drag.prevDragCells, cells)) {
+            highlighter.invalidateCell(rowIndex, colIndex);
             applyOverlay(cells);
           }
         }
       });
 
       $scope.shouldHighlightRow = function (rowIndex) {
-        if (!$scope.showClues) {
-          return false;
-        }
-        return solver.hasUnmarkedRequiredCells($scope.puzzle, rowIndex, false);
+        return $scope.showClues && highlighter.rowHighlighted(rowIndex);
       };
 
       $scope.shouldHighlightCol = function (colIndex) {
-        if (!$scope.showClues) {
-          return false;
-        }
-        return solver.hasUnmarkedRequiredCells($scope.puzzle, colIndex, true);
+        return $scope.showClues && highlighter.colHighlighted(colIndex);
       };
 
       $scope.cellClasses = function (rowIndex, colIndex) {
@@ -146,7 +142,32 @@ angular.module('ngPicrossApp').directive('puzzle', function (constantsService, p
 
       $scope.toggleShowClues = function () {
         $scope.showClues = !$scope.showClues;
-      }
+      };
     }
   };
+
+  function HintHighlighter (puzzle) {
+    var rowCache = [];
+    var colCache = [];
+    var solver = puzzleSolverService.createSolverFromPuzzle(puzzle);
+
+    this.invalidateCell = function (rowIndex, colIndex) {
+      rowCache[rowIndex] = undefined;
+      colCache[colIndex] = undefined;
+    };
+
+    this.rowHighlighted = function (rowIndex) {
+      if (rowCache[rowIndex] === undefined) {
+        rowCache[rowIndex] = solver.hasUnmarkedRequiredCells(puzzle, rowIndex, false);
+      }
+      return rowCache[rowIndex];
+    };
+
+    this.colHighlighted = function (colIndex) {
+      if (colCache[colIndex] === undefined) {
+        colCache[colIndex] = solver.hasUnmarkedRequiredCells(puzzle, colIndex, true);
+      }
+      return colCache[colIndex];
+    };
+  }
 });
