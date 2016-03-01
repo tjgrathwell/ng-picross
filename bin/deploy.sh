@@ -1,4 +1,8 @@
-git branch -D gh-pages
+set -e
+
+if git rev-parse --verify gh-pages &> /dev/null; then
+  git branch -D gh-pages
+fi
 
 git checkout -b gh-pages
 
