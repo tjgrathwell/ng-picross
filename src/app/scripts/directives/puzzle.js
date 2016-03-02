@@ -14,6 +14,7 @@ angular.module('ngPicrossApp').directive('puzzle', function (constantsService, p
       var CellStates = constantsService.CellStates;
       var Button = constantsService.Button;
       var highlighter;
+      var hoveredRowIndex, hoveredColIndex;
 
       $scope.showClues = false;
 
@@ -93,6 +94,8 @@ angular.module('ngPicrossApp').directive('puzzle', function (constantsService, p
       });
 
       $scope.mousemoveCell = disableIfReadonly(function (rowIndex, colIndex) {
+        hoveredRowIndex = rowIndex;
+        hoveredColIndex = colIndex;
         if (drag.startCell) {
           var startRowIx = drag.startCell.rowIndex;
           var startColIx = drag.startCell.colIndex;
@@ -124,19 +127,26 @@ angular.module('ngPicrossApp').directive('puzzle', function (constantsService, p
         }
       });
 
-      $scope.shouldHighlightRow = function (rowIndex) {
-        return $scope.showClues && highlighter.rowHighlighted(rowIndex);
+      $scope.classesForHintRow = function (rowIndex) {
+        return {
+          highlighted: $scope.showClues && highlighter.rowHighlighted(rowIndex),
+          'highlighted-line': rowIndex === hoveredRowIndex
+        };
       };
 
-      $scope.shouldHighlightCol = function (colIndex) {
-        return $scope.showClues && highlighter.colHighlighted(colIndex);
+      $scope.classesForHintCol = function (colIndex) {
+        return {
+          highlighted: $scope.showClues && highlighter.colHighlighted(colIndex),
+          'highlighted-line': colIndex === hoveredColIndex
+        };
       };
 
       $scope.cellClasses = function (rowIndex, colIndex) {
         var cellValue = $scope.puzzle.board[rowIndex][colIndex].displayValue;
         return {
           on: cellValue === CellStates.x,
-          off: cellValue === CellStates.b
+          off: cellValue === CellStates.b,
+          'highlighted-line': (hoveredRowIndex === rowIndex) || (hoveredColIndex === colIndex)
         };
       };
 

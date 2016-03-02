@@ -2,7 +2,7 @@
   <tr>
     <td></td>
     <td class='col-hint'
-        ng-class="{highlighted: shouldHighlightCol($index)}"
+        ng-class="classesForHintCol($index)"
         ng-repeat="hints in puzzle.colHints track by $index">
       <div class='col-hint-number'
            ng-repeat="hint in hints track by $index"
@@ -13,7 +13,7 @@
       ng-init="rowIndex = $index"
       ng-repeat="row in puzzle.board track by $index">
     <td class='row-hint'
-        ng-class="{highlighted: shouldHighlightRow(rowIndex)}">
+        ng-class="classesForHintRow($index)">
       <span class='row-hint-number'
             ng-repeat="hint in puzzle.rowHints[rowIndex] track by $index"
             ng-class="{off: hint.solved}">{{hint.value}}</span>

@@ -59,6 +59,10 @@
     height: $cell-width;
     white-space: nowrap;
 
+    &.highlighted-line {
+      background-color: #f7f7f7;
+    }
+
     &.highlighted {
       .row-hint-number, .col-hint-number {
         &, .off {
@@ -105,6 +109,10 @@
     background-color: #ddd;
     [readonly] & {
       pointer-events: none;
+    }
+
+    &.highlighted-line {
+      background-color: #d6d6d6;
     }
 
     &:hover {
