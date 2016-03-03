@@ -6,7 +6,7 @@ angular.module('ngPicrossApp').directive('puzzle', function (constantsService, p
     templateUrl: 'app/views/directives/puzzle.html',
     scope: {
       puzzle: '=',
-      allowClues: '@',
+      showPuzzleActions: '@',
       solved: '='
     },
     link: function ($scope, $element, $attrs) {
@@ -148,6 +148,15 @@ angular.module('ngPicrossApp').directive('puzzle', function (constantsService, p
           off: cellValue === CellStates.b,
           'highlighted-line': (hoveredRowIndex === rowIndex) || (hoveredColIndex === colIndex)
         };
+      };
+
+      $scope.confirmPuzzleReset = function () {
+        var answer = window.confirm("Reset this puzzle?");
+        if (answer) {
+          onEveryCell(function (cell) {
+            cell.displayValue = cell.value = CellStates.o;
+          });
+        }
       };
 
       $scope.toggleShowClues = function () {

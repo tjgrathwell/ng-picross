@@ -29,7 +29,9 @@
   </tr>
 </table>
 
-<button ng-if="allowClues"
-        class="show-clues-toggle"
-        ng-class="{active: showClues}"
-        ng-click="toggleShowClues()">?</button>
+<div class="puzzle-actions" ng-if="showPuzzleActions">
+  <button ng-click="confirmPuzzleReset()">X</button>
+
+  <button ng-class="{active: showClues}"
+          ng-click="toggleShowClues()">?</button>
+</div>
