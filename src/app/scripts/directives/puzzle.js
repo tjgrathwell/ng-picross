@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('ngPicrossApp').directive('puzzle', function (constantsService, puzzleService, puzzleHistoryService, puzzleSolverService) {
+angular.module('ngPicrossApp').directive('puzzle', function ($location, constantsService, puzzleService, puzzleHistoryService, puzzleSolverService) {
   return {
     restrict: 'E',
     templateUrl: 'app/views/directives/puzzle.html',

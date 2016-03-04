@@ -18,8 +18,7 @@
   "smarttabs": true,
   "globals": {
     "angular": false,
-    "injectIntoThis": false,
-    "xit": false,
+    "prompt": false,
     "_": false
   }
 }

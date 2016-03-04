@@ -27,5 +27,7 @@ angular.module('ngPicrossApp').controller('PuzzleBoardCtrl', function ($scope, $
     }
   };
 
+  $scope.showRandomLink = $location.url() === '/random';
+
   startPuzzle(puzzle);
 });
