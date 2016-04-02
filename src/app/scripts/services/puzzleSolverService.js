@@ -469,8 +469,8 @@ angular.module('ngPicrossApp').service('puzzleSolverService', function ($q, $tim
 
   this.createSolverFromPuzzle = function (puzzle) {
     return new PuzzleSolver({
-      rows: puzzle.rowHints.map(function (h) { return _.pluck(h, 'value'); }),
-      cols: puzzle.colHints.map(function (h) { return _.pluck(h, 'value'); }),
+      rows: puzzle.rowHints.map(function (h) { return _.map(h, 'value'); }),
+      cols: puzzle.colHints.map(function (h) { return _.map(h, 'value'); }),
     });
   };
 

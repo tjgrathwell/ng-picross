@@ -94,8 +94,8 @@ angular.module('ngPicrossApp').controller('PuzzleSolverCtrl', function ($scope, 
 
   if ($route.current.params.puzzleId) {
     var puzzle = puzzleCatalogService.getPuzzle(parseInt($route.current.params.puzzleId, 10));
-    var rowHintString = _.map(puzzle.rowHints, function (rowHint) { return _.pluck(rowHint, 'value').join(' '); }).join("\n");
-    var colHintString = _.map(puzzle.colHints, function (colHint) { return _.pluck(colHint, 'value').join(' '); }).join("\n");
+    var rowHintString = _.map(puzzle.rowHints, function (rowHint) { return _.map(rowHint, 'value').join(' '); }).join("\n");
+    var colHintString = _.map(puzzle.colHints, function (colHint) { return _.map(colHint, 'value').join(' '); }).join("\n");
     $scope.solverHints = rowHintString + "\n\n" + colHintString;
 
     $scope.solvePuzzle();

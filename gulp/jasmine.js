@@ -43,9 +43,11 @@ function listFiles(options) {
   }));
 
   var srcFiles = path.join(conf.paths.src, '/app/**/*.js');
+  var npmFiles = ['node_modules/lodash/lodash.js'];
 
   var mergedStreams = merge2(
     gulp.src(wiredep(wiredepOptions).js),
+    gulp.src(npmFiles),
     gulp.src(srcFiles).pipe($.angularFilesort()),
     gulp.src(path.join(conf.paths.src, '/**/specHelper.js')),
     templates,

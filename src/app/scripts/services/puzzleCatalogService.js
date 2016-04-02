@@ -54,10 +54,10 @@ angular.module('ngPicrossApp').service('puzzleCatalogService', function ($q, con
     var puzzleObj = puzzleService.makePuzzle(puzzle);
     var hints = {
       rows: puzzleObj.rowHints.map(function (hintObj) {
-        return _.pluck(hintObj, 'value');
+        return _.map(hintObj, 'value');
       }),
       cols: puzzleObj.colHints.map(function (hintObj) {
-        return _.pluck(hintObj, 'value');
+        return _.map(hintObj, 'value');
       })
     };
 

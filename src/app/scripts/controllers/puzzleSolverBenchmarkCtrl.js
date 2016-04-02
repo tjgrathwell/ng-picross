@@ -30,8 +30,8 @@ angular.module('ngPicrossApp').controller('PuzzleSolverBenchmarkCtrl', function 
     var puzzle = puzzleCatalogService.getPuzzle(listPuzzle.id);
 
     puzzleSolverService.solutionsForPuzzle({
-      rows: puzzle.rowHints.map(function (h) { return _.pluck(h, 'value'); }),
-      cols: puzzle.colHints.map(function (h) { return _.pluck(h, 'value'); })
+      rows: puzzle.rowHints.map(function (h) { return _.map(h, 'value'); }),
+      cols: puzzle.colHints.map(function (h) { return _.map(h, 'value'); })
     }).then(function (solutionData) {
       var solutions = solutionData.solutions;
       if (solutions.length !== 1) {

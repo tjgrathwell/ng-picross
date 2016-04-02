@@ -77,8 +77,8 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
   };
 
   this._annotateHints = function (hints, line) {
-    var forwardResult = this._computeHintAnnotationValues(_.pluck(hints, 'value'), line);
-    var backwardResult = this._computeHintAnnotationValues(_.pluck(hints.slice().reverse(), 'value'), line.slice().reverse());
+    var forwardResult = this._computeHintAnnotationValues(_.map(hints, 'value'), line);
+    var backwardResult = this._computeHintAnnotationValues(_.map(hints.slice().reverse(), 'value'), line.slice().reverse());
     backwardResult.reverse();
 
     for (var i = 0; i < hints.length; i++) {
@@ -147,10 +147,10 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
 
   this.annotateHintsForCellChanges = function (puzzle, cells) {
     var puzzleService = this;
-    _.uniq(_.pluck(cells, 'row')).forEach(function (rowIndex) {
+    _.uniq(_.map(cells, 'row')).forEach(function (rowIndex) {
       puzzleService._annotateHints(puzzle.rowHints[rowIndex], matrixService.row(puzzle.board, rowIndex));
     });
-    _.uniq(_.pluck(cells, 'col')).forEach(function (colIndex) {
+    _.uniq(_.map(cells, 'col')).forEach(function (colIndex) {
       puzzleService._annotateHints(puzzle.colHints[colIndex], matrixService.col(puzzle.board, colIndex));
     });
   };

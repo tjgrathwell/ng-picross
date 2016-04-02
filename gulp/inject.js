@@ -28,7 +28,12 @@ gulp.task('inject', ['scripts', 'styles'], function () {
     addRootSlash: false
   };
 
+  var npmScripts = gulp.src([
+    'node_modules/lodash/lodash.js'
+  ]);
+
   return gulp.src(path.join(conf.paths.src, '/*.html'))
+    .pipe($.inject(npmScripts,  {name: 'npm', addPrefix: '..', addRootSlash: false}))
     .pipe($.inject(injectStyles, injectOptions))
     .pipe($.inject(injectScripts, injectOptions))
     .pipe(wiredep(_.extend({}, conf.wiredep)))
