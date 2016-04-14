@@ -3,10 +3,10 @@
 var path = require('path');
 var gulp = require('gulp');
 var conf = require('./conf');
+var nodeModules = require('./nodeModules');
 
 var $ = require('gulp-load-plugins')();
 
-var wiredep = require('wiredep').stream;
 var _ = require('lodash');
 
 gulp.task('inject', ['scripts', 'styles'], function () {
@@ -28,14 +28,11 @@ gulp.task('inject', ['scripts', 'styles'], function () {
     addRootSlash: false
   };
 
-  var npmScripts = gulp.src([
-    'node_modules/lodash/lodash.js'
-  ]);
+  var npmScripts = gulp.src(nodeModules.paths);
 
   return gulp.src(path.join(conf.paths.src, '/*.html'))
     .pipe($.inject(npmScripts,  {name: 'npm', addPrefix: '..', addRootSlash: false}))
     .pipe($.inject(injectStyles, injectOptions))
     .pipe($.inject(injectScripts, injectOptions))
-    .pipe(wiredep(_.extend({}, conf.wiredep)))
     .pipe(gulp.dest(path.join(conf.paths.tmp, '/serve')));
 });

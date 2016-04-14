@@ -2,18 +2,13 @@ var gulp = require('gulp');
 var jasmineBrowser = require('gulp-jasmine-browser');
 var conf = require('./conf');
 var _ = require('lodash');
-var wiredep = require('wiredep');
 var path = require('path');
 var merge2 = require('merge2');
 var webpack = require('webpack-stream');
 var $ = require('gulp-load-plugins')();
+var nodeModules = require('./nodeModules');
 
 function listFiles(options) {
-  var wiredepOptions = _.extend({}, conf.wiredep, {
-    dependencies: true,
-    devDependencies: true
-  });
-
   var JasminePlugin = require('gulp-jasmine-browser/webpack/jasmine-plugin');
   var plugin = new JasminePlugin();
 
@@ -43,11 +38,12 @@ function listFiles(options) {
   }));
 
   var srcFiles = path.join(conf.paths.src, '/app/**/*.js');
-  var npmFiles = ['node_modules/lodash/lodash.js'];
+
+  var testOnlyScripts = ['node_modules/angular-mocks/angular-mocks.js'];
+  var npmScripts = nodeModules.paths.concat(testOnlyScripts);
 
   var mergedStreams = merge2(
-    gulp.src(wiredep(wiredepOptions).js),
-    gulp.src(npmFiles),
+    gulp.src(npmScripts),
     gulp.src(srcFiles).pipe($.angularFilesort()),
     gulp.src(path.join(conf.paths.src, '/**/specHelper.js')),
     templates,
