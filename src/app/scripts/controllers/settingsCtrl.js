@@ -10,4 +10,8 @@ angular.module('ngPicrossApp').controller('SettingsCtrl', function ($scope, stor
       storageService.setObj('settings', {});
     }
   }, true);
+
+  $scope.arrayOfSize = function (size) {
+    return Array(size);
+  };
 });

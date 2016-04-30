@@ -18,3 +18,28 @@
     </div>
   </form>
 </div>
+
+<div ng-if="properties.size.rows && properties.size.cols">
+  <table class='board'>
+    <tr>
+      <td></td>
+      <td class='col-hint'
+          ng-repeat="col in arrayOfSize(properties.size.cols) track by $index">
+        <div class='col-hint-number'
+             class="off">1</div>
+      </td>
+    </tr>
+    <tr class='row'
+        ng-init="rowIndex = $index"
+        ng-repeat="row in arrayOfSize(properties.size.rows) track by $index">
+      <td class='row-hint'>
+        <span class='row-hint-number'>1</span>
+      </td>
+      <td class='cell'
+          ng-repeat="col in arrayOfSize(properties.size.cols) track by $index"
+          class="off">
+      </td>
+    </tr>
+  </table>
+</div>
+
