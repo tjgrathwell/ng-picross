@@ -9,3 +9,7 @@ window.injectIntoThis = function () {
 };
 
 beforeEach(module('ngPicrossApp'));
+
+beforeEach(function () {
+  localStorage.clear();
+});
