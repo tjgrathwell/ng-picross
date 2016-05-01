@@ -53,6 +53,13 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, constant
         });
       }
 
+      function checkAndMarkSolved() {
+        $scope.solved = $scope.puzzle.solved();
+        if ($scope.solved && $scope.puzzle.fingerprint) {
+          puzzleHistoryService.markCompleted($scope.puzzle.fingerprint);
+        }
+      }
+
       function overlayBoardCell (rowIndex, colIndex, desiredValue) {
         $scope.puzzle.board[rowIndex][colIndex].displayValue = desiredValue;
       }
@@ -66,6 +73,8 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, constant
       }
 
       $scope.$watch('puzzle', function (newPuzzle) {
+        newPuzzle.restoreState();
+        checkAndMarkSolved();
         highlighter = new HintHighlighter(newPuzzle);
       });
 
@@ -73,10 +82,8 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, constant
         if (drag) {
           drag = {};
           commitOverlayValues();
-          $scope.solved = $scope.puzzle.solved();
-          if ($scope.solved && $scope.puzzle.fingerprint) {
-            puzzleHistoryService.markCompleted($scope.puzzle.fingerprint);
-          }
+          $scope.puzzle.saveState();
+          checkAndMarkSolved();
         }
       });
 

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('ngPicrossApp').service('puzzleService', function (constantsService, matrixService) {
+angular.module('ngPicrossApp').service('puzzleService', function (constantsService, matrixService, storageService) {
   var CellStates = constantsService.CellStates;
   var puzzleService = this;
 
@@ -57,6 +57,29 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
       rowHints: rowHints(solution),
       colHints: colHints(solution),
       fingerprint: fingerprint,
+      restoreState: function () {
+        var savedState = storageService.get('puzzleState.' + this.fingerprint);
+        if (!savedState) {
+          return;
+        }
+
+        var board = this.board;
+        savedState.split(',').forEach(function (savedRow, rowIndex) {
+          return savedRow.split('').forEach(function (savedCell, colIndex) {
+            var transformedCell = savedCell === ' ' ? '' : savedCell;
+            var boardCell = board[rowIndex][colIndex];
+            boardCell.value = boardCell.displayValue = transformedCell;
+          });
+        });
+      },
+      saveState: function () {
+        var savedState = this.board.map(function (row) {
+          return row.map(function (cell) {
+            return cell.value || ' ';
+          }).join('');
+        }).join(',');
+        storageService.set('puzzleState.' + this.fingerprint, savedState);
+      },
       markAsSolved: function () {
         var puzzle = this;
         _.each(this.solution, function (solutionRow, rowIndex) {
