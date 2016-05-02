@@ -31,4 +31,34 @@ angular.module('ngPicrossApp').service('storageService', function () {
   this.setObj = function (key, val) {
     this.set(key, JSON.stringify(val));
   };
+
+  function keysMatching(prefix) {
+    var keysMatching = [];
+    for (var i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      if (key.match(new RegExp('^' + prefix))) {
+        keysMatching.push(key);
+      }
+    }
+    return keysMatching;
+  }
+
+  this.countKeysMatching = function (prefix) {
+    if (!this.supported) {
+      return 0;
+    }
+
+    return keysMatching(prefix).length;
+  };
+
+  this.clearKeysMatching = function (prefix) {
+    if (!this.supported) {
+      return;
+    }
+
+    var keysToRemove = keysMatching(prefix);
+    keysToRemove.forEach(function (key) {
+      localStorage.removeItem(key);
+    });
+  };
 });
