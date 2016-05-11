@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('ngPicrossApp').directive('puzzle', function ($location, constantsService, puzzleService, puzzleHistoryService, puzzleSolverService) {
+angular.module('ngPicrossApp').directive('puzzle', function ($location, $timeout, constantsService, puzzleService, puzzleHistoryService, puzzleSolverService) {
   return {
     restrict: 'E',
     templateUrl: 'app/views/directives/puzzle.html',
@@ -13,10 +13,11 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, constant
       var drag = {};
       var CellStates = constantsService.CellStates;
       var Button = constantsService.Button;
-      var highlighter;
+      var highlighter, puzzleTimer;
       var hoveredRowIndex, hoveredColIndex;
 
       $scope.showClues = false;
+      $scope.formattedTime = null;
 
       function applyOverlay (cells) {
         discardOverlayValues();
@@ -57,6 +58,9 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, constant
         $scope.solved = $scope.puzzle.solved();
         if ($scope.solved && $scope.puzzle.fingerprint) {
           puzzleHistoryService.markCompleted($scope.puzzle.fingerprint);
+          if (puzzleTimer) {
+            puzzleTimer.stop();
+          }
         }
       }
 
@@ -76,6 +80,21 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, constant
         newPuzzle.restoreState();
         checkAndMarkSolved();
         highlighter = new HintHighlighter(newPuzzle);
+        if (puzzleTimer) {
+          puzzleTimer.stop();
+        }
+        if (!$scope.solved) {
+          puzzleTimer = new PuzzleTimer();
+          puzzleTimer.run(function () {
+            $scope.formattedTime = puzzleTimer.formattedValue();
+          });
+        }
+      });
+
+      $scope.$on('$destroy', function () {
+        if (puzzleTimer) {
+          puzzleTimer.stop();
+        }
       });
 
       $scope.mouseupBoard = disableIfReadonly(function () {
@@ -171,6 +190,49 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, constant
       };
     }
   };
+
+  function PuzzleTimer () {
+    var timerPromise = null;
+    var startTime = null;
+    var self = this;
+
+    this.run = function (cb) {
+      if (!startTime) {
+        startTime = new Date();
+      }
+
+      timerPromise = $timeout(function () {
+        cb();
+        self.run(cb);
+      }, 50);
+    };
+
+    function pad(num, size) {
+      var s = num + "";
+      while (s.length < size) {
+        s = "0" + s;
+      }
+      return s;
+    }
+
+    this.formattedValue = function () {
+      var now = new Date();
+      var diff = now - startTime;
+      var totalSeconds = diff / 1000;
+      var TIME_MULTIPLIER = 60;
+      var totalMinutes = totalSeconds / TIME_MULTIPLIER;
+      var totalHours = totalMinutes / TIME_MULTIPLIER;
+
+      var justSeconds = pad(Math.floor(totalSeconds % TIME_MULTIPLIER), 2);
+      var justMinutes = pad(Math.floor(totalMinutes % TIME_MULTIPLIER), 2);
+      var justHours = pad(Math.floor(totalHours), 2);
+      return justHours + ':' + justMinutes + ':' + justSeconds;
+    };
+
+    this.stop = function () {
+      $timeout.cancel(timerPromise);
+    };
+  }
 
   function HintHighlighter (puzzle) {
     var rowCache = [];
