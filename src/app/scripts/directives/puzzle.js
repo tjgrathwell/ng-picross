@@ -13,8 +13,9 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, $timeout
       var drag = {};
       var CellStates = constantsService.CellStates;
       var Button = constantsService.Button;
-      var highlighter, puzzleTimer;
+      var highlighter;
       var hoveredRowIndex, hoveredColIndex;
+      var puzzleTimer = window.PROTRACTOR_TEST ? new FakePuzzleTimer() : new PuzzleTimer();
 
       $scope.showClues = false;
       $scope.formattedTime = null;
@@ -58,9 +59,7 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, $timeout
         $scope.solved = $scope.puzzle.solved();
         if ($scope.solved && $scope.puzzle.fingerprint) {
           puzzleHistoryService.markCompleted($scope.puzzle.fingerprint);
-          if (puzzleTimer) {
-            puzzleTimer.stop();
-          }
+          puzzleTimer.stop();
         }
       }
 
@@ -80,21 +79,16 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, $timeout
         newPuzzle.restoreState();
         checkAndMarkSolved();
         highlighter = new HintHighlighter(newPuzzle);
-        if (puzzleTimer) {
-          puzzleTimer.stop();
-        }
+        puzzleTimer.stop();
         if (!$scope.solved) {
-          puzzleTimer = new PuzzleTimer();
-          puzzleTimer.run(function () {
+          puzzleTimer.start(function () {
             $scope.formattedTime = puzzleTimer.formattedValue();
           });
         }
       });
 
       $scope.$on('$destroy', function () {
-        if (puzzleTimer) {
-          puzzleTimer.stop();
-        }
+        puzzleTimer.stop();
       });
 
       $scope.mouseupBoard = disableIfReadonly(function () {
@@ -192,21 +186,6 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, $timeout
   };
 
   function PuzzleTimer () {
-    var timerPromise = null;
-    var startTime = null;
-    var self = this;
-
-    this.run = function (cb) {
-      if (!startTime) {
-        startTime = new Date();
-      }
-
-      timerPromise = $timeout(function () {
-        cb();
-        self.run(cb);
-      }, 50);
-    };
-
     function pad(num, size) {
       var s = num + "";
       while (s.length < size) {
@@ -214,6 +193,25 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, $timeout
       }
       return s;
     }
+
+    var timerPromise, startTime;
+    var self = this;
+
+    this.start = function (cb) {
+      startTime = new Date();
+      this.run(cb);
+    };
+
+    this.run = function (cb) {
+      timerPromise = $timeout(function () {
+        cb();
+        self.run(cb);
+      }, 50);
+    };
+
+    this.stop = function () {
+      $timeout.cancel(timerPromise);
+    };
 
     this.formattedValue = function () {
       var now = new Date();
@@ -228,10 +226,16 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, $timeout
       var justHours = pad(Math.floor(totalHours), 2);
       return justHours + ':' + justMinutes + ':' + justSeconds;
     };
+  }
 
-    this.stop = function () {
-      $timeout.cancel(timerPromise);
-    };
+  function FakePuzzleTimer () {
+    var timer = new PuzzleTimer();
+    for (var p in timer) {
+      if (timer.hasOwnProperty(p) && typeof(timer[p]) === 'function') {
+        timer[p] = angular.noop;
+      }
+    }
+    return timer;
   }
 
   function HintHighlighter (puzzle) {

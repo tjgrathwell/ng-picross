@@ -1,6 +1,7 @@
 describe('ng-picross', function() {
   beforeEach(function() {
     browser.get('/');
+    browser.executeScript('window.PROTRACTOR_TEST = true;');
   });
 
   describe("visiting the first puzzle", function () {
