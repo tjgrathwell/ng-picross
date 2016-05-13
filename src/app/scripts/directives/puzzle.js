@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('ngPicrossApp').directive('puzzle', function ($location, $timeout, constantsService, puzzleService, puzzleHistoryService, puzzleSolverService) {
+angular.module('ngPicrossApp').directive('puzzle', function ($location, $timeout, constantsService, puzzleService, puzzleHistoryService, puzzleSolverService, storageService) {
   return {
     restrict: 'E',
     templateUrl: 'app/views/directives/puzzle.html',
@@ -15,9 +15,10 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, $timeout
       var Button = constantsService.Button;
       var highlighter;
       var hoveredRowIndex, hoveredColIndex;
-      var puzzleTimer = window.PROTRACTOR_TEST ? new FakePuzzleTimer() : new PuzzleTimer();
+      var puzzleTimer = $scope.showTimer ? new PuzzleTimer() : new FakePuzzleTimer();
 
       $scope.showClues = false;
+      $scope.showTimer = !storageService.getObj('settings').hideTimers;
       $scope.formattedTime = null;
 
       function applyOverlay (cells) {

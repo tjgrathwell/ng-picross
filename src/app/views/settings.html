@@ -6,6 +6,11 @@
           ng-disabled="numberOfPartialPuzzleSolutions() === 0"
           ng-bind="clearPartialPuzzleSolutionsText()"></button>
 
+  <h3>Timers</h3>
+  <label>
+    <input type="checkbox" ng-model="properties.hideTimers"> Hide Timers
+  </label>
+
   <h3>Random Puzzles</h3>
   <form name="sizeForm">
     <label>
