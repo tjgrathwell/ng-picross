@@ -29,6 +29,10 @@ angular.module('ngPicrossApp').service('timerService', function ($timeout) {
       $timeout.cancel(timerPromise);
     };
 
+    this.reset = function () {
+      startTime = new Date();
+    };
+
     this.formattedValue = function () {
       var now = new Date();
       var diff = now - startTime;

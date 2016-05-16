@@ -175,6 +175,7 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, constant
       $scope.confirmPuzzleReset = function () {
         var answer = window.confirm("Reset this puzzle?");
         if (answer) {
+          puzzleTimer.reset();
           onEveryCell(function (cell) {
             cell.displayValue = cell.value = CellStates.o;
           });
