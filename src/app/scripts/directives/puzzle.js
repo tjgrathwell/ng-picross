@@ -21,6 +21,7 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, constant
       $scope.formattedTime = null;
 
       var puzzleTimer = timerService.createTimer($scope.showTimer);
+      var dragHandler = new DragHandler();
 
       function applyOverlay (cells) {
         discardOverlayValues();
@@ -118,34 +119,10 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, constant
       $scope.mousemoveCell = disableIfReadonly(function (rowIndex, colIndex) {
         hoveredRowIndex = rowIndex;
         hoveredColIndex = colIndex;
-        if (drag.startCell) {
-          var startRowIx = drag.startCell.rowIndex;
-          var startColIx = drag.startCell.colIndex;
-          var sign, cellCount, cells;
-          if (rowIndex === startRowIx) {
-            cellCount = colIndex - drag.startCell.colIndex;
-            sign = Math.min(1, Math.max(-1, cellCount));
-            cellCount += sign;
-            cells = [];
-            do {
-              cellCount -= sign;
-              cells.push({row: startRowIx, col: startColIx + cellCount});
-            } while (cellCount !== 0);
-          }
-          if (colIndex === startColIx) {
-            cellCount = rowIndex - drag.startCell.rowIndex;
-            sign = Math.min(1, Math.max(-1, cellCount));
-            cellCount += sign;
-            cells = [];
-            do {
-              cellCount -= sign;
-              cells.push({row: startRowIx + cellCount, col: startColIx});
-            } while (cellCount !== 0);
-          }
-          if (cells && !angular.equals(drag.prevDragCells, cells)) {
-            highlighter.invalidateCell(rowIndex, colIndex);
-            applyOverlay(cells);
-          }
+        var cells = dragHandler.draggedCells(drag, rowIndex, colIndex);
+        if (cells && !angular.equals(drag.prevDragCells, cells)) {
+          highlighter.invalidateCell(rowIndex, colIndex);
+          applyOverlay(cells);
         }
       });
 
@@ -187,6 +164,39 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, constant
       };
     }
   };
+
+  function DragHandler() {
+    function _draggedCells(startIndex, currentIndex, makeCell) {
+      var cellCount = currentIndex - startIndex;
+      var sign = Math.min(1, Math.max(-1, cellCount));
+      cellCount += sign;
+      var cells = [];
+      do {
+        cellCount -= sign;
+        cells.push(makeCell(cellCount));
+      } while (cellCount !== 0);
+      return cells;
+    }
+
+    this.draggedCells = function (drag, rowIndex, colIndex) {
+      if (!drag.startCell) {
+        return;
+      }
+
+      var startRowIx = drag.startCell.rowIndex;
+      var startColIx = drag.startCell.colIndex;
+      if (rowIndex === startRowIx) {
+        return _draggedCells(startColIx, colIndex, function (cellCount) {
+          return {row: startRowIx, col: startColIx + cellCount};
+        });
+      }
+      if (colIndex === startColIx) {
+        return _draggedCells(startRowIx, rowIndex, function (cellCount) {
+          return {row: startRowIx + cellCount, col: startColIx};
+        });
+      }
+    };
+  }
 
   function HintHighlighter (puzzle) {
     var rowCache = [];
