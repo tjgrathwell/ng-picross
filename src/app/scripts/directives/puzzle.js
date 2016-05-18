@@ -10,7 +10,6 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, constant
       solved: '='
     },
     link: function ($scope, $element, $attrs) {
-      var drag = {};
       var CellStates = constantsService.CellStates;
       var Button = constantsService.Button;
       var highlighter;
@@ -26,15 +25,15 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, constant
       function applyOverlay (cells) {
         discardOverlayValues();
         cells.forEach(function (pair) {
-          overlayBoardCell(pair.row, pair.col, drag.value);
+          overlayBoardCell(pair.row, pair.col, dragHandler.value);
         });
 
         var affectedCells = cells;
-        if (drag.prevDragCells) {
-          affectedCells = affectedCells.concat(drag.prevDragCells);
+        if (dragHandler.prevDragCells) {
+          affectedCells = affectedCells.concat(dragHandler.prevDragCells);
         }
         puzzleService.annotateHintsForCellChanges($scope.puzzle, affectedCells);
-        drag.prevDragCells = cells;
+        dragHandler.prevDragCells = cells;
       }
 
       function onEveryCell (f) {
@@ -95,12 +94,10 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, constant
       });
 
       $scope.mouseupBoard = disableIfReadonly(function () {
-        if (drag) {
-          drag = {};
-          commitOverlayValues();
-          $scope.puzzle.saveState();
-          checkAndMarkSolved();
-        }
+        dragHandler.reset();
+        commitOverlayValues();
+        $scope.puzzle.saveState();
+        checkAndMarkSolved();
       });
 
       $scope.mousedownCell = disableIfReadonly(function ($event, rowIndex, colIndex) {
@@ -108,19 +105,19 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, constant
         var cellValue = $scope.puzzle.board[rowIndex][colIndex].value;
         var rightClicky = ($event.button === Button.RIGHT) || $event.ctrlKey;
         if (rightClicky) {
-          drag.value = (cellValue === CellStates.b) ? CellStates.o : CellStates.b;
+          dragHandler.value = (cellValue === CellStates.b) ? CellStates.o : CellStates.b;
         } else {
-          drag.value = (cellValue === CellStates.x) ? CellStates.o : CellStates.x;
+          dragHandler.value = (cellValue === CellStates.x) ? CellStates.o : CellStates.x;
         }
-        drag.startCell = {rowIndex: rowIndex, colIndex: colIndex};
+        dragHandler.setDragStart({rowIndex: rowIndex, colIndex: colIndex});
         $scope.mousemoveCell(rowIndex, colIndex);
       });
 
       $scope.mousemoveCell = disableIfReadonly(function (rowIndex, colIndex) {
         hoveredRowIndex = rowIndex;
         hoveredColIndex = colIndex;
-        var cells = dragHandler.draggedCells(drag, rowIndex, colIndex);
-        if (cells && !angular.equals(drag.prevDragCells, cells)) {
+        var cells = dragHandler.draggedCells(rowIndex, colIndex);
+        if (cells && !angular.equals(dragHandler.prevDragCells, cells)) {
           highlighter.invalidateCell(rowIndex, colIndex);
           applyOverlay(cells);
         }
@@ -166,6 +163,8 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, constant
   };
 
   function DragHandler() {
+    var dragStart;
+
     function _draggedCells(startIndex, currentIndex, makeCell) {
       var cellCount = currentIndex - startIndex;
       var sign = Math.min(1, Math.max(-1, cellCount));
@@ -178,13 +177,13 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, constant
       return cells;
     }
 
-    this.draggedCells = function (drag, rowIndex, colIndex) {
-      if (!drag.startCell) {
+    this.draggedCells = function (rowIndex, colIndex) {
+      if (!dragStart) {
         return;
       }
 
-      var startRowIx = drag.startCell.rowIndex;
-      var startColIx = drag.startCell.colIndex;
+      var startRowIx = dragStart.rowIndex;
+      var startColIx = dragStart.colIndex;
       if (rowIndex === startRowIx) {
         return _draggedCells(startColIx, colIndex, function (cellCount) {
           return {row: startRowIx, col: startColIx + cellCount};
@@ -196,6 +195,18 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, constant
         });
       }
     };
+
+    this.setDragStart = function (ds) {
+      dragStart = ds;
+    };
+
+    this.reset = function () {
+      this.value = null;
+      this.prevDragCells = null;
+      dragStart = null;
+    };
+
+    this.reset();
   }
 
   function HintHighlighter (puzzle) {
