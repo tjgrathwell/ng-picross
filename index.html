@@ -1,0 +1,36 @@
+<!doctype html>
+<html ng-app="ngPicrossApp">
+<head>
+  <script>
+    if (window.location.href.match(/ng-picross/)) {
+      document.write('<base href="/ng-picross/" />');
+    } else {
+      document.write('<base href="/" />');
+    }
+  </script>
+  <meta charset="utf-8">
+  <title>ng-picross</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
+
+  <link rel="stylesheet" href="styles/app.css">
+</head>
+<body>
+<!--[if lt IE 10]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a
+  href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
+
+<header>
+  <h1 class='text-center'><a href ng-click="goHome()">ng-picross</a></h1>
+</header>
+
+<div class="container" ng-view="" autoscroll="true"></div>
+
+<script src="scripts/vendor.js"></script>
+
+<script src="scripts/app.js"></script>
+
+</body>
+</html>
