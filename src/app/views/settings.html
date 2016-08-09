@@ -1,32 +1,38 @@
 <h2 class="text-center" style="margin: 30px 0;">Settings</h2>
 
 <div class="settings">
-  <h3>Local Storage</h3>
-  <button ng-click="clearPartialPuzzleSolutions()"
-          ng-disabled="numberOfPartialPuzzleSolutions() === 0"
-          ng-bind="clearPartialPuzzleSolutionsText()"></button>
+  <div class="settings-field">
+    <h3>Local Storage</h3>
+    <button ng-click="clearPartialPuzzleSolutions()"
+            ng-disabled="numberOfPartialPuzzleSolutions() === 0"
+            ng-bind="clearPartialPuzzleSolutionsText()"></button>
+  </div>
 
-  <h3>Timers</h3>
-  <label>
-    <input type="checkbox" ng-model="properties.hideTimers"> Hide Timers
-  </label>
-
-  <h3>Random Puzzles</h3>
-  <form name="sizeForm">
+  <div class="settings-field">
+    <h3>Timers</h3>
     <label>
-      <input type="checkbox" ng-model="properties.specifySize"> Specify Size
+      <input type="checkbox" ng-model="properties.hideTimers"> Hide Timers
     </label>
+  </div>
 
-    <div ng-if="properties.specifySize">
-      <input type="number"
-             placeholder="?"
-             ng-model="properties.size.rows">
-      x
-      <input type="number"
-             placeholder="?"
-             ng-model="properties.size.cols">
-    </div>
-  </form>
+  <div class="settings-field">
+    <h3>Random Puzzles</h3>
+    <form name="sizeForm">
+      <label>
+        <input type="checkbox" ng-model="properties.specifySize"> Specify Size
+      </label>
+
+      <div ng-if="properties.specifySize">
+        <input type="number"
+               placeholder="?"
+               ng-model="properties.size.rows">
+        x
+        <input type="number"
+               placeholder="?"
+               ng-model="properties.size.cols">
+      </div>
+    </form>
+  </div>
 </div>
 
 <div ng-if="properties.specifySize && properties.size.rows && properties.size.cols">
