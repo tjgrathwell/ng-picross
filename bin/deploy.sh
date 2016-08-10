@@ -8,7 +8,7 @@ git checkout -b gh-pages
 
 perl -i -nle'/^dist$/||print' .gitignore
 
-gulp build
+NODE_ENV=production gulp build
 
 git add .
 

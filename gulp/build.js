@@ -39,6 +39,12 @@ gulp.task('html', ['inject', 'partials'], function () {
 
   return gulp.src(path.join(conf.paths.tmp, '/serve/*.html'))
     .pipe($.inject(partialsInjectFile, partialsInjectOptions))
+    .pipe($.htmlReplace({
+      favicon: {
+        src: (process.env.NODE_ENV == 'production') ? 'favicon.ico' : 'favicon-development.ico',
+        tpl: '<link rel="icon" href="assets/images/%s" type="image/x-icon" />'
+      }
+    }))
     .pipe($.useref())
     .pipe(jsFilter)
     .pipe($.ngAnnotate())

@@ -33,6 +33,7 @@
     "gulp-eslint": "3.0.1",
     "gulp-filter": "4.0.0",
     "gulp-flatten": "0.3.0",
+    "gulp-html-replace": "^1.6.1",
     "gulp-inject": "4.1.0",
     "gulp-jasmine-browser": "1.4.0",
     "gulp-load-plugins": "1.2.4",
