@@ -12,7 +12,7 @@ describe('Directive: puzzle', function () {
     angular.element(document).triggerHandler('mouseup');
   }
 
-  beforeEach(function () {
+  function renderPuzzle() {
     $scope = this.$rootScope.$new();
 
     // 'x x',
@@ -21,14 +21,18 @@ describe('Directive: puzzle', function () {
     $scope.puzzle = this.puzzleCatalogService.getPuzzle('1');
     view = this.$compile('<puzzle puzzle="puzzle" solved="solved">')($scope);
     $scope.$digest();
-  });
+  }
 
   it('renders a board representing a puzzle', function () {
+    renderPuzzle.call(this);
+
     expect(view[0].querySelectorAll('.row').length).toEqual(3);
     expect(view[0].querySelectorAll('.cell').length).toEqual(9);
   });
 
   it('renders hints based on the puzzle solution', function () {
+    renderPuzzle.call(this);
+
     var rowHints = _.map(view[0].querySelectorAll('.row-hint'), function (rowHint) {
       return _.map(rowHint.querySelectorAll('.row-hint-number'), function (number) {
         return number.textContent;
@@ -46,6 +50,8 @@ describe('Directive: puzzle', function () {
   });
 
   it("marks a cell as 'on' when it is clicked", function () {
+    renderPuzzle.call(this);
+
     function firstCellChecked () {
       return view[0].querySelector('.row').querySelector('.cell').classList.contains('on');
     }
@@ -58,6 +64,8 @@ describe('Directive: puzzle', function () {
   });
 
   it("marks the puzzle as 'solved' when all appropriate cells are marked", function () {
+    renderPuzzle.call(this);
+
     expect($scope.puzzle.solved()).toEqual(false);
 
     clickCell(0, 0);
@@ -70,6 +78,8 @@ describe('Directive: puzzle', function () {
   });
 
   it("clears all checked cells and crossed-out hints when reset", function () {
+    renderPuzzle.call(this);
+
     spyOn(window, 'confirm').and.returnValue(true);
 
     clickCell(0, 0);
@@ -82,5 +92,18 @@ describe('Directive: puzzle', function () {
 
     expect(view[0].querySelectorAll('.cell.on').length).toEqual(0);
     expect(view[0].querySelectorAll('.col-hint-number.off').length).toEqual(0);
+  });
+
+  it("restores state of cells and hints if a saved partial solution exists", function () {
+    renderPuzzle.call(this);
+    clickCell(0, 0);
+
+    expect(view[0].querySelectorAll('.cell.on').length).toEqual(1);
+    expect(view[0].querySelectorAll('.col-hint-number.off').length).toEqual(1);
+
+    renderPuzzle.call(this);
+
+    expect(view[0].querySelectorAll('.cell.on').length).toEqual(1);
+    expect(view[0].querySelectorAll('.col-hint-number.off').length).toEqual(1);
   });
 });

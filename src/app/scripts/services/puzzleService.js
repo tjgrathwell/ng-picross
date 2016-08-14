@@ -75,6 +75,7 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
             boardCell.value = boardCell.displayValue = transformedCell;
           });
         });
+        puzzleService.annotateAllHints(this);
       },
       saveState: function () {
         var savedState = this.board.map(function (row) {
@@ -179,6 +180,18 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
     });
     _.uniq(_.map(cells, 'col')).forEach(function (colIndex) {
       puzzleService._annotateHints(puzzle.colHints[colIndex], matrixService.col(puzzle.board, colIndex));
+    });
+  };
+
+  this.annotateAllHints = function (puzzle) {
+    var hintables = [
+      {hints: puzzle.rowHints, lineFetcher: matrixService.row},
+      {hints: puzzle.colHints, lineFetcher: matrixService.col}
+    ];
+    hintables.forEach(function (hintable) {
+      hintable.hints.forEach(function (hints, hintIndex) {
+        puzzleService._annotateHints(hints, hintable.lineFetcher(puzzle.board, hintIndex));
+      });
     });
   };
 
