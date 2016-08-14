@@ -58,6 +58,10 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
       colHints: colHints(solution),
       fingerprint: fingerprint,
       restoreState: function () {
+        if (!this.fingerprint) {
+          return;
+        }
+
         var savedState = storageService.get('puzzleState.' + this.fingerprint);
         if (!savedState) {
           return;
