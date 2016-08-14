@@ -181,4 +181,14 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
       puzzleService._annotateHints(puzzle.colHints[colIndex], matrixService.col(puzzle.board, colIndex));
     });
   };
+
+  this.clearHintAnnotations = function (puzzle) {
+    [puzzle.rowHints, puzzle.colHints].forEach(function (rowOrColumnHints) {
+      rowOrColumnHints.forEach(function (hints) {
+        for (var i = 0; i < hints.length; i++) {
+          hints[i].solved = false;
+        }
+      });
+    });
+  };
 });

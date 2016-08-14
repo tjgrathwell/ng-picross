@@ -153,6 +153,7 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, constant
           onEveryCell(function (cell) {
             cell.displayValue = cell.value = CellStates.o;
           });
+          puzzleService.clearHintAnnotations($scope.puzzle);
         }
       };
 

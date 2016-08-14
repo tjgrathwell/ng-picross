@@ -68,4 +68,19 @@ describe('Directive: puzzle', function () {
 
     expect($scope.puzzle.solved()).toEqual(true);
   });
+
+  it("clears all checked cells and crossed-out hints when reset", function () {
+    spyOn(window, 'confirm').and.returnValue(true);
+
+    clickCell(0, 0);
+
+    expect(view[0].querySelectorAll('.cell.on').length).toEqual(1);
+    expect(view[0].querySelectorAll('.col-hint-number.off').length).toEqual(1);
+
+    view.isolateScope().confirmPuzzleReset();
+    view.scope().$digest();
+
+    expect(view[0].querySelectorAll('.cell.on').length).toEqual(0);
+    expect(view[0].querySelectorAll('.col-hint-number.off').length).toEqual(0);
+  });
 });
