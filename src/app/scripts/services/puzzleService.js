@@ -174,7 +174,6 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
   };
 
   this.annotateHintsForCellChanges = function (puzzle, cells) {
-    var puzzleService = this;
     _.uniq(_.map(cells, 'row')).forEach(function (rowIndex) {
       puzzleService._annotateHints(puzzle.rowHints[rowIndex], matrixService.row(puzzle.board, rowIndex));
     });
