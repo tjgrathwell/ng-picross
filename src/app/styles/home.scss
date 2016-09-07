@@ -86,6 +86,11 @@ $puzzle-choice-width: 60px;
   border: 1px solid black;
   transform: rotate(6deg);
 
+  .puzzle-choice:hover & {
+    animation-name: diceShake;
+    animation-duration: 1s;
+  }
+
   .pip {
     position: absolute;
     width: 3px;
