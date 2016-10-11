@@ -93,8 +93,8 @@ $puzzle-choice-width: 60px;
 
   .pip {
     position: absolute;
-    width: 3px;
-    height: 3px;
+    width: 4px;
+    height: 4px;
     background-color: black;
     border-radius: 50%;
   }
@@ -116,7 +116,7 @@ $puzzle-choice-width: 60px;
   }
 
   .pip3 {
-    top: calc(50% - 1px);
-    left: calc(50% - 1px);
+    top: calc(50% - 2px);
+    left: calc(50% - 2px);
   }
 }
