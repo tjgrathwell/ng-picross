@@ -65,7 +65,11 @@ gulp.task('jasmine', function() {
 });
 
 gulp.task('jasmine-phantom', function() {
+  var headlessOptions = {};
+  if (process.argv.length > 3 && process.argv[3] == '--spec') {
+    headlessOptions.spec = process.argv[4];
+  }
   return listFiles()
     .pipe(jasmineBrowser.specRunner({console: true}))
-    .pipe(jasmineBrowser.headless());
+    .pipe(jasmineBrowser.headless(headlessOptions));
 });

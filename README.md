@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/tjgrathwell/ng-picross.svg?branch=master)](https://travis-ci.org/tjgrathwell/ng-picross)
 
-An AngularJS implementation of the puzzle game Picross, often terribly refered to as [nonograms](http://en.wikipedia.org/wiki/Nonogram).
+An AngularJS implementation of the puzzle game Picross, sometimes called [nonograms](http://en.wikipedia.org/wiki/Nonogram).
 
 ## Running the server
 
@@ -11,6 +11,8 @@ An AngularJS implementation of the puzzle game Picross, often terribly refered t
 ## Running the tests
 
 `gulp jasmine` (browser) or `gulp jasmine-phantom` (headless)
+
+`gulp jasmine-phantom --spec "some test name"` will run a focused subset of tests
 
 `protractor protractor.conf.js`
 
