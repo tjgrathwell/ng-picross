@@ -42,6 +42,14 @@ describe('Service: puzzleService', function () {
       return hints.map(hint => [hint.value, hint.solved]);
     }
 
+    it("marks hints as 'solved' if the hint is 0 and the row is empty", function () {
+      var hints;
+
+      hints = makeHints(0);
+      this.puzzleService._annotateHints(hints, makeLine(0, 0, 0, 0, 0));
+      expect(solvedHints(hints)).toEqual([[0, true]]);
+    });
+
     it("marks hints as 'solved' if they must be solved given the marked board spaces", function () {
       var hints;
 

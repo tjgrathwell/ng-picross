@@ -120,8 +120,20 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
     var lastLineIndex = line.length - 1;
     var remainingHintValue = _.sum(hintValues);
 
+    function positionUnmarked(position) {
+      return line[position].displayValue === CellStates.b;
+    }
+
     function positionMarked(position) {
       return line[position].displayValue === CellStates.x;
+    }
+
+    if (hintValues[0] === 0) {
+      return [
+        _.every(line, function (value) {
+          return value.displayValue === CellStates.b;
+        })
+      ];
     }
 
     for (var i = 0; i < hintValues.length; i++) {
@@ -162,7 +174,9 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
           break;
         }
       }
+
       result[i] = hintSolved;
+
       remainingHintValue -= hintValue;
       // If this segment had less cells than the hint, give up.
       if (runStarted && cellsRemainingForHint > 0) {
