@@ -120,10 +120,6 @@ angular.module('ngPicrossApp').service('puzzleService', function (constantsServi
     var lastLineIndex = line.length - 1;
     var remainingHintValue = _.sum(hintValues);
 
-    function positionUnmarked(position) {
-      return line[position].displayValue === CellStates.b;
-    }
-
     function positionMarked(position) {
       return line[position].displayValue === CellStates.x;
     }

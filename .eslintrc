@@ -3,7 +3,8 @@
   "plugins": ["angular"],
   "env": {
     "browser": true,
-    "jasmine": true
+    "jasmine": true,
+    "es6": true
   },
   "rules": {
     "comma-dangle": 0,
@@ -14,6 +15,7 @@
     "angular": true,
     "module": true,
     "inject": true,
+    "injectIntoThis": true,
     "_": false
   }
 }
