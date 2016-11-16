@@ -48,22 +48,22 @@ angular.module('ngPicrossApp').service('timerService', function ($timeout) {
     };
   }
 
-  function FakePuzzleTimer () {
-    var timer = new PuzzleTimer();
-    for (var p in timer) {
-      if (timer.hasOwnProperty(p) && typeof(timer[p]) === 'function') {
-        timer[p] = angular.noop;
+  function replaceBehaviorWithNoop (obj) {
+    for (var p in obj) {
+      if (obj.hasOwnProperty(p) && typeof(obj[p]) === 'function') {
+        obj[p] = angular.noop;
       }
     }
-    return timer;
+    return obj;
   }
 
   return {
     createTimer: function (realTimer) {
+      var timer = new PuzzleTimer();
       if (realTimer) {
-        return new PuzzleTimer();
+        return timer;
       } else {
-        return new FakePuzzleTimer();
+        return replaceBehaviorWithNoop(timer);
       }
     }
   };
