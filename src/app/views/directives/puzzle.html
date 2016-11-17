@@ -30,7 +30,7 @@
 </table>
 
 <div class="puzzle-actions" ng-if="showPuzzleActions">
-  <div class="timer" ng-bind="formattedTime" ng-if="showTimer && formattedTime"></div>
+  <puzzle-timer timer="puzzleTimer" ng-if="showTimer"></puzzle-timer>
 
   <button ng-click="confirmPuzzleReset()">X</button>
 

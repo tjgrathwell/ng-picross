@@ -17,9 +17,9 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, constant
 
       $scope.showClues = false;
       $scope.showTimer = !storageService.getObj('settings').hideTimers;
-      $scope.formattedTime = null;
-
       var puzzleTimer = timerService.createTimer($scope.showTimer);
+      $scope.puzzleTimer = puzzleTimer;
+
       var dragHandler = new DragHandler();
 
       function applyOverlay (cells) {
@@ -83,9 +83,7 @@ angular.module('ngPicrossApp').directive('puzzle', function ($location, constant
         highlighter = new HintHighlighter(newPuzzle);
         puzzleTimer.stop();
         if (!$scope.solved) {
-          puzzleTimer.start(function () {
-            $scope.formattedTime = puzzleTimer.formattedValue();
-          });
+          puzzleTimer.start();
         }
       });
 

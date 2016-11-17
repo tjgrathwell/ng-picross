@@ -13,15 +13,21 @@ angular.module('ngPicrossApp').service('timerService', function ($timeout) {
     var timerPromise, startTime;
     var self = this;
 
-    this.start = function (cb) {
+    this.start = function () {
       startTime = new Date();
-      this.run(cb);
+      this.run();
     };
 
-    this.run = function (cb) {
+    this.onTick = function (cb) {
+      this.cb = cb;
+    };
+
+    this.run = function () {
       timerPromise = $timeout(function () {
-        cb();
-        self.run(cb);
+        if (self.cb) {
+          self.cb();
+        }
+        self.run();
       }, 50);
     };
 
