@@ -6,5 +6,8 @@ before_script:
   - sh -e /etc/init.d/xvfb start
   - gulp serve &
   - webdriver-manager update
-cache: yarn
+cache:
+  yarn: true
+  directories:
+    - node_modules
 sudo: false
