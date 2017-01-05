@@ -4,7 +4,7 @@
   "dependencies": {
     "angular": "~1.6.0",
     "angular-route": "~1.6.0",
-    "lodash": "4.17.2"
+    "lodash": "~4.17.2"
   },
   "scripts": {
     "test": "gulp jasmine-phantom && protractor protractor.conf.js",
