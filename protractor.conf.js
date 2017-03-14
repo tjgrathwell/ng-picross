@@ -1,16 +1,13 @@
 'use strict';
 
-exports.config = {
-  // The address of a running selenium server.
-  //seleniumAddress: 'http://localhost:4444/wd/hub',
-  //seleniumServerJar: deprecated, this should be set on node_modules/protractor/config.json
+let browserName = process.env.BROWSER || (process.env.CI ? 'firefox' : 'chrome');
 
+let config = {
   // Capabilities to be passed to the webdriver instance.
   capabilities: {
-    'browserName': process.env.CI ? 'firefox' : 'chrome'
+    browserName: browserName
   },
 
-  directConnect: true,
   framework: 'jasmine2',
   baseUrl: 'http://localhost:3000',
 
@@ -24,3 +21,12 @@ exports.config = {
     defaultTimeoutInterval: 30000
   }
 };
+
+if (browserName === 'firefox') {
+  config.directConnect = false;
+  config.seleniumAddress = 'http://localhost:4444/wd/hub';
+} else if (browserName === 'chrome') {
+  config.directConnect = true;
+}
+
+exports.config = config;

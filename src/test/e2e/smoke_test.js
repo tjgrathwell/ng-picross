@@ -9,7 +9,13 @@ describe('ng-picross', function() {
       element.all(by.css(".puzzle-choices a")).first().click();
     });
 
-    afterEach(printConsoleErrors);
+    afterEach(function () {
+      browser.driver.getCapabilities().then(function(caps){
+        if (caps.get('browserName') == 'chrome') {
+          printConsoleErrors();
+        }
+      });
+    });
 
     it('has a 3x3 puzzle to start with', function () {
       expect(element.all(by.css('.board .row')).count()).toEqual(3);

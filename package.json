@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "gulp jasmine-phantom && protractor protractor.conf.js",
-    "pretest": "./node_modules/.bin/webdriver-manager update"
+    "pretest": "./bin/pretest.sh"
   },
   "license": "MIT",
   "repository": {
@@ -40,7 +40,7 @@
     "gulp-load-plugins": "~1.5.0",
     "gulp-minify-html": "~1.0.6",
     "gulp-ng-annotate": "~2.0.0",
-    "gulp-protractor": "~3.0.0",
+    "gulp-protractor": "~4.0.0",
     "gulp-rename": "~1.2.2",
     "gulp-replace": "~0.5.3",
     "gulp-rev": "~7.1.2",
@@ -55,7 +55,7 @@
     "http-proxy-middleware": "~0.17.4",
     "merge2": "~1.0.2",
     "phantomjs-prebuilt": "~2.1.14",
-    "protractor": "~4.0.13",
+    "protractor": "~5.1.1",
     "require-dir": "~0.3.1",
     "uglify-save-license": "~0.4.1",
     "webpack": "~2.2.1",

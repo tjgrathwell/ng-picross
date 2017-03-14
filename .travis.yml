@@ -1,6 +1,12 @@
 language: node_js
 node_js:
   - "6"
+addons:
+  firefox: '51'
+  apt:
+    packages:
+      - oracle-java8-installer
+      - oracle-java8-set-default
 before_script:
   - yarn add --force node-sass # https://github.com/yarnpkg/yarn/issues/1981
   - export DISPLAY=:99.0
